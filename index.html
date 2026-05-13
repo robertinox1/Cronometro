@@ -8,15 +8,8 @@
     <title>Cronometro</title>
     <style>
         :root { 
-            --bg-color: #000000; 
-            --text-color: #ffffff; 
-            --gray-btn: #1c1c1e; 
-            --gray-text: #545456; 
-            --green-btn: #0a2e12; 
             --green-text: #2fbc4b; 
-            --red-btn: #32100f; 
             --red-text: #ff453a; 
-            --tab-active: #ff9f0a;
         }
         * { 
             box-sizing: border-box; 
@@ -26,272 +19,163 @@
             padding: 0; 
         }
         html, body {
-            background-color: var(--bg-color); 
-            color: var(--text-color); 
+            background-color: #000000; 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
             height: 100vh; 
-            padding: 0 24px 0px 24px; 
             overflow: hidden;
             position: fixed;
             width: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        /* SCHERMATA ORIGINALE IPHONE AD ALTA DEFINIZIONE COME SFONDO */
+        .iphone-screen-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('sfondo.png'); /* Chiama la tua foto intera */
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            z-index: 1;
         }
         
+        /* RETTANGOLO NERO COPRI-NUMERI ORIGINALI */
+        .black-mask {
+            position: absolute;
+            top: 110px; /* Regola questa altezza per coprire i vecchi numeri della foto se necessario */
+            width: 100%;
+            height: 115px;
+            background-color: #000000;
+            z-index: 2;
+        }
+
+        /* NUOVO TIMER VERO POSIZIONATO SOPRA LA MASCHERA NERA */
         .display-container {
             width: 100%;
             height: 110px;
-            margin-top: calc(115px + env(safe-area-inset-top));
-            margin-bottom: 70px;
+            position: absolute;
+            top: 110px; /* Allineato alla maschera */
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
+            z-index: 3;
         }
-
         .timer-display { 
-            font-family: -apple-system-headline, "SF Pro Display", -apple-system, sans-serif;
+            font-family: -apple-system-headline, "SF Pro Display", sans-serif;
             font-size: 88px; 
             font-weight: 100; 
             font-variant-numeric: tabular-nums; 
             letter-spacing: -2px; 
+            color: #ffffff;
             width: 100%; 
             text-align: center; 
             line-height: 110px;
         }
         
+        /* PULSANTI TRASPARENTI ATTIVI POSIZIONATI SOPRA QUELLI DELLA FOTO */
         .controls-wrapper {
+            position: absolute;
+            top: 295px; /* Posizione millimetrica sopra i cerchi dello screenshot */
             display: flex;
             align-items: center;
             justify-content: space-between;
             width: 100%;
-            max-width: 350px;
+            max-width: 342px;
             height: 82px;
-            margin-bottom: 25px;
-            flex-shrink: 0;
+            z-index: 4;
         }
         .btn { 
             width: 82px; 
             height: 82px; 
             border-radius: 50%; 
             border: none; 
-            font-family: -apple-system, "SF Pro Text", sans-serif;
             font-size: 16px; 
             font-weight: 400;
             display: flex; 
             align-items: center; 
             justify-content: center; 
             outline: none; 
-            background-color: var(--gray-btn);
-            color: #ffffff;
-            transition: background-color 0.1s, color 0.1s;
+            background-color: transparent; /* Invisibili perché usano la grafica della foto sotto */
         }
+        .btn-start { color: var(--green-text); font-weight: 500; }
+        .btn-stop { color: var(--red-text); font-weight: 500; font-size: 15px; } 
         .btn-lap { color: #ffffff; }
-        .btn-lap.disabled { color: var(--gray-text); }
-        .btn-start { background-color: var(--green-btn); color: var(--green-text); }
-        .btn-stop { 
-            background-color: var(--red-btn); 
-            color: var(--red-text); 
-            font-size: 15px; 
-        } 
+        .btn-lap.disabled { color: #545456; }
 
-        .page-dots {
-            display: flex;
-            gap: 6px;
-        }
-        .dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-        }
-        .dot.active { background-color: #ffffff; }
-        .dot.inactive { background-color: #48484a; }
-
+        /* AREA DEI GIRI REALI */
         .laps-container { 
+            position: absolute;
+            top: 400px;
+            bottom: 120px;
             width: 100%; 
             max-width: 330px; 
-            border-top: 0.3px solid #2c2c2e; 
             overflow-y: auto; 
-            flex-grow: 1;
-            margin-bottom: 120px; 
+            z-index: 3;
         }
-        
         .lap-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 12px 2px;
-            font-family: -apple-system, "SF Pro Text", sans-serif;
             font-size: 16px;
             border-bottom: 0.3px solid #2c2c2e;
-            opacity: 0;
             height: 45px;
-        }
-        .lap-row.visible { opacity: 1; }
-        .lap-row .lap-label { color: #ffffff; }
-        
-        .lap-time-wrapper {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            font-family: -apple-system, "SF Pro Text", sans-serif;
-            font-variant-numeric: tabular-nums; 
-            font-weight: 400; 
-            color: #ffffff;
-        }
-        .lap-block-minsec { width: 44px; text-align: right; }
-        .lap-block-divider { width: 8px; text-align: center; }
-        .lap-block-cent { width: 22px; text-align: left; }
-
-        /* TAB BAR - CONTORNO BOLLA STRUTTURALE iOS NATIVO */
-        .tab-bar-container {
-            position: fixed;
-            bottom: 42px;
-            left: 0;
-            width: 100%;
-            padding: 0 14px;
-            display: flex;
-            justify-content: center;
-            z-index: 999;
-        }
-        .tab-bar {
-            width: 100%;
-            max-width: 382px;
-            height: 78px;
-            background-color: #111112;
-            border-radius: 39px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 6px;
-            border: 0.5px solid #242426;
-        }
-        .tab-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-family: -apple-system, "SF Pro Text", sans-serif;
-            font-size: 11px;
-            font-weight: 400;
-            width: 24%;
-            height: 100%;
-            color: #ffffff;
-        }
-        .tab-item span {
-            color: #ffffff;
-            margin-top: 5px;
-            letter-spacing: -0.1px;
-        }
-        .tab-item .tab-svg { 
-            width: 28px; 
-            height: 28px; 
-        }
-        .tab-item .icon-wrapper {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 84px;
-            height: 44px;
-            border-radius: 22px;
+            color: white;
         }
 
-        /* REPLICA CORRETTA PILLOLA GRIGIA INTERNA CRONOMETRO */
-        .tab-item.active .icon-wrapper { 
-            background-color: #242426;
+        /* MENU SEGRETO IN PRIMO PIANO */
+        #secret-menu { 
+            display: none; 
+            position: fixed; 
+            top: 40%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            background-color: #1c1c1e; 
+            border: 1px solid #3a3a3c; 
+            border-radius: 14px; 
+            padding: 20px; 
+            width: 280px; 
+            z-index: 99999; 
+            text-align: center; 
+            box-shadow: 0 0 20px rgba(0,0,0,0.8); 
         }
-        .tab-item.active span { 
-            color: var(--tab-active);
-            font-weight: 500;
-        }
+        #secret-menu h3 { color: white; margin-bottom: 15px; font-size: 17px; }
+        #secret-menu input { width: 80%; padding: 10px; background-color: #2c2c2e; border: 1px solid #3a3a3c; border-radius: 8px; color: white; font-size: 20px; text-align: center; margin-bottom: 15px; outline: none; }
+        #secret-menu button { background-color: #0a84ff; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 16px; font-weight: 600; }
     </style>
 </head>
 <body>
 
+    <!-- IMMAGINE DI SFONDO REALE AL 100% -->
+    <div class="iphone-screen-bg"></div>
+    
+    <!-- COPERTURA DEI NUMERI DELLA FOTO -->
+    <div class="black-mask"></div>
+
+    <!-- CRONOMETRO VERO IN FUNZIONE -->
     <div class="display-container" id="gestureZone">
         <div class="timer-display" id="display">00:00,00</div>
     </div>
 
+    <!-- TASTI ATTIVI INVISIBILI -->
     <div class="controls-wrapper">
         <button class="btn btn-lap disabled" id="btnLeft">Giro</button>
-        <div class="page-dots">
-            <div class="dot active"></div>
-            <div class="dot inactive"></div>
-        </div>
         <button class="btn btn-start" id="btnRight">Avvia</button>
     </div>
 
-    <div class="laps-container" id="lapsContainer">
-        <div class="lap-row" id="lap-row-placeholder">
-            <span class="lap-label">Giro 1</span>
-            <div class="lap-time-wrapper">
-                <span class="lap-block-minsec" id="live-lap-minsec">00:00</span>
-                <span class="lap-block-divider">,</span>
-                <span class="lap-block-cent" id="live-lap-cent">00</span>
-            </div>
-        </div>
+    <div class="laps-container" id="lapsContainer"></div>
+
+    <div id="secret-menu">
+        <h3>Menu Segreto</h3>
+        <input type="number" id="forceNumber" placeholder="Numero da forzare" min="0" max="99">
+        <button id="saveBtn">Salva</button>
     </div>
 
-    <!-- STRUTTURA DEL DOCK ESTETICA CON GLI SF SYMBOLS ORIGINALI APPLE -->
-    <div class="tab-bar-container">
-        <nav class="tab-bar">
-            <!-- Ore Locali (Mappamondo con paralleli perfetti) -->
-            <div class="tab-item">
-                <div class="icon-wrapper">
-                    <svg class="tab-svg" viewBox="0 0 30 30" fill="none" xmlns="w3.org">
-                        <circle cx="15" cy="15" r="9.5" stroke="white" stroke-width="1.3"/>
-                        <path d="M15 5.5V24.5" stroke="white" stroke-width="1"/>
-                        <path d="M5.5 15H24.5" stroke="white" stroke-width="1"/>
-                        <path d="M15 5.5C18.2 8.2 19.5 11.5 19.5 15C19.5 18.5 18.2 21.8 15 24.5C11.8 21.8 10.5 18.5 10.5 15C10.5 11.5 11.8 8.2 15 5.5Z" stroke="white" stroke-width="1"/>
-                        <path d="M6.5 10.5H23.5M6.5 19.5H23.5" stroke="white" stroke-width="1"/>
-                    </svg>
-                </div>
-                <span>Ore locali</span>
-            </div>
-            
-            <!-- Sveglie (Forma bombata nativa con campanelli e piedini solidi) -->
-            <div class="tab-item">
-                <div class="icon-wrapper">
-                    <svg class="tab-svg" viewBox="0 0 30 30" fill="white" xmlns="w3.org">
-                        <path d="M15 23.5C19.6 23.5 23.5 19.6 23.5 15C23.5 10.4 19.6 6.5 15 6.5C10.4 6.5 6.5 10.4 6.5 15C6.5 19.6 10.4 23.5 15 23.5ZM14.1 11.2C14.1 10.7 14.5 10.3 15 10.3C15.5 10.3 15.9 10.7 15.9 11.2V14.1H18.8C19.3 14.1 19.7 14.5 19.7 15C19.7 15.5 19.3 15.9 18.8 15.9H15C14.5 15.9 14.1 15.5 14.1 15V11.2Z"/>
-                        <path d="M5.8 4.8C4.6 4.8 3.6 5.8 3.6 7C3.6 7.8 4 8.5 4.7 8.9C5.1 7.7 5.9 6.7 6.8 5.8C6.5 5.2 6 4.8 5.8 4.8Z"/>
-                        <path d="M24.2 4.8C24 4.8 23.5 5.2 23.2 5.8C24.1 6.7 24.9 7.7 25.3 8.9C26 8.5 26.4 7.8 26.4 7C26.4 5.8 25.4 4.8 24.2 4.8Z"/>
-                        <path d="M8.2 24.8C8.2 25.4 7.7 25.9 7.1 25.9C6.5 25.9 6 25.4 6 24.8C6 23.9 6.4 23.1 7 22.5C7.3 23.4 7.7 24.2 8.2 24.8Z"/>
-                        <path d="M21.8 24.8C22.3 24.2 22.7 23.4 23 22.5C23.6 23.1 24 23.9 24 24.8C24 25.4 23.5 25.9 22.9 25.9C22.3 25.9 21.8 25.4 21.8 24.8Z"/>
-                    </svg>
-                </div>
-                <span>Sveglie</span>
-            </div>
-            
-            <!-- Cronometro (Attivo - Cerchio arancione con i 3 tasti fisici della cassa) -->
-            <div class="tab-item active">
-                <div class="icon-wrapper">
-                    <svg class="tab-svg" viewBox="0 0 30 30" fill="none" xmlns="w3.org">
-                        <circle cx="15" cy="16.5" r="8" fill="#ff9f0a"/>
-                        <rect x="14.3" y="11" width="1.4" height="6" rx="0.7" fill="black"/>
-                        <rect x="13.8" y="4.5" width="2.4" height="2.5" rx="0.4" fill="#ff9f0a"/>
-                        <rect x="20.3" y="7.2" width="1.6" height="2.5" rx="0.4" transform="rotate(40 20.3 7.2)" fill="#ff9f0a"/>
-                        <rect x="8.2" y="8.5" width="1.6" height="2.5" rx="0.4" transform="rotate(-40 8.2 8.5)" fill="#ff9f0a"/>
-                    </svg>
-                </div>
-                <span>Cronometro</span>
-            </div>
-            
-            <!-- Timer (Anello circolare con freccia di scorrimento orario) -->
-            <div class="tab-item">
-                <div class="icon-wrapper">
-                    <svg class="tab-svg" viewBox="0 0 30 30" fill="none" xmlns="w3.org">
-                        <path d="M15 8.5C19.4 8.5 23 12.1 23 16.5C23 20.9 19.4 24.5 15 24.5C10.6 24.5 7 20.9 7 16.5C7 13.1 9 10.2 11.9 9" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-                        <path d="M10.5 6.5L12.7 9L10 11.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M15 16.5L19.2 12.8" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-                    </svg>
-                </div>
-                <span>Timer</span>
-            </div>
-        </nav>
-    </div>
-
-    <!-- RESTANTE CODICE LOGICO DI FORZATURA E GESTIONE SWIPE -->
     <script>
         let startTime = 0;
         let elapsedTime = 0;
@@ -308,10 +192,12 @@
 
         if(targetSum !== null) forceInput.value = targetSum;
 
+        // Blocca i gesti di zoom nativi e l'effetto elastico di Safari
         document.addEventListener('touchmove', function (e) {
             if (e.scale !== 1) { e.preventDefault(); }
         }, { passive: false });
 
+        // Swipe segreto a due dita verso il basso
         let touchStartY = 0;
         window.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
@@ -356,7 +242,7 @@
 
         btnLeft.addEventListener('click', () => {
             if (isRunning) {
-                // Logica Giri
+                // Sviluppo Giro
             } else {
                 resetTimer();
             }
