@@ -143,7 +143,7 @@
         .lap-block-divider { width: 8px; text-align: center; }
         .lap-block-cent { width: 22px; text-align: left; }
 
-        /* TAB BAR REGOLATA PER NITIDEZZA NATIVA SENZA LINEE BIANCHE */
+        /* TAB BAR - CORREZIONE LINEE BIANCHE E OTTIMIZZAZIONE CONTRASTO RETINA */
         .tab-bar-container {
             position: fixed;
             bottom: 40px;
@@ -156,21 +156,27 @@
         }
         .tab-bar-native-img {
             width: 100%;
-            max-width: 366px; /* Larghezza calibrata sullo schermo iPhone logico */
-            height: 78px; /* Altezza calibrata sulle proporzioni native */
+            max-width: 366px; 
+            height: 72px; 
             position: relative;
             background-image: url('dock.png'); 
-            background-size: contain; /* Impedisce lo stretching e la sgranatura */
+            
+            /* Forza l'hardware dell'iPhone a rendere l'immagine nitida e definita */
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+            
+            /* Ingrandisce e sposta di 1px l'immagine per mangiare i bordi bianchi di Paint */
+            background-size: 101% 101%; 
             background-repeat: no-repeat;
-            background-position: center;
-            border: none; /* Rimuove qualsiasi linea bianca di contorno automatica */
-            outline: none;
-            box-shadow: none;
-            overflow: hidden; /* Taglia via il nero negli angoli del ritaglio di Paint */
-            border-radius: 36px; /* Forza gli angoli tondi perfetti di iOS 18 */
+            background-position: center -1px;
+            
+            border: none !important; 
+            outline: none !important;
+            box-shadow: none !important;
+            overflow: hidden; 
+            border-radius: 36px; 
         }
         
-        /* PULSANTI TRASPARENTI DI INTERAZIONE SOPRA LE ICONE REALI */
         .touch-map-container {
             position: absolute;
             top: 0;
@@ -270,7 +276,6 @@
             console.log("Sezione attiva: " + type);
         }
 
-        // Blocco completo dello zoom elastico di Safari
         document.addEventListener('touchmove', function (e) {
             if (e.scale !== 1) { e.preventDefault(); }
         }, { passive: false });
