@@ -110,7 +110,7 @@
             margin-bottom: 120px; 
         }
         
-        /* Struttura del giro irrigidita e allineata */
+        /* Struttura della riga bloccata */
         .lap-row {
             display: flex;
             justify-content: space-between;
@@ -125,14 +125,27 @@
         .lap-row.visible { opacity: 1; }
         .lap-row .lap-label { color: #ffffff; }
         
-        /* Forza i numeri del giro a rimanere totalmente immobili */
-        .lap-row .lap-time { 
+        /* Blocco orizzontale a scomparti rigidi per azzerare i movimenti */
+        .lap-time-wrapper {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
             font-family: -apple-system, "SF Pro Text", sans-serif;
             font-variant-numeric: tabular-nums; 
             font-weight: 400; 
-            color: #ffffff; 
+            color: #ffffff;
+        }
+        .lap-block-minsec {
+            width: 44px;
             text-align: right;
-            min-width: 100px;
+        }
+        .lap-block-divider {
+            width: 8px;
+            text-align: center;
+        }
+        .lap-block-cent {
+            width: 22px;
+            text-align: left;
         }
 
         .tab-bar-container {
@@ -196,9 +209,14 @@
     </div>
 
     <div class="laps-container" id="lapsContainer">
+        <!-- Struttura orizzontale a blocchi rigidi per disattivare le oscillazioni tipografiche -->
         <div class="lap-row" id="lap-row-placeholder">
             <span class="lap-label">Giro 1</span>
-            <span class="lap-time" id="live-lap-time">00:00,00</span>
+            <div class="lap-time-wrapper">
+                <span class="lap-block-minsec" id="live-lap-minsec">00:00</span>
+                <span class="lap-block-divider">,</span>
+                <span class="lap-block-cent" id="live-lap-cent">00</span>
+            </div>
         </div>
     </div>
 
@@ -232,7 +250,11 @@
 
     <script>
         let startTime = 0, elapsedTime = 0, timerInterval = null, isRunning = false;
-        const display = document.getElementById('display'), btnLeft = document.getElementById('btnLeft'), btnRight = document.getElementById('btnRight'), secretMenu = document.getElementById('secret-menu'), targetInput = document.getElementById('target-number'), saveBtn = document.getElementById('save-target'), placeholderLap = document.getElementById('lap-row-placeholder'), liveLapTime = document.getElementById('live-lap-time'), gestureZone = document.getElementById('gestureZone');
+        const display = document.getElementById('display'), btnLeft = document.getElementById('btnLeft'), btnRight = document.getElementById('btnRight'), secretMenu = document.getElementById('secret-menu'), targetInput = document.getElementById('target-number'), saveBtn = document.getElementById('save-target'), placeholderLap = document.getElementById('lap-row-placeholder'), gestureZone = document.getElementById('gestureZone');
+        
+        // Elementi dei blocchi rigidi inferiori
+        const liveLapMinsec = document.getElementById('live-lap-minsec');
+        const liveLapCent = document.getElementById('live-lap-cent');
         
         let targetSum = localStorage.getItem('magicTarget') ? parseInt(localStorage.getItem('magicTarget')) : null;
         if(targetSum) targetInput.value = targetSum;
@@ -243,8 +265,14 @@
             elapsedTime = Date.now() - startTime; 
             let tc = Math.floor(elapsedTime / 10); 
             let m = Math.floor(tc/6000), s = Math.floor(tc/100)%60, c = tc%100;
+            
             display.textContent = formatTime(m, s, c);
-            if(liveLapTime) liveLapTime.textContent = formatTime(m, s, c);
+            
+            // Distribuzione esatta del tempo nei tre blocchi fissi
+            if(liveLapMinsec && liveLapCent) {
+                liveLapMinsec.textContent = `${m<10?'0'+m:m}:${s<10?'0'+s:s}`;
+                liveLapCent.textContent = `${c<10?'0'+c:c}`;
+            }
         }
 
         btnRight.addEventListener('click', () => {
@@ -271,7 +299,10 @@
             if (!isRunning && btnLeft.textContent === 'Azzera') { 
                 elapsedTime = 0; 
                 display.textContent = "00:00,00"; 
-                if(liveLapTime) liveLapTime.textContent = "00:00,00";
+                if(liveLapMinsec && liveLapCent) {
+                    liveLapMinsec.textContent = "00:00";
+                    liveLapCent.textContent = "00";
+                }
                 btnLeft.className = 'btn btn-lap disabled'; 
                 placeholderLap.classList.remove('visible'); 
             } 
@@ -283,9 +314,14 @@
             let sParziale = mStr.split('').concat(sStr.split('')).reduce((sum, d) => sum + parseInt(d), 0);
             let diff = targetSum - sParziale, forcedC = tc % 100, migliorD = 999;
             for (let c1 = 0; c1 <= 9; c1++) { for (let c2 = 0; c2 <= 9; c2++) { if (c1 + c2 === diff) { let vCent = c1 * 10 + c2; let dist = Math.abs(vCent - (tc % 100)); if (dist < migliorD) { migliorD = dist; forcedC = vCent; } } } }
+            
             let tForzato = formatTime(rm, rs, forcedC);
             display.textContent = tForzato;
-            if(liveLapTime) liveLapTime.textContent = tForzato;
+            
+            if(liveLapMinsec && liveLapCent) {
+                liveLapMinsec.textContent = `${rm<10?'0'+rm:rm}:${rs<10?'0'+rs:rs}`;
+                liveLapCent.textContent = `${forcedC<10?'0'+forcedC:forcedC}`;
+            }
         }
 
         let touchStartY = 0;
