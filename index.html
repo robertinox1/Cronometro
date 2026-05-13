@@ -10,14 +10,15 @@
         :root { 
             --bg-color: #000000; 
             --text-color: #ffffff; 
-            --gray-btn: #333333; 
-            --gray-text: #ebebf599; 
-            --green-btn: #1c3d1e; 
-            --green-text: #54d664; 
-            --red-btn: #3a1715; 
+            --gray-btn: #1c1c1e; 
+            --gray-text: #545456; 
+            --green-btn: #0a2e12; 
+            --green-text: #2fbc4b; 
+            --red-btn: #32100f; 
             --red-text: #ff453a; 
             --tab-active: #ff9f0a;
             --tab-inactive: #8e8e93;
+            --dock-bg: #1c1c1e;
         }
         * { 
             box-sizing: border-box; 
@@ -25,7 +26,7 @@
             -webkit-user-select: none; 
             margin: 0; 
             padding: 0; 
-            font-family: -apple-system, "SF Pro Display", "SF Pro Text", system-ui, sans-serif; 
+            font-family: -apple-system, "SF Pro Display", sans-serif; 
         }
         body { 
             background-color: var(--bg-color); 
@@ -34,19 +35,24 @@
             flex-direction: column; 
             align-items: center; 
             height: 100vh; 
-            padding: calc(60px + env(safe-area-inset-top)) 24px calc(20px + env(safe-area-inset-bottom)) 24px; 
+            padding: 0 28px 0px 28px; 
             overflow: hidden; 
         }
         
-        /* Display del Tempo */
+        /* Posizionamento verticale perfetto basato sullo screenshot */
+        .spacer-top {
+            flex-grow: 2.2;
+        }
+
+        /* Display del Tempo: Ultra-sottile e spaziato */
         .timer-display { 
-            font-size: 84px; 
-            font-weight: 200; 
+            font-size: 82px; 
+            font-weight: 100; 
             font-variant-numeric: tabular-nums; 
             letter-spacing: -1px; 
             width: 100%; 
             text-align: center; 
-            margin-bottom: 40px;
+            margin-bottom: 55px;
         }
         
         /* Layout Pulsanti + Indicatori di Pagina (Pallini) */
@@ -55,12 +61,12 @@
             align-items: center;
             justify-content: space-between;
             width: 100%;
-            max-width: 340px;
-            margin-bottom: 30px;
+            max-width: 350px;
+            margin-bottom: 20px;
         }
         .btn { 
-            width: 80px; 
-            height: 80px; 
+            width: 76px; 
+            height: 76px; 
             border-radius: 50%; 
             border: none; 
             font-size: 16px; 
@@ -68,16 +74,15 @@
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            cursor: pointer; 
             outline: none; 
+            background-color: var(--gray-btn);
+            color: #8e8e93;
         }
-        .btn:active { filter: brightness(1.4); }
-        .btn-lap { background-color: var(--gray-btn); color: var(--text-color); }
         .btn-lap.disabled { color: var(--gray-text); }
         .btn-start { background-color: var(--green-btn); color: var(--green-text); }
-        .btn-stop { background-color: var(--red-btn); color: var(--red-text); font-size: 14px; white-space: nowrap; } 
+        .btn-stop { background-color: var(--red-btn); color: var(--red-text); font-size: 15px; } 
 
-        /* Pallini Apple centrali */
+        /* Pallini Apple centrali dello screenshot */
         .page-dots {
             display: flex;
             gap: 6px;
@@ -88,67 +93,81 @@
             border-radius: 50%;
         }
         .dot.active { background-color: #ffffff; }
-        .dot.inactive { background-color: #2c2c2e; }
+        .dot.inactive { background-color: #48484a; }
 
-        /* Contenitore Lista Giri */
+        /* Contenitore Lista Giri con riga sottile superiore */
         .laps-container { 
             width: 100%; 
-            max-width: 340px; 
-            border-top: 0.5px solid #222; 
+            max-width: 350px; 
+            border-top: 0.3px solid #2c2c2e; 
             overflow-y: auto; 
-            flex-grow: 1;
-            margin-bottom: 75px; 
+            flex-grow: 2;
+            margin-bottom: 120px; 
         }
         .lap-row {
             display: flex;
             justify-content: space-between;
             padding: 14px 4px;
-            border-bottom: 0.5px solid #1c1c1e;
             font-size: 16px;
         }
         .lap-row .lap-label { color: #ffffff; }
-        .lap-row .lap-time { font-variant-numeric: tabular-nums; font-weight: 400; }
+        .lap-row .lap-time { font-variant-numeric: tabular-nums; font-weight: 400; color: #ffffff; }
 
-        /* Barra di Navigazione Inferiore con 4 Voci Bubble */
-        .tab-bar {
+        /* DOCK FLOTTANTE INFERIORE (Uguagliato allo screenshot) */
+        .tab-bar-container {
             position: fixed;
-            bottom: 0;
+            bottom: 25px;
             left: 0;
             width: 100%;
-            height: calc(65px + env(safe-area-inset-bottom));
-            background-color: #161616;
-            border-top: 0.5px solid #2c2c2c;
+            padding: 0 16px;
+            display: flex;
+            justify-content: center;
+            z-index: 999;
+        }
+        .tab-bar {
+            width: 100%;
+            max-width: 390px;
+            height: 64px;
+            background-color: var(--dock-bg);
+            border-radius: 32px;
             display: flex;
             justify-content: space-around;
-            padding-top: 8px;
-            padding-bottom: env(safe-area-inset-bottom);
-            z-index: 999;
+            align-items: center;
+            padding: 0 10px;
         }
         .tab-item {
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
             color: var(--tab-inactive);
             font-size: 10px;
-            font-weight: 500;
+            font-weight: 400;
+            width: 22%;
+            height: 100%;
             text-decoration: none;
-            width: 25%;
         }
+        /* Capsula arancione per la voce selezionata */
         .tab-item.active {
             color: var(--tab-active);
+            background-color: #2c2c2e;
+            height: 50px;
+            border-radius: 25px;
         }
         .tab-icon {
-            font-size: 22px;
-            margin-bottom: 4px;
+            font-size: 19px;
+            margin-bottom: 2px;
         }
 
-        /* Pannello Trucco Sbloccabile */
+        /* Pannello Trucco Segreto */
         #secret-menu { display: none; position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%); background-color: #1c1c1e; border: 1px solid #3a3a3c; border-radius: 14px; padding: 20px; width: 280px; z-index: 99999; text-align: center; box-shadow: 0 0 20px rgba(0,0,0,0.8); }
         #secret-menu input { width: 80%; padding: 10px; background-color: #2c2c2e; border: 1px solid #3a3a3c; border-radius: 8px; color: white; font-size: 20px; text-align: center; margin-bottom: 15px; outline: none; }
         #secret-menu button { background-color: #0a84ff; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 16px; font-weight: 600; }
     </style>
 </head>
 <body>
+
+    <div class="spacer-top"></div>
 
     <div class="timer-display" id="display">00:00,00</div>
 
@@ -163,27 +182,29 @@
 
     <div class="laps-container" id="lapsContainer"></div>
 
-    <!-- Barra Inferiore Apple Replicata -->
-    <nav class="tab-bar">
-        <div class="tab-item">
-            <span class="tab-icon">🌐</span>
-            <span>Ore locali</span>
-        </div>
-        <div class="tab-item">
-            <span class="tab-icon">⏰</span>
-            <span>Sveglia</span>
-        </div>
-        <div class="tab-item active">
-            <span class="tab-icon">⏱️</span>
-            <span>Cronometro</span>
-        </div>
-        <div class="tab-item">
-            <span class="tab-icon">⏳</span>
-            <span>Timer</span>
-        </div>
-    </nav>
+    <!-- Struttura Dock Flottante dello screenshot -->
+    <div class="tab-bar-container">
+        <nav class="tab-bar">
+            <div class="tab-item">
+                <span class="tab-icon">🌐</span>
+                <span>Ore locali</span>
+            </div>
+            <div class="tab-item">
+                <span class="tab-icon">⏰</span>
+                <span>Sveglie</span>
+            </div>
+            <div class="tab-item active">
+                <span class="tab-icon">⏱️</span>
+                <span>Cronometro</span>
+            </div>
+            <div class="tab-item">
+                <span class="tab-icon">⏳</span>
+                <span>Timer</span>
+            </div>
+        </nav>
+    </div>
 
-    <!-- Pannello di Configurazione -->
+    <!-- Pannello Trucco -->
     <div id="secret-menu">
         <h3 style="margin-bottom:15px; font-size:17px;">Impostazione Forza</h3>
         <input type="number" id="target-number" placeholder="Es. 17" min="1" max="54">
@@ -204,13 +225,9 @@
             elapsedTime = Date.now() - startTime; 
             let tc = Math.floor(elapsedTime / 10); 
             let m = Math.floor(tc/6000), s = Math.floor(tc/100)%60, c = tc%100;
-            
             display.textContent = formatTime(m, s, c);
-            
             const liveLapTime = document.getElementById('live-lap-time');
-            if(liveLapTime) {
-                liveLapTime.textContent = formatTime(m, s, c);
-            }
+            if(liveLapTime) liveLapTime.textContent = formatTime(m, s, c);
         }
 
         btnRight.addEventListener('click', () => {
@@ -222,7 +239,6 @@
                 btnRight.className = 'btn btn-stop'; 
                 btnLeft.textContent = 'Giro'; 
                 btnLeft.className = 'btn btn-lap';
-                
                 lapsContainer.innerHTML = `
                     <div class="lap-row" id="lap-1-row">
                         <span class="lap-label">Giro 1</span>
@@ -234,10 +250,7 @@
                 btnRight.textContent = 'Avvia'; 
                 btnRight.className = 'btn btn-start'; 
                 btnLeft.textContent = 'Azzera'; 
-                
-                if (targetSum !== null) {
-                    forzareRisultato();
-                }
+                if (targetSum !== null) forzareRisultato();
             }
         });
 
@@ -255,17 +268,7 @@
             let mStr = rm < 10 ? '0' + rm : rm.toString(), sStr = rs < 10 ? '0' + rs : rs.toString();
             let sParziale = mStr.split('').concat(sStr.split('')).reduce((sum, d) => sum + parseInt(d), 0);
             let diff = targetSum - sParziale, forcedC = tc % 100, migliorD = 999;
-            
-            for (let c1 = 0; c1 <= 9; c1++) { 
-                for (let c2 = 0; c2 <= 9; c2++) { 
-                    if (c1 + c2 === diff) { 
-                        let vCent = c1 * 10 + c2; 
-                        let dist = Math.abs(vCent - (tc % 100)); 
-                        if (dist < migliorD) { migliorD = dist; forcedC = vCent; } 
-                    } 
-                } 
-            }
-            
+            for (let c1 = 0; c1 <= 9; c1++) { for (let c2 = 0; c2 <= 9; c2++) { if (c1 + c2 === diff) { let vCent = c1 * 10 + c2; let dist = Math.abs(vCent - (tc % 100)); if (dist < migliorD) { migliorD = dist; forcedC = vCent; } } } }
             let tForzato = formatTime(rm, rs, forcedC);
             display.textContent = tForzato;
             const liveLapTime = document.getElementById('live-lap-time');
