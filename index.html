@@ -39,10 +39,9 @@
         }
         
         .spacer-top {
-            flex-grow: 2.3;
+            flex-grow: 2.5;
         }
 
-        /* Grafica e spessore dei numeri come da foto */
         .timer-display { 
             font-family: -apple-system-headline, "SF Pro Display", -apple-system, sans-serif;
             font-size: 88px; 
@@ -54,7 +53,6 @@
             margin-bottom: 75px;
         }
         
-        /* Controlli distaccati dai numeri */
         .controls-wrapper {
             display: flex;
             align-items: center;
@@ -95,7 +93,6 @@
         .dot.active { background-color: #ffffff; }
         .dot.inactive { background-color: #48484a; }
 
-        /* Tabella Giri proporzionata */
         .laps-container { 
             width: 100%; 
             max-width: 330px; 
@@ -115,7 +112,6 @@
         .lap-row .lap-label { color: #ffffff; }
         .lap-row .lap-time { font-variant-numeric: tabular-nums; font-weight: 400; color: #ffffff; }
 
-        /* Dock inferiore flottante */
         .tab-bar-container {
             position: fixed;
             bottom: 25px;
@@ -162,7 +158,6 @@
             margin-bottom: 3px;
         }
 
-        /* Menu Segreto */
         #secret-menu { display: none; position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%); background-color: #1c1c1e; border: 1px solid #3a3a3c; border-radius: 14px; padding: 20px; width: 280px; z-index: 99999; text-align: center; box-shadow: 0 0 20px rgba(0,0,0,0.8); }
         #secret-menu h3 { font-family: -apple-system, sans-serif; color: white; margin-bottom: 15px; font-size: 17px; font-weight: 500; }
         #secret-menu input { width: 80%; padding: 10px; background-color: #2c2c2e; border: 1px solid #3a3a3c; border-radius: 8px; color: white; font-size: 20px; text-align: center; margin-bottom: 15px; outline: none; }
@@ -188,7 +183,6 @@
 
     <div class="tab-bar-container">
         <nav class="tab-bar">
-            <!-- Ore Locali -->
             <div class="tab-item">
                 <svg class="tab-icon-svg" viewBox="0 0 24 24" fill="none" stroke="#8e8e93" stroke-width="1.5">
                     <circle cx="12" cy="12" r="9"></circle>
@@ -197,7 +191,6 @@
                 </svg>
                 <span>Ore locali</span>
             </div>
-            <!-- Sveglie -->
             <div class="tab-item">
                 <svg class="tab-icon-svg" viewBox="0 0 24 24" fill="none" stroke="#8e8e93" stroke-width="1.5">
                     <circle cx="12" cy="13" r="7"></circle>
@@ -206,7 +199,6 @@
                 </svg>
                 <span>Sveglie</span>
             </div>
-            <!-- Cronometro -->
             <div class="tab-item active">
                 <svg class="tab-icon-svg" viewBox="0 0 24 24" fill="none" stroke="#ff9f0a" stroke-width="1.6">
                     <circle cx="12" cy="13" r="7"></circle>
@@ -214,7 +206,6 @@
                 </svg>
                 <span>Cronometro</span>
             </div>
-            <!-- Timer -->
             <div class="tab-item">
                 <svg class="tab-icon-svg" viewBox="0 0 24 24" fill="none" stroke="#8e8e93" stroke-width="1.5">
                     <circle cx="12" cy="12" r="9" stroke-dasharray="4 2"></circle>
@@ -295,7 +286,7 @@
             if(liveLapTime) liveLapTime.textContent = tForzato;
         }
 
-        // UNICO METODO DI SBLOCCO: SWIPE VERSO IL BASSO CON DUE DITA
+        // ALGORTIMO DI TRACCIAMENTO RIPRISTINATO E CORRETTO
         let touchStartY = 0;
         window.addEventListener('touchstart', (e) => { 
             if (e.touches.length === 2) {
@@ -305,8 +296,9 @@
 
         window.addEventListener('touchend', (e) => { 
             if (touchStartY !== 0) { 
-                let touchEndY = (e.changedTouches[0].clientY + (e.changedTouches[1] ? e.changedTouches[1].clientY : e.changedTouches[0].clientY)) / 2; 
-                if (touchEndY - touchStartY > 60) {
+                // Traccia i punti di uscita delle due dita
+                let currentY = (e.changedTouches[0].clientY + (e.changedTouches[1] ? e.changedTouches[1].clientY : e.changedTouches[0].clientY)) / 2;
+                if (currentY - touchStartY > 50) { // Rileva lo swipe verso il basso se supera i 50 pixel
                     secretMenu.style.display = 'block'; 
                 }
                 touchStartY = 0; 
