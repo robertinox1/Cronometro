@@ -17,8 +17,8 @@
             --red-btn: #32100f; 
             --red-text: #ff453a; 
             --tab-active: #ff9f0a;
-            --tab-inactive: #8e8e93;
-            --dock-bg: #1c1c1e;
+            --tab-inactive: #ffffff;
+            --dock-bg: #161617;
         }
         * { 
             box-sizing: border-box; 
@@ -38,18 +38,17 @@
             overflow: hidden; 
         }
         
-        /* Contenitore ad altezza fissa per bloccare i numeri ed eliminare lo scatto */
         .display-container {
             width: 100%;
             height: 110px;
-            margin-top: calc(75px + env(safe-area-inset-top));
-            margin-bottom: 90px;
+            margin-top: calc(115px + env(safe-area-inset-top));
+            margin-bottom: 70px;
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
         }
 
-        /* Spessore dei numeri ultra-sottile originale Apple */
         .timer-display { 
             font-family: -apple-system-headline, "SF Pro Display", -apple-system, sans-serif;
             font-size: 88px; 
@@ -61,14 +60,15 @@
             line-height: 110px;
         }
         
-        /* Controlli e pulsanti ingranditi */
         .controls-wrapper {
             display: flex;
             align-items: center;
             justify-content: space-between;
             width: 100%;
             max-width: 350px;
+            height: 82px;
             margin-bottom: 25px;
+            flex-shrink: 0;
         }
         .btn { 
             width: 82px; 
@@ -102,7 +102,6 @@
         .dot.active { background-color: #ffffff; }
         .dot.inactive { background-color: #48484a; }
 
-        /* Contenitore Giri più stretto rispetto ai bordi dello schermo */
         .laps-container { 
             width: 100%; 
             max-width: 330px; 
@@ -118,31 +117,32 @@
             font-family: -apple-system, "SF Pro Text", sans-serif;
             font-size: 16px;
             border-bottom: 0.3px solid #2c2c2e;
+            opacity: 0;
         }
-        .lap-row .lap-label { color: #ffffff; }
-        .lap-row .lap-time { font-variant-numeric: tabular-nums; font-weight: 400; color: #ffffff; }
+        .lap-row.visible { opacity: 1; }
 
-        /* Dock inferiore flottante */
+        /* REPLICA DOCK FLOTTANTE ESATTO DALLA FOTO */
         .tab-bar-container {
             position: fixed;
-            bottom: 25px;
+            bottom: 35px;
             left: 0;
             width: 100%;
-            padding: 0 16px;
+            padding: 0 12px;
             display: flex;
             justify-content: center;
             z-index: 999;
         }
         .tab-bar {
             width: 100%;
-            max-width: 390px;
-            height: 64px;
+            max-width: 395px;
+            height: 68px;
             background-color: var(--dock-bg);
-            border-radius: 32px;
+            border-radius: 34px;
             display: flex;
             justify-content: space-around;
             align-items: center;
-            padding: 0 6px;
+            padding: 0 4px;
+            border: 0.5px solid #242426;
         }
         .tab-item {
             display: flex;
@@ -156,30 +156,29 @@
             width: 23%;
             height: 100%;
         }
-        /* Effetto capsula attiva identico alla foto */
+        /* Ovale asimmetrico grigio scuro per l'elemento attivo */
         .tab-item.active {
             color: var(--tab-active);
-            background-color: #2c2c2e;
-            height: 52px;
-            border-radius: 26px;
+            background-color: #2a2a2b;
+            height: 54px;
+            width: 26%;
+            border-radius: 27px;
         }
         .tab-icon-svg {
-            width: 22px;
-            height: 22px;
-            margin-bottom: 3px;
+            width: 24px;
+            height: 24px;
+            margin-bottom: 2px;
         }
 
-        /* Menu Segreto */
         #secret-menu { display: none; position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%); background-color: #1c1c1e; border: 1px solid #3a3a3c; border-radius: 14px; padding: 20px; width: 280px; z-index: 99999; text-align: center; box-shadow: 0 0 20px rgba(0,0,0,0.8); }
-        #secret-menu h3 { font-family: -apple-system, sans-serif; color: white; margin-bottom: 15px; font-size: 17px; font-weight: 500; }
+        #secret-menu h3 { font-family: -apple-system, sans-serif; color: white; margin-bottom: 15px; font-size: 17px; }
         #secret-menu input { width: 80%; padding: 10px; background-color: #2c2c2e; border: 1px solid #3a3a3c; border-radius: 8px; color: white; font-size: 20px; text-align: center; margin-bottom: 15px; outline: none; }
-        #secret-menu button { background-color: #0a84ff; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; }
+        #secret-menu button { background-color: #0a84ff; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 16px; font-weight: 600; }
     </style>
 </head>
 <body>
 
-    <!-- Area dei numeri stabilizzata ad altezza fissa -->
-    <div class="display-container">
+    <div class="display-container" id="gestureZone">
         <div class="timer-display" id="display">00:00,00</div>
     </div>
 
@@ -192,36 +191,44 @@
         <button class="btn btn-start" id="btnRight">Avvia</button>
     </div>
 
-    <div class="laps-container" id="lapsContainer"></div>
+    <div class="laps-container" id="lapsContainer">
+        <div class="lap-row" id="lap-row-placeholder">
+            <span class="lap-label">Giro 1</span>
+            <span class="lap-time" id="live-lap-time">00:00,00</span>
+        </div>
+    </div>
 
+    <!-- ICONOGRAFIA SOLIDA E COLORATA IDENTICA ALLO SCREENSHOT -->
     <div class="tab-bar-container">
         <nav class="tab-bar">
-            <!-- Icone geometriche originali Apple ricreate in formato vettoriale esatto -->
+            <!-- Ore Locali (Mappamondo grigliato pieno) -->
             <div class="tab-item">
-                <svg class="tab-icon-svg" viewBox="0 0 24 24" fill="none" stroke="#8e8e93" stroke-width="1.5">
-                    <circle cx="12" cy="12" r="9"></circle>
-                    <path d="M12 3v18M3 12h18M5.5 6.5c3-1 10-1 13 0M5.5 17.5c3 1 10 1 13 0" stroke-linecap="round"></path>
+                <svg class="tab-icon-svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.53c-.26-.81-1-1.4-1.9-1.4h-1v-3c0-.55-.45-1-1-1h-6v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
                 </svg>
                 <span>Ore locali</span>
             </div>
+            <!-- Sveglie (Icona sveglia bombata piena bianca) -->
             <div class="tab-item">
-                <svg class="tab-icon-svg" viewBox="0 0 24 24" fill="none" stroke="#8e8e93" stroke-width="1.5">
-                    <circle cx="12" cy="13" r="6.5"></circle>
-                    <path d="M12 9.5v3.5l2 1.5M6 4.5L4.5 6M18 4.5L19.5 6" stroke-linecap="round"></path>
+                <svg class="tab-icon-svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M22 5.72l-4.6-3.86-1.29 1.53 4.6 3.86L22 5.72zM7.88 3.39L6.6 1.86 2 5.71l1.29 1.53 4.59-3.85zM12 4c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 15c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z"/>
                 </svg>
                 <span>Sveglie</span>
             </div>
+            <!-- Cronometro (Icona arancione piena con lancetta scura identica alla foto) -->
             <div class="tab-item active">
-                <svg class="tab-icon-svg" viewBox="0 0 24 24" fill="none" stroke="#ff9f0a" stroke-width="1.6">
-                    <circle cx="12" cy="13.5" r="6.5"></circle>
-                    <path d="M12 7V4M10 4h4M12 11v3h3" stroke-linecap="round" stroke-linejoin="round"></path>
+                <svg class="tab-icon-svg" viewBox="0 0 24 24">
+                    <circle cx="12" cy="14" r="6" fill="#ff9f0a"/>
+                    <path d="M12 5V2h-2v3h2zm4.5 1.5l1.4-1.4-1.4-1.4-1.4 1.4 1.4 1.4zM12 9v5h3v-2h-1V9h-2z" fill="#ff9f0a"/>
+                    <path d="M12 11v3" stroke="#2a2a2b" stroke-width="1.5" stroke-linecap="round"/>
                 </svg>
                 <span>Cronometro</span>
             </div>
+            <!-- Timer (Cerchio con quarto vuoto e freccia) -->
             <div class="tab-item">
-                <svg class="tab-icon-svg" viewBox="0 0 24 24" fill="none" stroke="#8e8e93" stroke-width="1.5">
-                    <circle cx="12" cy="12" r="9"></circle>
-                    <path d="M12 12V6.5M12 12l4.5 4.5" stroke-linecap="round"></path>
+                <svg class="tab-icon-svg" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
+                    <circle cx="12" cy="13" r="7"></circle>
+                    <path d="M12 13V8M12 13l4 4" stroke-linecap="round"></path>
                 </svg>
                 <span>Timer</span>
             </div>
@@ -237,7 +244,7 @@
 
     <script>
         let startTime = 0, elapsedTime = 0, timerInterval = null, isRunning = false;
-        const display = document.getElementById('display'), btnLeft = document.getElementById('btnLeft'), btnRight = document.getElementById('btnRight'), secretMenu = document.getElementById('secret-menu'), targetInput = document.getElementById('target-number'), saveBtn = document.getElementById('save-target'), lapsContainer = document.getElementById('lapsContainer');
+        const display = document.getElementById('display'), btnLeft = document.getElementById('btnLeft'), btnRight = document.getElementById('btnRight'), secretMenu = document.getElementById('secret-menu'), targetInput = document.getElementById('target-number'), saveBtn = document.getElementById('save-target'), placeholderLap = document.getElementById('lap-row-placeholder'), liveLapTime = document.getElementById('live-lap-time'), gestureZone = document.getElementById('gestureZone');
         
         let targetSum = localStorage.getItem('magicTarget') ? parseInt(localStorage.getItem('magicTarget')) : null;
         if(targetSum) targetInput.value = targetSum;
@@ -249,7 +256,6 @@
             let tc = Math.floor(elapsedTime / 10); 
             let m = Math.floor(tc/6000), s = Math.floor(tc/100)%60, c = tc%100;
             display.textContent = formatTime(m, s, c);
-            const liveLapTime = document.getElementById('live-lap-time');
             if(liveLapTime) liveLapTime.textContent = formatTime(m, s, c);
         }
 
@@ -262,11 +268,7 @@
                 btnRight.className = 'btn btn-stop'; 
                 btnLeft.textContent = 'Giro'; 
                 btnLeft.className = 'btn btn-lap';
-                lapsContainer.innerHTML = `
-                    <div class="lap-row" id="lap-1-row">
-                        <span class="lap-label">Giro 1</span>
-                        <span class="lap-time" id="live-lap-time">00:00,00</span>
-                    </div>`;
+                placeholderLap.classList.add('visible');
             } else { 
                 clearInterval(timerInterval); 
                 isRunning = false; 
@@ -281,8 +283,9 @@
             if (!isRunning && btnLeft.textContent === 'Azzera') { 
                 elapsedTime = 0; 
                 display.textContent = "00:00,00"; 
+                if(liveLapTime) liveLapTime.textContent = "00:00,00";
                 btnLeft.className = 'btn btn-lap disabled'; 
-                lapsContainer.innerHTML = ''; 
+                placeholderLap.classList.remove('visible'); 
             } 
         });
 
@@ -294,22 +297,21 @@
             for (let c1 = 0; c1 <= 9; c1++) { for (let c2 = 0; c2 <= 9; c2++) { if (c1 + c2 === diff) { let vCent = c1 * 10 + c2; let dist = Math.abs(vCent - (tc % 100)); if (dist < migliorD) { migliorD = dist; forcedC = vCent; } } } }
             let tForzato = formatTime(rm, rs, forcedC);
             display.textContent = tForzato;
-            const liveLapTime = document.getElementById('live-lap-time');
             if(liveLapTime) liveLapTime.textContent = tForzato;
         }
 
-        // SWIPE CON DUE DITA OTTIMIZZATO
+        // SWIPE A DUE DITA VINCOLATO ALLA ZONA SUPERIORE DEL TIMER
         let touchStartY = 0;
-        window.addEventListener('touchstart', (e) => { 
+        gestureZone.addEventListener('touchstart', (e) => { 
             if (e.touches.length === 2) {
                 touchStartY = (e.touches.clientY + e.touches.clientY) / 2;
             } 
         }, {passive: true});
 
-        window.addEventListener('touchend', (e) => { 
+        gestureZone.addEventListener('touchend', (e) => { 
             if (touchStartY !== 0) { 
                 let currentY = (e.changedTouches.clientY + (e.changedTouches ? e.changedTouches.clientY : e.changedTouches.clientY)) / 2;
-                if (currentY - touchStartY > 60) {
+                if (currentY - touchStartY > 45) { // Rilevazione immediata dello swipe verso il basso
                     secretMenu.style.display = 'block'; 
                 }
                 touchStartY = 0; 
