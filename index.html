@@ -38,12 +38,18 @@
             overflow: hidden; 
         }
         
-        /* Rialza la posizione iniziale del timer rispetto alle versioni precedenti */
-        .spacer-top {
-            flex-grow: 1.4;
+        /* Contenitore ad altezza fissa per bloccare i numeri ed eliminare lo scatto */
+        .display-container {
+            width: 100%;
+            height: 110px;
+            margin-top: calc(75px + env(safe-area-inset-top));
+            margin-bottom: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* Display del Tempo: Più alto e distanziato dai bottoni */
+        /* Spessore dei numeri ultra-sottile originale Apple */
         .timer-display { 
             font-family: -apple-system-headline, "SF Pro Display", -apple-system, sans-serif;
             font-size: 88px; 
@@ -52,10 +58,10 @@
             letter-spacing: -2px; 
             width: 100%; 
             text-align: center; 
-            margin-bottom: 115px;
+            line-height: 110px;
         }
         
-        /* Controlli distaccati e Pulsanti Ingranditi presi da iOS 26 */
+        /* Controlli e pulsanti ingranditi */
         .controls-wrapper {
             display: flex;
             align-items: center;
@@ -96,13 +102,13 @@
         .dot.active { background-color: #ffffff; }
         .dot.inactive { background-color: #48484a; }
 
-        /* Contenitore Lista Giri più stretto */
+        /* Contenitore Giri più stretto rispetto ai bordi dello schermo */
         .laps-container { 
             width: 100%; 
             max-width: 330px; 
             border-top: 0.3px solid #2c2c2e; 
             overflow-y: auto; 
-            flex-grow: 2;
+            flex-grow: 1;
             margin-bottom: 120px; 
         }
         .lap-row {
@@ -116,7 +122,7 @@
         .lap-row .lap-label { color: #ffffff; }
         .lap-row .lap-time { font-variant-numeric: tabular-nums; font-weight: 400; color: #ffffff; }
 
-        /* Barra inferiore con icone geometriche esatte estratte da SF Symbols */
+        /* Dock inferiore flottante */
         .tab-bar-container {
             position: fixed;
             bottom: 25px;
@@ -172,9 +178,10 @@
 </head>
 <body>
 
-    <div class="spacer-top"></div>
-
-    <div class="timer-display" id="display">00:00,00</div>
+    <!-- Area dei numeri stabilizzata ad altezza fissa -->
+    <div class="display-container">
+        <div class="timer-display" id="display">00:00,00</div>
+    </div>
 
     <div class="controls-wrapper">
         <button class="btn btn-lap disabled" id="btnLeft">Giro</button>
@@ -189,35 +196,32 @@
 
     <div class="tab-bar-container">
         <nav class="tab-bar">
-            <!-- Ore Locali (Mappamondo con linee curve pulite) -->
+            <!-- Icone geometriche originali Apple ricreate in formato vettoriale esatto -->
             <div class="tab-item">
                 <svg class="tab-icon-svg" viewBox="0 0 24 24" fill="none" stroke="#8e8e93" stroke-width="1.5">
                     <circle cx="12" cy="12" r="9"></circle>
-                    <path d="M3.6 9h16.8M3.6 15h16.8"></path>
-                    <path d="M12 3a14 14 0 0 0-3.5 9 14 14 0 0 0 3.5 9 14 14 0 0 0 3.5-9A14 14 0 0 0 12 3z"></path>
+                    <path d="M12 3v18M3 12h18M5.5 6.5c3-1 10-1 13 0M5.5 17.5c3 1 10 1 13 0" stroke-linecap="round"></path>
                 </svg>
                 <span>Ore locali</span>
             </div>
-            <!-- Sveglie (Piedini geometrici piatti e martelletto centrale) -->
             <div class="tab-item">
                 <svg class="tab-icon-svg" viewBox="0 0 24 24" fill="none" stroke="#8e8e93" stroke-width="1.5">
                     <circle cx="12" cy="13" r="6.5"></circle>
-                    <path d="M12 9.5v3.5l2 1.5M6 4.5L4.5 6M18 4.5L19.5 6M7 19.5l-1.5 1.5M17 19.5l1.5 1.5" stroke-linecap="round"></path>
+                    <path d="M12 9.5v3.5l2 1.5M6 4.5L4.5 6M18 4.5L19.5 6" stroke-linecap="round"></path>
                 </svg>
                 <span>Sveglie</span>
             </div>
-            <!-- Cronometro Attivo (Lancette con perno e pulsante superiore squadrato) -->
             <div class="tab-item active">
                 <svg class="tab-icon-svg" viewBox="0 0 24 24" fill="none" stroke="#ff9f0a" stroke-width="1.6">
                     <circle cx="12" cy="13.5" r="6.5"></circle>
-                    <path d="M12 7V4M10 4h4M12 10.5v3.5h3" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M12 7V4M10 4h4M12 11v3h3" stroke-linecap="round" stroke-linejoin="round"></path>
                 </svg>
                 <span>Cronometro</span>
             </div>
-            <!-- Timer (Simbolo clessidra stilizzato a coordinate fisse) -->
             <div class="tab-item">
                 <svg class="tab-icon-svg" viewBox="0 0 24 24" fill="none" stroke="#8e8e93" stroke-width="1.5">
-                    <path d="M7 4h10M7 20h10M7 4l4 5.5v5L7 20M17 4l-4 5.5v5l4 5.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path d="M12 12V6.5M12 12l4.5 4.5" stroke-linecap="round"></path>
                 </svg>
                 <span>Timer</span>
             </div>
@@ -294,17 +298,17 @@
             if(liveLapTime) liveLapTime.textContent = tForzato;
         }
 
-        // SWIPE VERSO IL BASSO CON DUE DITA
+        // SWIPE CON DUE DITA OTTIMIZZATO
         let touchStartY = 0;
         window.addEventListener('touchstart', (e) => { 
             if (e.touches.length === 2) {
-                touchStartY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                touchStartY = (e.touches.clientY + e.touches.clientY) / 2;
             } 
         }, {passive: true});
 
         window.addEventListener('touchend', (e) => { 
             if (touchStartY !== 0) { 
-                let currentY = (e.changedTouches[0].clientY + (e.changedTouches[1] ? e.changedTouches[1].clientY : e.changedTouches[0].clientY)) / 2;
+                let currentY = (e.changedTouches.clientY + (e.changedTouches ? e.changedTouches.clientY : e.changedTouches.clientY)) / 2;
                 if (currentY - touchStartY > 60) {
                     secretMenu.style.display = 'block'; 
                 }
