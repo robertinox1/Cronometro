@@ -38,6 +38,7 @@
             overflow: hidden; 
         }
         
+        /* Contenitore rigido per bloccare il timer ed evitare lo scatto */
         .display-container {
             width: 100%;
             height: 110px;
@@ -121,7 +122,7 @@
         }
         .lap-row.visible { opacity: 1; }
 
-        /* STRUTTURA DOCK FLOTTANTE IDENTICA AL 100% ALLA FOTO */
+        /* REPLICA FEDELE DEL DOCK FLOTTANTE */
         .tab-bar-container {
             position: fixed;
             bottom: 35px;
@@ -156,6 +157,7 @@
             width: 23%;
             height: 100%;
         }
+        /* Ovale asimmetrico grigio scuro per l'elemento attivo */
         .tab-item.active {
             color: var(--tab-active);
             background-color: #2a2a2b;
@@ -163,9 +165,12 @@
             width: 26%;
             border-radius: 27px;
         }
-        .tab-icon-svg {
-            width: 25px;
-            height: 25px;
+        .tab-icon-wrapper {
+            width: 26px;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             margin-bottom: 2px;
         }
 
@@ -199,39 +204,53 @@
 
     <div class="tab-bar-container">
         <nav class="tab-bar">
-            <!-- Ore Locali: Mappamondo a griglia geometrica piena della foto -->
+            <!-- Ore Locali: Mappamondo geometrico perfetto -->
             <div class="tab-item">
-                <svg class="tab-icon-svg" viewBox="0 0 30 30" fill="currentColor">
-                    <path d="M15 3C8.37 3 3 8.37 3 15s5.37 12 12 12 12-5.37 12-12S21.63 3 15 3zm6.8 6h-2.92c-.32-1.35-.77-2.61-1.33-3.73 1.77.72 3.26 2.01 4.25 3.73zM15 5.08c.59 1.15 1.06 2.47 1.37 3.92h-2.74c.31-1.45.78-2.77 1.37-3.92zm-2.55 1.19c-.56 1.12-1.01 2.38-1.33 3.73H8.2c.99-1.72 2.48-3.01 4.25-3.73zM7.14 11h3.11c-.1.65-.16 1.32-.16 2s.06 1.35.16 2H7.14c-.1-.65-.14-1.32-.14-2s.04-1.35.14-2zm3.95 6h7.82c-.1.64-.17 1.31-.17 2s.07 1.36.17 2h-7.82c-.1-.64-.17-1.31-.17-2s.07-1.36.17-2zm.16-4h7.5c.09-.65.15-1.32.15-2s-.06-1.35-.15-2h-7.5c-.09.65-.15 1.32-.15 2s.06 1.35.15 2zm2.2 8.65c-.59-1.15-1.06-2.47-1.37-3.92h2.74c-.31 1.45-.78 2.77-1.37 3.92zm-3.25-.92c.56-1.12 1.01-2.38 1.33-3.73h2.92c-.99 1.72-2.48 3.01-4.25 3.73zm6.1 0c.56-1.12 1.01-2.38 1.33-3.73h2.92c-.99 1.72-2.48 3.01-4.25 3.73zm3.76-4.73h3.11c.1-.65.14-1.32.14-2s-.04-1.35-.14-2h-3.11c.1.65.16 1.32.16 2s-.06 1.35-.16 2z"/>
-                </svg>
+                <div class="tab-icon-wrapper">
+                    <svg width="23" height="23" viewBox="0 0 30 30" fill="none" stroke="#ffffff" stroke-width="1.5">
+                        <circle cx="15" cy="15" r="11"></circle>
+                        <line x1="15" y1="4" x2="15" y2="26"></line>
+                        <line x1="4" y1="15" x2="26" y2="15"></line>
+                        <path d="M15 4c3.5 4 3.5 18 0 22M15 4c-3.5 4-3.5 18 0 22M4.5 10h21M4.5 20h21"></path>
+                    </svg>
+                </div>
                 <span>Ore locali</span>
             </div>
             
-            <!-- Sveglie: Struttura bombata piena con lancette alle 4:00 della foto -->
+            <!-- Sveglie: Struttura originale con piedini e lancette ore 4:00 -->
             <div class="tab-item">
-                <svg class="tab-icon-svg" viewBox="0 0 30 30" fill="currentColor">
-                    <path d="M15 5.5c-5.24 0-9.5 4.26-9.5 9.5s4.26 9.5 9.5 9.5 9.5-4.26 9.5-9.5-4.26-9.5-9.5-9.5zm1.25 10.25l-3.5-2.12v-4.13h1.5v3.25l2.75 1.63-.75 1.25zM25.4 6.44l-3.35-2.81-1.01 1.2 3.35 2.81 1.01-1.2zM4.6 6.44l1.01-1.2 3.35 2.81-1.01 1.2-3.35-2.81zM6.5 24.5l-1.5 1.5 1 1 1.5-1.5-1-1zm17 0l-1 1 1.5 1.5 1-1-1.5-1.5z"/>
-                </svg>
+                <div class="tab-icon-wrapper">
+                    <svg width="24" height="24" viewBox="0 0 30 30" fill="#ffffff">
+                        <circle cx="15" cy="16" r="9"></circle>
+                        <path d="M14.2 11h1.6v5.5H19v1.5h-4.8V11z" fill="#000000"></path>
+                        <path d="M6.3 6.8l2-2 3.2 2.7-2 2zM23.7 6.8l-3.2 2.7-2-2 3.2-2.7zM7.5 25.5l-2.2 2.2-1.1-1.1 2.2-2.2zm15 0l1.1-1.1 2.2 2.2-1.1 1.1z"></path>
+                    </svg>
+                </div>
                 <span>Sveglie</span>
             </div>
             
-            <!-- Cronometro: Cerchio arancione, lancetta nera verticale a ore 12, bottoni in alto della foto -->
+            <!-- Cronometro: Ovale arancione pieno, lancetta scura verticale ore 12 e pulsanti geometrici -->
             <div class="tab-item active">
-                <svg class="tab-icon-svg" viewBox="0 0 30 30">
-                    <circle cx="15" cy="16" r="8.5" fill="#ff9f0a"/>
-                    <path d="M16 7.5V4.5h-2v3h2zm5 .2l1.2-1.2-1.4-1.4-1.2 1.2 1.4 1.4z" fill="#ff9f0a"/>
-                    <line x1="15" y1="16" x2="15" y2="10" stroke="#161617" stroke-width="1.8" stroke-linecap="round"/>
-                    <circle cx="15" cy="16" r="1.2" fill="#161617"/>
-                </svg>
+                <div class="tab-icon-wrapper">
+                    <svg width="24" height="24" viewBox="0 0 30 30">
+                        <circle cx="15" cy="16.5" r="9.5" fill="#ff9f0a"/>
+                        <rect x="13.8" y="4" width="2.4" height="3" fill="#ff9f0a"/>
+                        <rect x="21" y="5.5" width="2" height="3" transform="rotate(45 22 7)" fill="#ff9f0a"/>
+                        <line x1="15" y1="16.5" x2="15" y2="9.5" stroke="#2a2a2b" stroke-width="1.8" stroke-linecap="round"/>
+                        <circle cx="15" cy="16.5" r="1.2" fill="#2a2a2b"/>
+                    </svg>
+                </div>
                 <span>Cronometro</span>
             </div>
             
-            <!-- Timer: Cerchio bianco lineare con lancette a ore 10:10 della foto -->
+            <!-- Timer: Cerchio bianco lineare con lancette a ore 10:10 -->
             <div class="tab-item">
-                <svg class="tab-icon-svg" viewBox="0 0 30 30" fill="none" stroke="#ffffff" stroke-width="1.8">
-                    <circle cx="15" cy="15" r="8.5"></circle>
-                    <path d="M15 15l-3.5-3.5M15 15h5" stroke-linecap="round"/>
-                </svg>
+                <div class="tab-icon-wrapper">
+                    <svg width="22" height="22" viewBox="0 0 30 30" fill="none" stroke="#ffffff" stroke-width="1.8">
+                        <circle cx="15" cy="15" r="10"></circle>
+                        <path d="M15 15l-4-4M15 15h5.5" stroke-linecap="round"/>
+                    </svg>
+                </div>
                 <span>Timer</span>
             </div>
         </nav>
@@ -302,7 +321,7 @@
             if(liveLapTime) liveLapTime.textContent = tForzato;
         }
 
-        // SWIPE CON DUE DITA BLOCCATO SULLA METÀ SUPERIORE DELLO SCHERMO
+        // SWIPE CON DUE DITA BLOCCATO SUL DISPLAY DEI NUMERI
         let touchStartY = 0;
         gestureZone.addEventListener('touchstart', (e) => { 
             if (e.touches.length === 2) {
