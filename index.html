@@ -39,20 +39,20 @@
             overflow: hidden; 
         }
         
-        /* Posizionamento verticale perfetto basato sullo screenshot */
+        /* Centratura verticale esatta presa dalla foto */
         .spacer-top {
-            flex-grow: 2.2;
+            flex-grow: 2.5;
         }
 
-        /* Display del Tempo: Ultra-sottile e spaziato */
+        /* Display del Tempo: Ultra-sottile e posizionato come in foto */
         .timer-display { 
-            font-size: 82px; 
+            font-size: 84px; 
             font-weight: 100; 
             font-variant-numeric: tabular-nums; 
             letter-spacing: -1px; 
             width: 100%; 
             text-align: center; 
-            margin-bottom: 55px;
+            margin-bottom: 75px;
         }
         
         /* Layout Pulsanti + Indicatori di Pagina (Pallini) */
@@ -77,12 +77,14 @@
             outline: none; 
             background-color: var(--gray-btn);
             color: #8e8e93;
+            transition: opacity 0.1s;
         }
+        .btn:active { opacity: 0.7; }
         .btn-lap.disabled { color: var(--gray-text); }
         .btn-start { background-color: var(--green-btn); color: var(--green-text); }
         .btn-stop { background-color: var(--red-btn); color: var(--red-text); font-size: 15px; } 
 
-        /* Pallini Apple centrali dello screenshot */
+        /* Pallini Apple centrali presi dalla foto */
         .page-dots {
             display: flex;
             gap: 6px;
@@ -95,7 +97,7 @@
         .dot.active { background-color: #ffffff; }
         .dot.inactive { background-color: #48484a; }
 
-        /* Contenitore Lista Giri con riga sottile superiore */
+        /* Contenitore Lista Giri con linea di divisione */
         .laps-container { 
             width: 100%; 
             max-width: 350px; 
@@ -109,11 +111,12 @@
             justify-content: space-between;
             padding: 14px 4px;
             font-size: 16px;
+            border-bottom: 0.3px solid #2c2c2e;
         }
         .lap-row .lap-label { color: #ffffff; }
         .lap-row .lap-time { font-variant-numeric: tabular-nums; font-weight: 400; color: #ffffff; }
 
-        /* DOCK FLOTTANTE INFERIORE (Uguagliato allo screenshot) */
+        /* DOCK FLOTTANTE INFERIORE (Esatto come da screenshot) */
         .tab-bar-container {
             position: fixed;
             bottom: 25px;
@@ -143,19 +146,21 @@
             color: var(--tab-inactive);
             font-size: 10px;
             font-weight: 400;
-            width: 22%;
+            width: 23%;
             height: 100%;
             text-decoration: none;
         }
-        /* Capsula arancione per la voce selezionata */
+        /* Capsula ovale arancione per la voce selezionata */
         .tab-item.active {
             color: var(--tab-active);
             background-color: #2c2c2e;
-            height: 50px;
-            border-radius: 25px;
+            height: 48px;
+            border-radius: 24px;
         }
-        .tab-icon {
-            font-size: 19px;
+        .tab-icon-svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
             margin-bottom: 2px;
         }
 
@@ -182,23 +187,23 @@
 
     <div class="laps-container" id="lapsContainer"></div>
 
-    <!-- Struttura Dock Flottante dello screenshot -->
+    <!-- Struttura Grafica Vettoriale delle Icone Originali -->
     <div class="tab-bar-container">
         <nav class="tab-bar">
             <div class="tab-item">
-                <span class="tab-icon">🌐</span>
+                <svg class="tab-icon-svg" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 12 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.53c-.26-.81-1-1.4-1.9-1.4h-1v-3c0-.55-.45-1-1-1h-6v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
                 <span>Ore locali</span>
             </div>
             <div class="tab-item">
-                <span class="tab-icon">⏰</span>
+                <svg class="tab-icon-svg" viewBox="0 0 24 24"><path d="M22 5.72l-4.6-3.86-1.29 1.53 4.6 3.86L22 5.72zM7.88 3.39L6.6 1.86 2 5.71l1.29 1.53 4.59-3.85zM12.5 8H11v6l5.25 3.15.75-1.23-4.5-2.67V8zM12 4c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7z"/></svg>
                 <span>Sveglie</span>
             </div>
             <div class="tab-item active">
-                <span class="tab-icon">⏱️</span>
+                <svg class="tab-icon-svg" viewBox="0 0 24 24" style="color:#ff9f0a;"><path d="M19.03 7.39l1.42-1.42c-.45-.51-.94-1-1.46-1.46l-1.42 1.42C16.03 4.74 14.11 4 12 4c-5.52 0-10 4.48-10 10s4.48 10 10 10 10-4.48 10-10c0-2.42-.86-4.64-2.28-6.41zM13 13v-6h-2v6H7v2h6v-2zM11 2h2v2h-2V2z"/></svg>
                 <span>Cronometro</span>
             </div>
             <div class="tab-item">
-                <span class="tab-icon">⏳</span>
+                <svg class="tab-icon-svg" viewBox="0 0 24 24"><path d="M6 2h12v6l-4 4 4 4v6H6v-6l4-4-4-4V2zm10 14.5L12 13l-4 3.5V20h8v-3.5zm-8-9L12 11l4-3.5V4H8v3.5z"/></svg>
                 <span>Timer</span>
             </div>
         </nav>
