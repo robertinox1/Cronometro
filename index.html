@@ -141,7 +141,7 @@
         .lap-block-divider { width: 8px; text-align: center; }
         .lap-block-cent { width: 22px; text-align: left; }
 
-        /* TAB BAR - FOTO REALE AL 100% DI TRASPARENZA E CONTORNI */
+        /* TAB BAR CON STRUTTURA AD IMMAGINE REALE INCORPORATA IN BASE64 */
         .tab-bar-container {
             position: fixed;
             bottom: 35px;
@@ -155,16 +155,15 @@
         .tab-bar-native-img {
             width: 100%;
             max-width: 375px;
-            height: 72px;
+            height: 76px;
             position: relative;
-            /* La tua foto ritagliata e convertita in codice grafico */
             background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAXgAAACKCAMAAABf8zXzAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRF////AAAAV386VAAAAAJ0Uk5T/wDltzBKAAADc0lEQVR42u3diXLiMAwF0GzM+/9/uS0JCUPCgG0m086ded90AtKxrS8isbUFAAAAAAAAAAAAAAAAAAAAALbXarX6f8O91p8j9fV40/lE/DFeX6eEwV6P1NfjTecT8cd4fZ0SBns9Ul+PN51PxB/j9XVKGOz1SH093nQ+EX+M19cpYbDXI/X1eNP5RPwxXl+nhMFel6W+mDshvph7O76Yp6W+FvXFvCv1taivRX0x70p9LeqLeVfqa1FfzLtSX4v6Yt6V+lrUF/Ou1Neivph3pb4W9cW8K/W1qC/mXamvRX0x70p9LeqLeVfqa1FfzLtSX4v6Yt6V+lrUF/Ou1Neivph3pb4W9cW8K/W1qC/mXamvRX0x70p9LeqLeVfqa9GvLpYl06b0g58XF4Zt6ccZorWivlb0pYsl/9iSflw8Gr6lH2cI+p9mXbSifidDULv6O7gP9WpXf/v2wS/Urrp98Gu1g8MvHfxC7aDwSwf3v9ZqZ9E/OvxatbPpHz87vVptY/pPHzx99mS8Z9PHezZ9fDbwXpPp4/v7NqUuTstXq9XvA/C3T0Oclq9Wy36t0e3TEKflG6XlyWv58uS1/C7g7/gX7T7vSsvfU1+V+vUAvF840bKmvjX1u69P9Kypb0397v3C6Z6Wvzb1e6T+DOD+2g+wXq2ZfK3Z7GgGcH68p6Xz9+S+fO6ZfO6b/L6pXwG877g70XOmvs7vG/76zNcy9bN9uM/g2v7r6079XAD/tO+p7/K88bUnfB++BfC8w9qFfXrfI76Z70v9CuB5V6vR+N6P+E6+b1NfCOB5B5Y9fPf6mK8F8NxtZpbe6R3rG8vUz68AnruKq7x/Y5b/bH0lgOfZ9z6E6R3rYpX6Xf8UcFd9yM8gveP5e6Z+FfDcHepq9A/R9Z7wve7vAu7vX6vCem+orwXwPM8rZ+n9XvK9+H8C/9R72WPhvYl9K+AtgOf6S+tPZ7AitgDeSgDPdf1Z689A4w39v50AvK1erz9fH8Xf0uDvywDgeS8AAAAAAAAAAAAAAAAAAAAAgCbeu8L8/vE/wE6t/h7M3WfUf09Zfwa668TzPqOer8fS/0Odfgawb7PAnWunHqfO/SgAvL0+W4wA3l4bAQC8vTYCAHh7bQQA8PbaCADg7bURAMDby8oA4O21EgDA28vKAODttRIAwNvrswAI4O21EQDA22sjAIC310YfF8C+Nvvb8XgAAAAAAAAAAAAAAAAAAAAAoK6/AgwAyMclXnS2b4YAAAAASUVORK5CYII=');
-            background-size: cover;
+            background-size: contain;
+            background-repeat: no-repeat;
             background-position: center;
-            border-radius: 36px;
         }
         
-        /* I PULSANTI SEGRETI E INVISIBILI MAPPATI SOPRA LA FOTO */
+        /* CELLE TRASPARENTI DI INTERAZIONE SOPRA LE ICONE DELLA FOTO */
         .touch-map-container {
             position: absolute;
             top: 0;
@@ -227,7 +226,7 @@
         </div>
     </div>
 
-    <!-- DOCK PERFETTO CREATO CON LA TUA FOTO REALE -->
+    <!-- SEZIONE TAB BAR CON ICONE REALI E PULSANTI INVISIBILI -->
     <div class="tab-bar-container">
         <div class="tab-bar-native-img">
             <div class="touch-map-container">
@@ -261,12 +260,11 @@
 
         if(targetSum !== null) forceInput.value = targetSum;
 
-        // Cambi di Tab (Invisibili ma attivi)
         function selectTab(type) {
-            console.log("Tab selezionato: " + type);
-            // Qui in futuro puoi agganciare i cambi di pagina se lo vorrai
+            console.log("Navigazione simulata verso: " + type);
         }
 
+        // Rilevamento dello swipe a 2 dita verso il basso
         let touchStartY = 0;
         window.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
