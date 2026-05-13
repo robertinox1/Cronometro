@@ -17,6 +17,7 @@
             --red-btn: #32100f; 
             --red-text: #ff453a; 
             --tab-active: #ff9f0a;
+            --tab-inactive: #ffffff;
             --dock-bg: #161617;
         }
         * { 
@@ -89,7 +90,6 @@
         .btn-lap.disabled { color: var(--gray-text); }
         .btn-start { background-color: var(--green-btn); color: var(--green-text); }
         
-        /* Pulsante interrompi leggermente rimpicciolito */
         .btn-stop { 
             background-color: var(--red-btn); 
             color: var(--red-text); 
@@ -144,27 +144,31 @@
         .lap-block-divider { width: 8px; text-align: center; }
         .lap-block-cent { width: 22px; text-align: left; }
 
+        /* TAB BAR NUOVA iOS - DESIGN FLUTTUANTE A BOLLA */
         .tab-bar-container {
             position: fixed;
-            bottom: 35px;
+            bottom: 40px;
             left: 0;
             width: 100%;
-            padding: 0 12px;
+            padding: 0 32px;
             display: flex;
             justify-content: center;
             z-index: 999;
         }
         .tab-bar {
             width: 100%;
-            max-width: 395px;
-            height: 68px;
-            background-color: var(--dock-bg);
-            border-radius: 34px;
+            max-width: 330px; /* Più stretta e compatta */
+            height: 60px;
+            background-color: rgba(26, 26, 26, 0.85); /* Effetto trasparenza scura bubble */
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 30px;
             display: flex;
             justify-content: space-around;
             align-items: center;
-            padding: 0 4px;
-            border: 0.5px solid #242426;
+            padding: 0 10px;
+            border: 0.5px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
         }
         .tab-item {
             display: flex;
@@ -172,27 +176,26 @@
             align-items: center;
             justify-content: center;
             font-family: -apple-system, "SF Pro Text", sans-serif;
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 500;
-            width: 25%;
+            width: 22%;
             height: 100%;
-            color: #8e8e93;
-            transition: color 0.2s ease;
+            color: var(--tab-inactive);
+            opacity: 0.4; /* Icone bianche trasparenti se inattive */
+            transition: color 0.2s, opacity 0.2s;
         }
         .tab-item span { 
-            margin-top: 4px;
-            opacity: 1; 
+            margin-top: 3px;
         }
         .tab-item .tab-svg { 
-            width: 26px; 
-            height: 26px; 
-            color: #8e8e93;
+            width: 23px; 
+            height: 23px; 
+            fill: currentColor; /* Forza l'utilizzo di icone piene */
         }
+        /* Stato Attivo - Arancione Apple e opacità totale */
         .tab-item.active { 
             color: var(--tab-active); 
-        }
-        .tab-item.active .tab-svg { 
-            color: var(--tab-active); 
+            opacity: 1;
         }
 
         #secret-menu { 
@@ -241,41 +244,34 @@
         </div>
     </div>
 
+    <!-- NUOVA STRUTTURA BARRA AD ICONE PIENE (SOLID SVG) -->
     <div class="tab-bar-container">
         <nav class="tab-bar">
+            <!-- Ore Locali -->
             <div class="tab-item">
-                <svg class="tab-svg" viewBox="0 0 30 30" xmlns="w3.org">
-                    <circle cx="15" cy="15" r="11" stroke="currentColor" stroke-width="1.2" fill="none"/>
-                    <line x1="15" y1="15" x2="15" y2="8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-                    <line x1="15" y1="15" x2="20" y2="15" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                <svg class="tab-svg" viewBox="0 0 24 24" xmlns="w3.org">
+                    <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm1 10.586V7a1 1 0 1 0-2 0v6a1 1 0 0 0 .293.707l3.5 3.5a1 1 0 0 0 1.414-1.414l-3.207-3.207z"/>
                 </svg>
                 <span>Ore locali</span>
             </div>
+            <!-- Sveglie -->
             <div class="tab-item">
-                <svg class="tab-svg" viewBox="0 0 30 30" xmlns="w3.org">
-                    <circle cx="15" cy="16" r="9" stroke="currentColor" stroke-width="1.2" fill="none"/>
-                    <path d="M6 7 Q8 5 10 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/>
-                    <path d="M24 7 Q22 5 20 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/>
-                    <line x1="15" y1="16" x2="15" y2="11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-                    <line x1="15" y1="16" x2="19" y2="18" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                <svg class="tab-svg" viewBox="0 0 24 24" xmlns="w3.org">
+                    <path d="M12 4a8 8 0 1 0 8 8 8.009 8.009 0 0 0-8-8zm1 8H8a1 1 0 0 1 0-2h3V6a1 1 0 0 1 2 0v5a1 1 0 0 1-1 1zm-8.8-6.4a1 1 0 1 1 1.414-1.414l-2 2a1 1 0 1 1-1.414 1.414zm17.186-.286a1 1 0 0 1 0 1.414l-2 2a1 1 0 1 1-1.414-1.414l2-2a1 1 0 0 1 1.414 0z"/>
                 </svg>
                 <span>Sveglie</span>
             </div>
+            <!-- Cronometro (Attivo) -->
             <div class="tab-item active">
-                <svg class="tab-svg" viewBox="0 0 30 30" xmlns="w3.org">
-                    <circle cx="15" cy="16" r="9" stroke="currentColor" stroke-width="1.4" fill="none"/>
-                    <line x1="15" y1="4" x2="15" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-                    <line x1="12" y1="4" x2="18" y2="4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-                    <line x1="15" y1="16" x2="15" y2="10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-                    <line x1="15" y1="16" x2="20" y2="12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                <svg class="tab-svg" viewBox="0 0 24 24" xmlns="w3.org">
+                    <path d="M12 5a8 8 0 1 0 8 8 8.009 8.009 0 0 0-8-8zm1 8h-4a1 1 0 0 1 0-2h2V7a1 1 0 0 1 2 0v5a1 1 0 0 1-1 1zm2-10V2a1 1 0 0 0-2 0v1a1 1 0 0 0 2 0z"/>
                 </svg>
                 <span>Cronometro</span>
             </div>
+            <!-- Timer -->
             <div class="tab-item">
-                <svg class="tab-svg" viewBox="0 0 30 30" xmlns="w3.org">
-                    <circle cx="15" cy="15" r="11" stroke="currentColor" stroke-width="1.2" fill="none"/>
-                    <path d="M15 4 A11 11 0 0 1 26 15" stroke="currentColor" stroke-width="1.6" fill="none"/>
-                    <polygon points="15,4 12,1 18,1" fill="currentColor"/>
+                <svg class="tab-svg" viewBox="0 0 24 24" xmlns="w3.org">
+                    <path d="M12 2a10 10 0 1 0 10 10A10.011 10.011 0 0 0 12 2zm0 14a4 4 0 1 1 4-4 4.005 4.005 0 0 1-4 4z"/>
                 </svg>
                 <span>Timer</span>
             </div>
@@ -307,7 +303,7 @@
         let touchStartY = 0;
         window.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
-                touchStartY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                touchStartY = (e.touches.clientY + e.touches.clientY) / 2;
             }
         }, { passive: true });
 
@@ -315,9 +311,9 @@
             if (touchStartY === 0) return;
             let currentY = 0;
             if (e.touches.length === 2) {
-                currentY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                currentY = (e.touches.clientY + e.touches.clientY) / 2;
             } else if (e.changedTouches.length > 0) {
-                currentY = e.changedTouches[0].clientY;
+                currentY = e.changedTouches.clientY;
             }
             
             if (currentY - touchStartY > 80) { 
