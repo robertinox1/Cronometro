@@ -34,39 +34,38 @@
             flex-direction: column; 
             align-items: center; 
             height: 100vh; 
-            padding: 0 16px 0px 16px; 
+            padding: 0 28px 0px 28px; 
             overflow: hidden; 
         }
         
         .spacer-top {
-            flex-grow: 1.8;
+            flex-grow: 2.3;
         }
 
-        /* Display del Tempo: Più alto e distanziato dai bottoni */
+        /* Grafica e spessore dei numeri come da foto */
         .timer-display { 
             font-family: -apple-system-headline, "SF Pro Display", -apple-system, sans-serif;
-            font-size: 84px; 
+            font-size: 88px; 
             font-weight: 100; 
             font-variant-numeric: tabular-nums; 
-            letter-spacing: -0.5px; 
+            letter-spacing: -2px; 
             width: 100%; 
             text-align: center; 
-            margin-bottom: 110px;
+            margin-bottom: 75px;
         }
         
-        /* Layout Pulsanti Ingranditi */
+        /* Controlli distaccati dai numeri */
         .controls-wrapper {
             display: flex;
             align-items: center;
             justify-content: space-between;
             width: 100%;
-            max-width: 345px;
-            margin-bottom: 25px;
-            padding: 0 4px;
+            max-width: 350px;
+            margin-bottom: 20px;
         }
         .btn { 
-            width: 82px; 
-            height: 82px; 
+            width: 76px; 
+            height: 76px; 
             border-radius: 50%; 
             border: none; 
             font-family: -apple-system, "SF Pro Text", sans-serif;
@@ -96,20 +95,19 @@
         .dot.active { background-color: #ffffff; }
         .dot.inactive { background-color: #48484a; }
 
-        /* Contenitore Tabella Giri: Più stretto e compresso rispetto ai bordi */
+        /* Tabella Giri proporzionata */
         .laps-container { 
             width: 100%; 
-            max-width: 335px; 
+            max-width: 330px; 
             border-top: 0.3px solid #2c2c2e; 
             overflow-y: auto; 
             flex-grow: 2;
             margin-bottom: 120px; 
-            padding: 0 2px;
         }
         .lap-row {
             display: flex;
             justify-content: space-between;
-            padding: 13px 2px;
+            padding: 12px 2px;
             font-family: -apple-system, "SF Pro Text", sans-serif;
             font-size: 16px;
             border-bottom: 0.3px solid #2c2c2e;
@@ -117,10 +115,10 @@
         .lap-row .lap-label { color: #ffffff; }
         .lap-row .lap-time { font-variant-numeric: tabular-nums; font-weight: 400; color: #ffffff; }
 
-        /* DOCK FLOTTANTE INFERIORE (Effetto Ovale Capsula Esatto) */
+        /* Dock inferiore flottante */
         .tab-bar-container {
             position: fixed;
-            bottom: 30px;
+            bottom: 25px;
             left: 0;
             width: 100%;
             padding: 0 16px;
@@ -130,14 +128,14 @@
         }
         .tab-bar {
             width: 100%;
-            max-width: 360px;
+            max-width: 390px;
             height: 64px;
             background-color: var(--dock-bg);
             border-radius: 32px;
             display: flex;
-            justify-content: space-between;
+            justify-content: space-around;
             align-items: center;
-            padding: 0 8px;
+            padding: 0 6px;
         }
         .tab-item {
             display: flex;
@@ -148,34 +146,27 @@
             font-family: -apple-system, "SF Pro Text", sans-serif;
             font-size: 10px;
             font-weight: 500;
-            width: 22%;
+            width: 23%;
             height: 100%;
-            transition: background-color 0.2s;
         }
-        /* Capsula arancione interna perfettamente proporzionata alla foto */
         .tab-item.active {
             color: var(--tab-active);
             background-color: #2c2c2e;
-            height: 48px;
-            border-radius: 24px;
+            height: 52px;
+            border-radius: 26px;
         }
+        
         .tab-icon-svg {
             width: 22px;
             height: 22px;
-            fill: none;
-            stroke: currentColor;
-            stroke-width: 1.8;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            margin-bottom: 4px;
-        }
-        .tab-item.active .tab-icon-svg {
-            stroke: var(--tab-active);
+            margin-bottom: 3px;
         }
 
+        /* Menu Segreto */
         #secret-menu { display: none; position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%); background-color: #1c1c1e; border: 1px solid #3a3a3c; border-radius: 14px; padding: 20px; width: 280px; z-index: 99999; text-align: center; box-shadow: 0 0 20px rgba(0,0,0,0.8); }
+        #secret-menu h3 { font-family: -apple-system, sans-serif; color: white; margin-bottom: 15px; font-size: 17px; font-weight: 500; }
         #secret-menu input { width: 80%; padding: 10px; background-color: #2c2c2e; border: 1px solid #3a3a3c; border-radius: 8px; color: white; font-size: 20px; text-align: center; margin-bottom: 15px; outline: none; }
-        #secret-menu button { background-color: #0a84ff; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 16px; font-weight: 600; }
+        #secret-menu button { background-color: #0a84ff; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -195,40 +186,39 @@
 
     <div class="laps-container" id="lapsContainer"></div>
 
-    <!-- Icone vettoriali geometriche lineari estratte dallo screenshot originale di iOS -->
     <div class="tab-bar-container">
         <nav class="tab-bar">
+            <!-- Ore Locali -->
             <div class="tab-item">
-                <svg class="tab-icon-svg" viewBox="0 0 24 24">
+                <svg class="tab-icon-svg" viewBox="0 0 24 24" fill="none" stroke="#8e8e93" stroke-width="1.5">
                     <circle cx="12" cy="12" r="9"></circle>
                     <path d="M12 3a15.3 15.3 0 0 1 4 9 15.3 15.3 0 0 1-4 9 15.3 15.3 0 0 1-4-9 15.3 15.3 0 0 1 4-9z"></path>
                     <path d="M3 12h18"></path>
                 </svg>
                 <span>Ore locali</span>
             </div>
+            <!-- Sveglie -->
             <div class="tab-item">
-                <svg class="tab-icon-svg" viewBox="0 0 24 24">
+                <svg class="tab-icon-svg" viewBox="0 0 24 24" fill="none" stroke="#8e8e93" stroke-width="1.5">
                     <circle cx="12" cy="13" r="7"></circle>
-                    <path d="M12 9v4l2.5 2.5"></path>
-                    <path d="M5 3L3 5"></path>
-                    <path d="M19 3l2 5"></path>
+                    <path d="M12 9v4l2 2"></path>
+                    <path d="M5 4.5L3.5 6M19 4.5L20.5 6" stroke-linecap="round"></path>
                 </svg>
                 <span>Sveglie</span>
             </div>
+            <!-- Cronometro -->
             <div class="tab-item active">
-                <svg class="tab-icon-svg" viewBox="0 0 24 24" style="stroke: #ff9f0a; fill: none;">
-                    <circle cx="12" cy="14" r="7"></circle>
-                    <path d="M12 7V3"></path>
-                    <path d="M10 3h4"></path>
-                    <path d="M12 11v3h3"></path>
+                <svg class="tab-icon-svg" viewBox="0 0 24 24" fill="none" stroke="#ff9f0a" stroke-width="1.6">
+                    <circle cx="12" cy="13" r="7"></circle>
+                    <path d="M12 6V3M9 3h6M12 10v3l2.5 1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                 </svg>
                 <span>Cronometro</span>
             </div>
+            <!-- Timer -->
             <div class="tab-item">
-                <svg class="tab-icon-svg" viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="9"></circle>
-                    <path d="M12 12V7"></path>
-                    <path d="M12 12l3.5 3.5"></path>
+                <svg class="tab-icon-svg" viewBox="0 0 24 24" fill="none" stroke="#8e8e93" stroke-width="1.5">
+                    <circle cx="12" cy="12" r="9" stroke-dasharray="4 2"></circle>
+                    <path d="M12 12V7M12 12l4 4" stroke-linecap="round"></path>
                 </svg>
                 <span>Timer</span>
             </div>
@@ -236,7 +226,7 @@
     </div>
 
     <div id="secret-menu">
-        <h3 style="margin-bottom:15px; font-family:-apple-system, sans-serif; font-size:17px;">Impostazione Forza</h3>
+        <h3>Impostazione Forza</h3>
         <input type="number" id="target-number" placeholder="Es. 17" min="1" max="54">
         <br>
         <button id="save-target">Salva</button>
@@ -305,9 +295,24 @@
             if(liveLapTime) liveLapTime.textContent = tForzato;
         }
 
+        // UNICO METODO DI SBLOCCO: SWIPE VERSO IL BASSO CON DUE DITA
         let touchStartY = 0;
-        window.addEventListener('touchstart', (e) => { if (e.touches.length === 2) touchStartY = (e.touches.clientY + e.touches.clientY) / 2; }, {passive: true});
-        window.addEventListener('touchend', (e) => { if (touchStartY !== 0) { let touchEndY = (e.changedTouches.clientY + (e.changedTouches ? e.changedTouches.clientY : e.changedTouches.clientY)) / 2; if (touchEndY - touchStartY > 70) secretMenu.style.display = 'block'; touchStartY = 0; } });
+        window.addEventListener('touchstart', (e) => { 
+            if (e.touches.length === 2) {
+                touchStartY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+            } 
+        }, {passive: true});
+
+        window.addEventListener('touchend', (e) => { 
+            if (touchStartY !== 0) { 
+                let touchEndY = (e.changedTouches[0].clientY + (e.changedTouches[1] ? e.changedTouches[1].clientY : e.changedTouches[0].clientY)) / 2; 
+                if (touchEndY - touchStartY > 60) {
+                    secretMenu.style.display = 'block'; 
+                }
+                touchStartY = 0; 
+            } 
+        });
+
         saveBtn.addEventListener('click', () => { let val = parseInt(targetInput.value); if (val > 0) { targetSum = val; localStorage.setItem('magicTarget', val); secretMenu.style.display = 'none'; } });
     </script>
 </body>
