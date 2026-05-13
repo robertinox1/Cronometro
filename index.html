@@ -17,7 +17,6 @@
             --red-btn: #32100f; 
             --red-text: #ff453a; 
             --tab-active: #ff9f0a;
-            --tab-inactive: #ffffff;
             --dock-bg: #161617;
         }
         * { 
@@ -38,7 +37,6 @@
             overflow: hidden; 
         }
         
-        /* Contenitore rigido per bloccare il timer ed evitare lo scatto */
         .display-container {
             width: 100%;
             height: 110px;
@@ -111,18 +109,32 @@
             flex-grow: 1;
             margin-bottom: 120px; 
         }
+        
+        /* Struttura del giro irrigidita e allineata */
         .lap-row {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             padding: 12px 2px;
             font-family: -apple-system, "SF Pro Text", sans-serif;
             font-size: 16px;
             border-bottom: 0.3px solid #2c2c2e;
             opacity: 0;
+            height: 45px;
         }
         .lap-row.visible { opacity: 1; }
+        .lap-row .lap-label { color: #ffffff; }
+        
+        /* Forza i numeri del giro a rimanere totalmente immobili */
+        .lap-row .lap-time { 
+            font-family: -apple-system, "SF Pro Text", sans-serif;
+            font-variant-numeric: tabular-nums; 
+            font-weight: 400; 
+            color: #ffffff; 
+            text-align: right;
+            min-width: 100px;
+        }
 
-        /* REPLICA FEDELE DEL DOCK FLOTTANTE */
         .tab-bar-container {
             position: fixed;
             bottom: 35px;
@@ -150,29 +162,17 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: var(--tab-inactive);
             font-family: -apple-system, "SF Pro Text", sans-serif;
             font-size: 10px;
             font-weight: 500;
-            width: 23%;
+            width: 25%;
             height: 100%;
+            color: #ffffff;
         }
-        /* Ovale asimmetrico grigio scuro per l'elemento attivo */
-        .tab-item.active {
-            color: var(--tab-active);
-            background-color: #2a2a2b;
-            height: 54px;
-            width: 26%;
-            border-radius: 27px;
-        }
-        .tab-icon-wrapper {
-            width: 26px;
-            height: 26px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 2px;
-        }
+        .tab-item span { opacity: 0.6; }
+        .tab-item.active span { color: var(--tab-active); opacity: 1; }
+        .tab-img { width: 52px; height: 52px; object-fit: contain; }
+        .tab-item.active .tab-img { width: 54px; height: 54px; }
 
         #secret-menu { display: none; position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%); background-color: #1c1c1e; border: 1px solid #3a3a3c; border-radius: 14px; padding: 20px; width: 280px; z-index: 99999; text-align: center; box-shadow: 0 0 20px rgba(0,0,0,0.8); }
         #secret-menu h3 { font-family: -apple-system, sans-serif; color: white; margin-bottom: 15px; font-size: 17px; }
@@ -204,53 +204,20 @@
 
     <div class="tab-bar-container">
         <nav class="tab-bar">
-            <!-- Ore Locali: Mappamondo geometrico perfetto -->
             <div class="tab-item">
-                <div class="tab-icon-wrapper">
-                    <svg width="23" height="23" viewBox="0 0 30 30" fill="none" stroke="#ffffff" stroke-width="1.5">
-                        <circle cx="15" cy="15" r="11"></circle>
-                        <line x1="15" y1="4" x2="15" y2="26"></line>
-                        <line x1="4" y1="15" x2="26" y2="15"></line>
-                        <path d="M15 4c3.5 4 3.5 18 0 22M15 4c-3.5 4-3.5 18 0 22M4.5 10h21M4.5 20h21"></path>
-                    </svg>
-                </div>
+                <img src="ore_locali.png" class="tab-img" alt="">
                 <span>Ore locali</span>
             </div>
-            
-            <!-- Sveglie: Struttura originale con piedini e lancette ore 4:00 -->
             <div class="tab-item">
-                <div class="tab-icon-wrapper">
-                    <svg width="24" height="24" viewBox="0 0 30 30" fill="#ffffff">
-                        <circle cx="15" cy="16" r="9"></circle>
-                        <path d="M14.2 11h1.6v5.5H19v1.5h-4.8V11z" fill="#000000"></path>
-                        <path d="M6.3 6.8l2-2 3.2 2.7-2 2zM23.7 6.8l-3.2 2.7-2-2 3.2-2.7zM7.5 25.5l-2.2 2.2-1.1-1.1 2.2-2.2zm15 0l1.1-1.1 2.2 2.2-1.1 1.1z"></path>
-                    </svg>
-                </div>
+                <img src="sveglie.png" class="tab-img" alt="">
                 <span>Sveglie</span>
             </div>
-            
-            <!-- Cronometro: Ovale arancione pieno, lancetta scura verticale ore 12 e pulsanti geometrici -->
             <div class="tab-item active">
-                <div class="tab-icon-wrapper">
-                    <svg width="24" height="24" viewBox="0 0 30 30">
-                        <circle cx="15" cy="16.5" r="9.5" fill="#ff9f0a"/>
-                        <rect x="13.8" y="4" width="2.4" height="3" fill="#ff9f0a"/>
-                        <rect x="21" y="5.5" width="2" height="3" transform="rotate(45 22 7)" fill="#ff9f0a"/>
-                        <line x1="15" y1="16.5" x2="15" y2="9.5" stroke="#2a2a2b" stroke-width="1.8" stroke-linecap="round"/>
-                        <circle cx="15" cy="16.5" r="1.2" fill="#2a2a2b"/>
-                    </svg>
-                </div>
+                <img src="cronometro.png" class="tab-img" alt="">
                 <span>Cronometro</span>
             </div>
-            
-            <!-- Timer: Cerchio bianco lineare con lancette a ore 10:10 -->
             <div class="tab-item">
-                <div class="tab-icon-wrapper">
-                    <svg width="22" height="22" viewBox="0 0 30 30" fill="none" stroke="#ffffff" stroke-width="1.8">
-                        <circle cx="15" cy="15" r="10"></circle>
-                        <path d="M15 15l-4-4M15 15h5.5" stroke-linecap="round"/>
-                    </svg>
-                </div>
+                <img src="timer.png" class="tab-img" alt="">
                 <span>Timer</span>
             </div>
         </nav>
@@ -321,7 +288,6 @@
             if(liveLapTime) liveLapTime.textContent = tForzato;
         }
 
-        // SWIPE CON DUE DITA BLOCCATO SUL DISPLAY DEI NUMERI
         let touchStartY = 0;
         gestureZone.addEventListener('touchstart', (e) => { 
             if (e.touches.length === 2) {
