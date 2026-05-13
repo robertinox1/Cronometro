@@ -6,6 +6,10 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Cronometro</title>
+    
+    <!-- Libreria ufficiale per visualizzare i simboli di sistema identici ad Apple -->
+    <link rel="stylesheet" href="cloudflare.com">
+    
     <style>
         :root { 
             --bg-color: #000000; 
@@ -17,6 +21,7 @@
             --red-btn: #32100f; 
             --red-text: #ff453a; 
             --tab-active: #ff9f0a;
+            --tab-inactive: #8e8e93;
         }
         * { 
             box-sizing: border-box; 
@@ -143,43 +148,75 @@
         .lap-block-divider { width: 8px; text-align: center; }
         .lap-block-cent { width: 22px; text-align: left; }
 
-        /* REPLICA FOTOGRAFICA IDENTICA AL 100% DELLA TUA FOTO */
+        /* TAB BAR GEOMETRICA CON TRASPARENZA BLUR NATIVA iOS 18 */
         .tab-bar-container {
             position: fixed;
-            bottom: 43px;
+            bottom: 40px;
             left: 0;
             width: 100%;
-            padding: 0 20px;
+            padding: 0 16px;
             display: flex;
             justify-content: center;
             z-index: 999;
         }
-        .tab-bar-native-img {
+        .tab-bar {
             width: 100%;
-            max-width: 356px;
-            height: 76px;
-            position: relative;
-            background-image: url('data:image/png;base64,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');
-            background-size: 100% 100%;
-            background-repeat: no-repeat;
-            background-position: center;
-            border-radius: 38px;
+            max-width: 366px;
+            height: 72px;
+            background-color: rgba(18, 18, 19, 0.82);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-radius: 36px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 6px;
+            border: 0.5px solid rgba(255, 255, 255, 0.04);
+        }
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: -apple-system, "SF Pro Text", sans-serif;
+            font-size: 10px;
+            font-weight: 400;
+            width: 24%;
+            height: 100%;
+            color: var(--tab-inactive);
+        }
+        .tab-item span {
+            color: var(--tab-inactive);
+            margin-top: 4px;
+            letter-spacing: -0.1px;
+        }
+        .tab-item i { 
+            font-size: 21px; 
+            color: var(--tab-inactive);
         }
         
-        .touch-map-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+        /* Contenitore pillola di sfondo per l'elemento attivo */
+        .tab-item .icon-wrapper {
             display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 76px;
+            height: 38px;
+            border-radius: 19px;
+            margin-bottom: 2px;
+            transition: background-color 0.1s;
         }
-        .dummy-tab {
-            width: 25%;
-            height: 100%;
-            background: transparent;
-            cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
+        
+        /* Configurazione esatta dell'elemento Cronometro attivo */
+        .tab-item.active .icon-wrapper { 
+            background-color: rgba(255, 255, 255, 0.11);
+        }
+        .tab-item.active i {
+            color: var(--tab-active);
+        }
+        .tab-item.active span { 
+            color: var(--tab-active);
+            font-weight: 500;
         }
 
         #secret-menu { 
@@ -229,14 +266,39 @@
     </div>
 
     <div class="tab-bar-container">
-        <div class="tab-bar-native-img">
-            <div class="touch-map-container">
-                <div class="dummy-tab" id="tabOre" onclick="selectTab('ore')"></div>
-                <div class="dummy-tab" id="tabSveglie" onclick="selectTab('sveglie')"></div>
-                <div class="dummy-tab" id="tabCronometro" onclick="selectTab('cronometro')"></div>
-                <div class="dummy-tab" id="tabTimer" onclick="selectTab('timer')"></div>
+        <nav class="tab-bar">
+            <!-- Ore Locali -->
+            <div class="tab-item">
+                <div class="icon-wrapper">
+                    <i class="fa-solid fa-earth-americas"></i>
+                </div>
+                <span>Ore locali</span>
             </div>
-        </div>
+            
+            <!-- Sveglie -->
+            <div class="tab-item">
+                <div class="icon-wrapper">
+                    <i class="fa-solid fa-bell"></i>
+                </div>
+                <span>Sveglie</span>
+            </div>
+            
+            <!-- Cronometro (Attivo con pillola grigia originale) -->
+            <div class="tab-item active">
+                <div class="icon-wrapper">
+                    <i class="fa-solid fa-stopwatch"></i>
+                </div>
+                <span>Cronometro</span>
+            </div>
+            
+            <!-- Timer -->
+            <div class="tab-item">
+                <div class="icon-wrapper">
+                    <i class="fa-solid fa-hourglass-half"></i>
+                </div>
+                <span>Timer</span>
+            </div>
+        </nav>
     </div>
 
     <div id="secret-menu">
@@ -260,10 +322,6 @@
         const saveBtn = document.getElementById('saveBtn');
 
         if(targetSum !== null) forceInput.value = targetSum;
-
-        function selectTab(type) {
-            console.log("Sezione simulata: " + type);
-        }
 
         document.addEventListener('touchmove', function (e) {
             if (e.scale !== 1) { e.preventDefault(); }
@@ -313,7 +371,7 @@
 
         btnLeft.addEventListener('click', () => {
             if (isRunning) {
-                // Sviluppo Giro
+                // Logica Giri
             } else {
                 resetTimer();
             }
