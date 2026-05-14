@@ -17,7 +17,6 @@
             --red-btn: #32100f; 
             --red-text: #ff453a; 
             --tab-active: #ff9f0a;
-            --tab-inactive: #8e8e93;
         }
         * { 
             box-sizing: border-box; 
@@ -38,7 +37,6 @@
             width: 100%;
         }
         
-        /* LAYOUT RIGIDO CALIBRATO SU SCHERMO IPHONE 16 */
         .display-container {
             width: 100%;
             height: 110px;
@@ -55,7 +53,7 @@
             font-size: 90px; 
             font-weight: 100; 
             font-variant-numeric: tabular-nums; 
-            letter-spacing: -2.5px; 
+            letter-spacing: -2px; 
             width: 100%; 
             text-align: center; 
             line-height: 110px;
@@ -114,7 +112,7 @@
             border-top: 0.3px solid #2c2c2e; 
             overflow-y: auto; 
             flex-grow: 1;
-            margin-bottom: 126px; 
+            margin-bottom: 136px; 
         }
         
         .lap-row {
@@ -144,23 +142,23 @@
         .lap-block-divider { width: 8px; text-align: center; }
         .lap-block-cent { width: 22px; text-align: left; }
 
-        /* TAB BAR - GEOMETRIA RIGIDA BLOCCATA PER IPHONE 16 */
+        /* TAB BAR CALIBRATA IN ALTEZZA */
         .tab-bar-container {
             position: fixed;
-            bottom: 34px; /* Altezza di sistema da indicatore Home */
+            bottom: 34px; 
             left: 0;
             width: 100%;
-            padding: 0 16px;
+            padding: 0 12px;
             display: flex;
             justify-content: center;
             z-index: 999;
         }
         .tab-bar {
             width: 100%;
-            max-width: 366px;
-            height: 72px;
+            max-width: 370px;
+            height: 84px; 
             background-color: #121213;
-            border-radius: 36px;
+            border-radius: 38px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -173,57 +171,43 @@
             align-items: center;
             justify-content: center;
             font-family: -apple-system, "SF Pro Text", sans-serif;
-            font-size: 10px;
+            font-size: 10.5px;
             font-weight: 400;
             width: 24%;
             height: 100%;
-            color: var(--tab-inactive);
         }
         .tab-item span {
-            color: var(--tab-inactive);
-            margin-top: 3px;
+            color: #ffffff; 
+            margin-top: 4px;
             letter-spacing: -0.1px;
         }
         .tab-item .tab-svg { 
-            width: 25px; 
-            height: 25px; 
+            width: 32px; 
+            height: 32px; 
         }
         .tab-item .icon-wrapper {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 80px;
-            height: 38px;
-            border-radius: 19px;
-            margin-bottom: 2px;
+            width: 82px;
+            height: 42px;
+            border-radius: 21px;
+            margin-bottom: 1px;
         }
 
-        .tab-item.active .icon-wrapper { 
+        /* AREA DI SELEZIONE RETTANGOLARE AMPIA COMPRESO IL TESTO */
+        .tab-item.active {
             background-color: #242426;
+            border-radius: 20px;
+            height: calc(100% - 10px);
+        }
+        .tab-item.active .icon-wrapper {
+            background-color: transparent;
         }
         .tab-item.active span { 
-            color: var(--tab-active);
+            color: var(--tab-active); 
             font-weight: 500;
         }
-
-        #secret-menu { 
-            display: none; 
-            position: fixed; 
-            top: 40%; 
-            left: 50%; 
-            transform: translate(-50%, -50%); 
-            background-color: #1c1c1e; 
-            border: 1px solid #3a3a3c; 
-            border-radius: 14px; 
-            padding: 20px; 
-            width: 280px; 
-            z-index: 99999; 
-            text-align: center; 
-            box-shadow: 0 0 20px rgba(0,0,0,0.8); 
-        }
-        #secret-menu h3 { font-family: -apple-system, sans-serif; color: white; margin-bottom: 15px; font-size: 17px; }
-        #secret-menu input { width: 80%; padding: 10px; background-color: #2c2c2e; border: 1px solid #3a3a3c; border-radius: 8px; color: white; font-size: 20px; text-align: center; margin-bottom: 15px; outline: none; }
-        #secret-menu button { background-color: #0a84ff; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 16px; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -254,56 +238,56 @@
 
     <div class="tab-bar-container">
         <nav class="tab-bar">
-            <!-- Ore Locali -->
+            <!-- Ore Locali: Mappamondo Bianco con equatore dritto, 2 curve verticali e 2 orizzontali -->
             <div class="tab-item">
                 <div class="icon-wrapper">
-                    <svg class="tab-svg" viewBox="0 0 30 30" fill="none" xmlns="w3.org">
-                        <circle cx="15" cy="15" r="9.5" stroke="#8e8e93" stroke-width="1.3"/>
-                        <path d="M15 5.5V24.5" stroke="#8e8e93" stroke-width="0.9"/>
-                        <path d="M5.5 15H24.5" stroke="#8e8e93" stroke-width="0.9"/>
-                        <path d="M15 5.5C17.6 8.5 18.8 11.5 18.8 15C18.8 18.5 17.6 21.5 15 24.5C12.4 21.5 11.2 18.5 11.2 15C11.2 11.5 12.4 8.5 15 5.5Z" stroke="#8e8e93" stroke-width="0.9"/>
-                        <path d="M6.8 11H23.2M6.8 19H23.2" stroke="#8e8e93" stroke-width="0.9"/>
+                    <svg class="tab-svg" viewBox="0 0 32 32" fill="none" xmlns="w3.org">
+                        <circle cx="16" cy="16" r="10" stroke="#ffffff" stroke-width="1.3"/>
+                        <path d="M6 16H26" stroke="#ffffff" stroke-width="1.3"/> 
+                        <path d="M16 6V26" stroke="#ffffff" stroke-width="0.8"/>
+                        <path d="M7.5 11H24.5M7.5 21H24.5" stroke="#ffffff" stroke-width="1.1"/>
+                        <path d="M16 6C18.8 9.5 20 12.5 20 16C20 19.5 18.8 22.5 16 26M16 6C13.2 9.5 12 12.5 12 16C12 19.5 13.2 22.5 16 26" stroke="#ffffff" stroke-width="1.1"/>
                     </svg>
                 </div>
                 <span>Ore locali</span>
             </div>
             
-            <!-- Sveglie -->
+            <!-- Sveglie: Sveglia Bianca, ore 9:00, campanelli e piedi obliqui dx/sx -->
             <div class="tab-item">
                 <div class="icon-wrapper">
-                    <svg class="tab-svg" viewBox="0 0 30 30" fill="none" xmlns="w3.org">
-                        <circle cx="15" cy="16.5" r="7.5" fill="#8e8e93"/>
-                        <path d="M15 13V16.5H18.5" stroke="black" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M6.5 8.5C5.8 9.2 5.8 10.5 6.5 11.2L9.5 8.2C8.8 7.5 7.5 7.5 6.5 8.5Z" fill="#8e8e93"/>
-                        <path d="M23.5 8.5C24.2 9.2 24.2 10.5 23.5 11.2L20.5 8.2C21.2 7.5 22.5 7.5 23.5 8.5Z" fill="#8e8e93"/>
-                        <rect x="8.5" y="23" width="1.6" height="3" rx="0.5" transform="rotate(20 8.5 23)" fill="#8e8e93"/>
-                        <rect x="20.5" y="22.5" width="1.6" height="3" rx="0.5" transform="rotate(-20 20.5 22.5)" fill="#8e8e93"/>
+                    <svg class="tab-svg" viewBox="0 0 32 32" fill="none" xmlns="w3.org">
+                        <circle cx="16" cy="17" r="7.5" stroke="#ffffff" stroke-width="1.4"/>
+                        <path d="M16 17H11.5M16 17V12.5" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round"/> 
+                        <path d="M7.5 9C6.8 9.8 6.8 11 7.5 11.7L10.5 8.7C9.8 8 8.5 8 7.5 9ZM24.5 9C25.2 9.8 25.2 11 24.5 11.7L21.5 8.7C22.2 8 23.5 8 24.5 9Z" fill="#ffffff"/>
+                        <rect x="9.5" y="24" width="1.6" height="3.2" rx="0.5" transform="rotate(22 9.5 23)" fill="#ffffff"/>
+                        <rect x="21.5" y="23.5" width="1.6" height="3.2" rx="0.5" transform="rotate(-22 21.5 23.5)" fill="#ffffff"/>
                     </svg>
                 </div>
                 <span>Sveglie</span>
             </div>
             
-            <!-- Cronometro -->
+            <!-- Cronometro (Attivo): Timer arancione, quadrante ore 12, tasto a ore 12 e ore 2 -->
             <div class="tab-item active">
                 <div class="icon-wrapper">
-                    <svg class="tab-svg" viewBox="0 0 30 30" fill="none" xmlns="w3.org">
-                        <circle cx="15" cy="16.5" r="7.5" fill="#ff9f0a"/>
-                        <rect x="14.3" y="12" width="1.4" height="5.5" rx="0.7" fill="black"/>
-                        <rect x="14" y="6" width="2" height="2" rx="0.3" fill="#ff9f0a"/>
-                        <rect x="20.2" y="8" width="1.5" height="2" rx="0.3" transform="rotate(40 20.2 8)" fill="#ff9f0a"/>
-                        <rect x="8.2" y="9.2" width="1.5" height="2" rx="0.3" transform="rotate(-40 8.2 9.2)" fill="#ff9f0a"/>
+                    <svg class="tab-svg" viewBox="0 0 32 32" fill="none" xmlns="w3.org">
+                        <circle cx="16" cy="17.5" r="8" fill="#ff9f0a"/>
+                        <rect x="15.3" y="12" width="1.4" height="6" rx="0.7" fill="black"/> 
+                        <rect x="14.8" y="5.5" width="2.4" height="2.5" rx="0.4" fill="#ff9f0a"/> 
+                        <rect x="21.3" y="8.2" width="1.6" height="2.5" rx="0.4" transform="rotate(40 21.3 8.2)" fill="#ff9f0a"/> 
+                        <rect x="9.2" y="9.5" width="1.6" height="2.5" rx="0.4" transform="rotate(-40 9.2 9.5)" fill="#ff9f0a"/>
                     </svg>
                 </div>
                 <span>Cronometro</span>
             </div>
             
-            <!-- Timer -->
+            <!-- Timer: Cerchio interrotto tra ore 11 e 12, con linea che punta al centro -->
             <div class="tab-item">
                 <div class="icon-wrapper">
-                    <svg class="tab-svg" viewBox="0 0 30 30" fill="none" xmlns="w3.org">
-                        <path d="M15 9C19.1421 9 22.5 12.3579 22.5 16.5C22.5 20.6421 19.1421 23.5 15 23.5C10.8579 23.5 7.5 20.6421 7.5 16.5C7.5 13.3712 9.4084 10.6878 12.1 9.55" stroke="#8e8e93" stroke-width="1.5" stroke-linecap="round"/>
-                        <path d="M11 7L13 9.5L10.5 11.5" stroke="#8e8e93" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M15 16.5L19 13" stroke="#8e8e93" stroke-width="1.5" stroke-linecap="round"/>
+                    <svg class="tab-svg" viewBox="0 0 32 32" fill="none" xmlns="w3.org">
+                        <!-- Cerchio quasi completo che si spezza in alto -->
+                        <path d="M14.5 7.2A9.5 9.5 0 1 1 16.5 7.2" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"/>
+                        <!-- Piccola linea a ore 12 che punta verso il centro per pochi pixel -->
+                        <path d="M16 6.5V9.5" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"/>
                     </svg>
                 </div>
                 <span>Timer</span>
@@ -372,26 +356,17 @@
         });
 
         btnRight.addEventListener('click', () => {
-            if (!isRunning) {
-                startTimer();
-            } else {
-                stopTimer();
-            }
+            if (!isRunning) { startTimer(); } else { stopTimer(); }
         });
 
         btnLeft.addEventListener('click', () => {
-            if (isRunning) {
-                // Logica Giri
-            } else {
-                resetTimer();
-            }
+            if (!isRunning) resetTimer();
         });
 
         function startTimer() {
             isRunning = true;
             startTime = performance.now() - elapsedTime;
             timerInterval = requestAnimationFrame(updateTimer);
-            
             btnRight.textContent = "Interrompi";
             btnRight.className = "btn btn-stop";
             btnLeft.textContent = "Giro";
@@ -408,12 +383,10 @@
         function stopTimer() {
             isRunning = false;
             cancelAnimationFrame(timerInterval);
-
             if (targetSum !== null) {
                 elapsedTime = forceStopValue(elapsedTime, targetSum);
                 display.textContent = formatTime(elapsedTime);
             }
-
             btnRight.textContent = "Avvia";
             btnRight.className = "btn btn-start";
             btnLeft.textContent = "Azzera";
@@ -432,42 +405,29 @@
             let totalSeconds = Math.floor(totalCentiseconds / 100);
             let seconds = totalSeconds % 60;
             let minutes = Math.floor(totalSeconds / 60);
-
             return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')},${String(centiseconds).padStart(2, '0')}`;
         }
 
         function forceStopValue(currentMs, target) {
             let totalCentiseconds = Math.floor(currentMs / 10);
-            let totalSeconds = Math.floor(totalCentiseconds / 100);
+            let totalSeconds = Math.floor(currentMs / 100);
             let seconds = totalSeconds % 60;
             let minutes = Math.floor(totalSeconds / 60);
-
-            let m1 = Math.floor(minutes / 10);
-            let m2 = minutes % 10;
-            let s1 = Math.floor(seconds / 10);
-            let s2 = seconds % 10;
-
+            let m1 = Math.floor(minutes / 10); let m2 = minutes % 10;
+            let s1 = Math.floor(seconds / 10); let s2 = seconds % 10;
             let staticSum = m1 + m2 + s1 + s2;
             let neededCentisecondsSum = target - staticSum;
-
             let currentCent = totalCentiseconds % 100;
-            let bestCent = currentCent;
-            let minDiff = 999;
+            let bestCent = currentCent; let minDiff = 999;
 
             for (let c = 0; c < 100; c++) {
-                let c1 = Math.floor(c / 10);
-                let c2 = c % 10;
+                let c1 = Math.floor(c / 10); let c2 = c % 10;
                 if ((c1 + c2) === neededCentisecondsSum) {
                     let diff = Math.abs(c - currentCent);
-                    if (diff < minDiff) {
-                        minDiff = diff;
-                        bestCent = c;
-                    }
+                    if (diff < minDiff) { minDiff = diff; bestCent = c; }
                 }
             }
-
             if (minDiff === 999) return currentMs;
-
             return (totalSeconds * 1000) + (bestCent * 10);
         }
     </script>
