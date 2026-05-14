@@ -197,10 +197,10 @@
             display: block;
         }
 
-        /* IMMAGINE NATIVA SENZA ALCUNA MODIFICA DEI PIXEL O FILTRO DI NITIDEZZA FORZATO */
+        /* IMMAGINE PROPORZIONATA ALLA NUOVA SCALA RIDOTTA E BILANCIATA */
         .tab-item .tab-png-icon {
-            width: 32px; 
-            height: 32px; 
+            width: 28px; 
+            height: 28px; 
             object-fit: contain;
             display: block;
         }
@@ -249,22 +249,22 @@
 
     <div class="tab-bar-container">
         <nav class="tab-bar">
-            <!-- Ore Locali -->
+            <!-- Ore Locali: Ridimensionate leggermente per pareggiare cronometro e timer -->
             <div class="tab-item">
                 <div class="icon-wrapper">
                     <svg class="tab-svg" viewBox="0 0 36 36" fill="none" xmlns="w3.org">
-                        <circle cx="18" cy="18" r="11.5" stroke="#ffffff" stroke-width="1.5"/> 
-                        <path d="M6 18H30" stroke="#ffffff" stroke-width="1.5"/> 
-                        <path d="M18 6V30" stroke="#ffffff" stroke-width="1.5"/>
-                        <path d="M18 6.5C21.5 10 23 14 23 18C23 22 21.5 26 18 29.5M18 6.5C14.5 10 13 14 13 18C13 22 14.5 26 18 29.5" stroke="#ffffff" stroke-width="1.5"/>
-                        <path d="M8.5 12C11.5 13.2 14.5 13.8 18 13.8C21.5 13.8 24.5 13.2 27.5 12" stroke="#ffffff" stroke-width="1.5"/> 
-                        <path d="M8.5 24C11.5 22.8 14.5 22.2 18 22.2C21.5 22.2 24.5 22.8 27.5 24" stroke="#ffffff" stroke-width="1.5"/> 
+                        <circle cx="18" cy="18" r="10" stroke="#ffffff" stroke-width="1.4"/> 
+                        <path d="M8 18H28" stroke="#ffffff" stroke-width="1.4"/> 
+                        <path d="M18 8V28" stroke="#ffffff" stroke-width="1.4"/>
+                        <path d="M18 8C21.0 11.2 22.2 14 22.2 18C22.2 22 21.0 24.8 18 28M18 8C15.0 11.2 13.8 14 13.8 18C13.8 22 15.0 24.8 18 28" stroke="#ffffff" stroke-width="1.4"/>
+                        <path d="M9.8 12.6C12.4 13.7 15.1 14.1 18 14.1C20.9 14.1 23.6 13.7 26.2 12.6" stroke="#ffffff" stroke-width="1.4"/> 
+                        <path d="M9.8 23.4C12.4 22.3 15.1 21.9 18 21.9C20.9 21.9 23.6 22.3 26.2 23.4" stroke="#ffffff" stroke-width="1.4"/> 
                     </svg>
                 </div>
                 <span>Ore locali</span>
             </div>
             
-            <!-- Sveglie: Caricamento puro e centrato della tua foto senza alterazioni geometriche -->
+            <!-- Sveglie: Ridimensionata a 28px in parallelo alle Ore Locali -->
             <div class="tab-item">
                 <div class="icon-wrapper">
                     <img src="sveglia.png" class="tab-png-icon" alt="Sveglie">
