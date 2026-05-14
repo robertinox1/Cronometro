@@ -16,7 +16,7 @@
             --green-text: #2fbc4b; 
             --red-btn: #32100f; 
             --red-text: #ff453a; 
-            --tab-active: #ff9f0a; /* Arancione nativo Apple schiarito e calibrato */
+            --tab-active: #ffb347; /* Arancione nativo ultraluminoso e schiarito */
         }
         * { 
             box-sizing: border-box; 
@@ -173,7 +173,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 4px;
+            padding: 0 24px; /* Spazio interno aumentato sui bordi per accorpare le icone verso il centro */
             border: 0.8px solid rgba(255, 255, 255, 0.15); 
         }
         .tab-item {
@@ -184,7 +184,7 @@
             font-family: -apple-system, "SF Pro Text", sans-serif;
             font-size: 10px;
             font-weight: 400;
-            width: 21.5%; /* Ridotto leggermente per fare spazio alla bolla allargata */
+            width: 21%; /* Proporzione ristretta per compattare il layout verso l'asse centrale */
             height: 100%;
             position: relative;
             text-align: center;
@@ -204,13 +204,13 @@
             display: block;
         }
 
-        /* BOLLA ATTIVA: SCHIARITA A #3D3D3F ED ESPANSA IN LARGHEZZA AL 32.5% COME L'ORIGINALE APPLE */
+        /* BOLLA ATTIVA COESISTENTE CON LA RISTRUTTURAZIONE CENTRALIZZATA DELLE TAB */
         .tab-item.active {
             background-color: #3d3d3f; 
             border-radius: 26px; 
             height: calc(100% - 8px); 
             margin: 4px 0; 
-            width: 32.5%; 
+            width: 31%; 
         }
         .tab-item.active .icon-wrapper {
             background-color: transparent;
@@ -272,16 +272,13 @@
                 <span>Sveglie</span>
             </div>
             
-            <!-- Cronometro: Arancione rinfrescato, perno e lancetta coordinati al grigio della bolla -->
+            <!-- Cronometro -->
             <div class="tab-item active">
                 <div class="icon-wrapper">
                     <svg class="tab-svg" viewBox="0 0 36 36" fill="none" xmlns="w3.org" style="transform: scale(1.22);"> 
                         <circle cx="18" cy="19.5" r="8.5" fill="var(--tab-active)" stroke="var(--tab-active)" stroke-width="1.6"/> 
-                        
-                        <!-- Perno e lancetta agganciati al nuovo grigio #3d3d3f della bolla -->
                         <circle cx="18" cy="19.5" r="1.5" fill="#3d3d3f"/>
                         <path d="M18 18.2V14.2" stroke="#3d3d3f" stroke-width="1.6" stroke-linecap="round"/> 
-                        
                         <rect x="17.2" y="8.7" width="1.6" height="2.1" rx="0.3" fill="var(--tab-active)"/> 
                         <rect x="25.0" y="10.8" width="1.6" height="2.1" rx="0.3" transform="rotate(52 25.0 10.8)" fill="var(--tab-active)"/> 
                     </svg>
