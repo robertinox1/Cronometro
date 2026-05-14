@@ -16,7 +16,7 @@
             --green-text: #2fbc4b; 
             --red-btn: #32100f; 
             --red-text: #ff453a; 
-            --tab-active: #ffb347; /* Arancione più chiaro di sistema */
+            --tab-active: #ffb347; 
         }
         * { 
             box-sizing: border-box; 
@@ -142,7 +142,6 @@
         .lap-block-divider { width: 8px; text-align: center; }
         .lap-block-cent { width: 22px; text-align: left; }
 
-        /* TAB BAR SOTTILE - SCHIARITA CON BORDI LUCIDI E ICONE VICINE AI TESTI */
         .tab-bar-container {
             position: fixed;
             bottom: 34px; 
@@ -156,14 +155,14 @@
         .tab-bar {
             width: 100%;
             max-width: 366px;
-            height: 60px; /* Barra ulteriormente assottigliata */
-            background-color: #1a1a1c; /* Leggermente più chiara dell'originale */
+            height: 60px; 
+            background-color: #1a1a1c; 
             border-radius: 30px; 
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 0 4px;
-            border: 0.8px solid rgba(255, 255, 255, 0.15); /* Bordi lucidi d'effetto */
+            border: 0.8px solid rgba(255, 255, 255, 0.15); 
         }
         .tab-item {
             display: flex;
@@ -179,28 +178,28 @@
         }
         .tab-item span {
             color: #ffffff; 
-            margin-top: -1px; /* Icone avvicinate significativamente alle scritte */
+            margin-top: -1px; 
             letter-spacing: -0.1px;
         }
         .tab-item .tab-svg { 
-            width: 36px; /* Uniformate tutte le icone a una grandezza maggiore coerente */
-            height: 36px; 
+            width: 38px; /* Tutte le icone uniformate alla stessa dimensione massima */
+            height: 38px; 
         }
         .tab-item .icon-wrapper {
             display: flex;
             align-items: center;
             justify-content: center;
             width: 100%;
-            height: 36px;
+            height: 38px;
             margin-bottom: 0px;
         }
 
-        /* BOLLA DI SELEZIONAMENTO COMPLETA MOLTO PIÙ ALLARGATA AI LATI */
+        /* BOLLA DI SELEZIONAMENTO BEN PIÙ LARGA AI LATI */
         .tab-item.active {
-            background-color: #2c2c2e; /* Grigio di selezione leggermente più chiaro */
-            border-radius: 30px; /* Stesso angolo di curvatura della barra principale */
+            background-color: #2c2c2e; 
+            border-radius: 30px; 
             height: calc(100% - 4px);
-            width: 24.5%; /* Allargata lateralmente nell'area di competenza */
+            width: 25.5%; /* Ulteriormente ampliata lateralmente */
         }
         .tab-item.active .icon-wrapper {
             background-color: transparent;
@@ -239,7 +238,7 @@
 
     <div class="tab-bar-container">
         <nav class="tab-bar">
-            <!-- Ore Locali: Linee orizzontali spostate molto più vicine ai poli superiore e inferiore -->
+            <!-- Ore Locali: Linee orizzontali curve spostate di poco verso il centro -->
             <div class="tab-item">
                 <div class="icon-wrapper">
                     <svg class="tab-svg" viewBox="0 0 36 36" fill="none" xmlns="w3.org">
@@ -247,59 +246,59 @@
                         <path d="M6 18H30" stroke="#ffffff" stroke-width="1.8"/> 
                         <path d="M18 6V30" stroke="#ffffff" stroke-width="1.2"/>
                         <path d="M18 6.5C21.5 10 23 14 23 18C23 22 21.5 26 18 29.5M18 6.5C14.5 10 13 14 13 18C13 22 14.5 26 18 29.5" stroke="#ffffff" stroke-width="1.5"/>
-                        <!-- Linee orizzontali spostate stabilmente vicino ai poli -->
-                        <path d="M9.5 9.5C12 10.5 15 11 18 11C21 11 24 10.5 26.5 9.5" stroke="#ffffff" stroke-width="1.5"/> <!-- Polo Nord -->
-                        <path d="M9.5 26.5C12 25.5 15 25 18 25C21 25 24 25.5 26.5 26.5" stroke="#ffffff" stroke-width="1.5"/> <!-- Polo Sud -->
+                        <!-- Linee orizzontali avvicinate di poco verso il centro rispetto a prima -->
+                        <path d="M8.5 12C11.5 13.2 14.5 13.8 18 13.8C21.5 13.8 24.5 13.2 27.5 12" stroke="#ffffff" stroke-width="1.5"/> 
+                        <path d="M8.5 24C11.5 22.8 14.5 22.2 18 22.2C21.5 22.2 24.5 22.8 27.5 24" stroke="#ffffff" stroke-width="1.5"/> 
                     </svg>
                 </div>
                 <span>Ore locali</span>
             </div>
             
-            <!-- Sveglie: Grande come le altre, campanelli più grandi e ravvicinati, interamente bianca tranne lancette ore 9 -->
+            <!-- Sveglie: Molto più grande, campanelli grandi e ravvicinati, lancetta piccola sul 9, grande sul 12 -->
             <div class="tab-item">
                 <div class="icon-wrapper">
                     <svg class="tab-svg" viewBox="0 0 36 36" fill="none" xmlns="w3.org">
-                        <circle cx="18" cy="18.5" r="8.5" fill="#ffffff" stroke="#ffffff" stroke-width="0.5"/>
-                        <!-- Lancette scure interne: ore 9 spaccate -->
-                        <path d="M18 18.5H13.5M18 18.5V14" stroke="#1a1a1c" stroke-width="1.6" stroke-linecap="round"/> 
-                        <!-- Campanelli più grandi e ravvicinati verso l'asse centrale -->
-                        <path d="M9 10C8.3 10.7 8.3 11.9 9 12.6L11.8 9.8C11.1 9.1 9.8 9.1 9 10ZM27 10C27.7 10.7 27.7 11.9 27 12.6L24.2 9.8C24.9 9.1 26.2 9.1 27 10Z" fill="#ffffff"/>
-                        <rect x="10.2" y="25" width="1.8" height="3.5" rx="0.5" transform="rotate(22 10.2 25)" fill="#ffffff"/>
-                        <rect x="21.8" y="24.3" width="1.8" height="3.5" rx="0.5" transform="rotate(-22 21.8 24.3)" fill="#ffffff"/>
+                        <circle cx="18" cy="18.5" r="9" fill="#ffffff" stroke="#ffffff" stroke-width="0.5"/>
+                        <!-- Lancetta Piccola sul 9 e Grande sul 12 -->
+                        <path d="M18 18.5H13.5" stroke="#1a1a1c" stroke-width="1.8" stroke-linecap="round"/> <!-- Piccola sul 9 -->
+                        <path d="M18 18.5V13" stroke="#1a1a1c" stroke-width="1.4" stroke-linecap="round"/> <!-- Grande sul 12 -->
+                        <!-- Campanelli (Allarmi) più grandi e ravvicinati -->
+                        <path d="M8.5 9.5C7.7 10.3 7.7 11.7 8.5 12.5L11.5 9.5C10.7 8.7 9.3 8.7 8.5 9.5ZM27.5 9.5C28.3 10.3 28.3 11.7 27.5 12.5L24.5 9.5C25.3 8.7 26.7 8.7 27.5 9.5Z" fill="#ffffff"/>
+                        <!-- Piedini staccati -->
+                        <rect x="9.5" y="25.5" width="1.8" height="3.5" rx="0.5" transform="rotate(22 9.5 25.5)" fill="#ffffff"/>
+                        <rect x="22.5" y="24.8" width="1.8" height="3.5" rx="0.5" transform="rotate(-22 22.5 24.8)" fill="#ffffff"/>
                     </svg>
                 </div>
                 <span>Sveglie</span>
             </div>
             
-            <!-- Cronometro (Attivo): Arancione più chiaro, tasto sopra attaccato e uguale a quello a ore 2, lancetta da centro -->
+            <!-- Cronometro (Attivo): Molto più grande, tasto sopra attaccato, lancetta da cerchio centrale -->
             <div class="tab-item active">
                 <div class="icon-wrapper">
                     <svg class="tab-svg" viewBox="0 0 36 36" fill="none" xmlns="w3.org">
-                        <circle cx="18" cy="19" r="8.5" fill="var(--tab-active)"/>
+                        <circle cx="18" cy="19" r="9" fill="var(--tab-active)"/>
                         <circle cx="18" cy="19" r="1.6" fill="black"/>
                         <path d="M18 17.4V13" stroke="black" stroke-width="1.5" stroke-linecap="round"/>
-                        <!-- Tasto superiore ore 12: identico in grandezza a quello laterale e attaccato saldamente alla cassa -->
                         <rect x="17.2" y="7.7" width="1.6" height="2.8" rx="0.4" fill="var(--tab-active)"/> 
-                        <!-- Tasto laterale ore 2: identico a quello superiore -->
                         <rect x="23.3" y="9.2" width="1.6" height="2.8" rx="0.4" transform="rotate(40 23.3 9.2)" fill="var(--tab-active)"/> 
                     </svg>
                 </div>
                 <span>Cronometro</span>
             </div>
             
-            <!-- Timer: Cerchio completo spezzato unicamente tra ore 10 e ore 12, tacca a ore 12, lancetta a punta su ore 10 -->
+            <!-- Timer: Cerchio spezzato 10-12, tacca a ore 12, lancetta graduale che si stringe verso ore 10 senza toccare il bordo -->
             <div class="tab-item">
                 <div class="icon-wrapper">
                     <svg class="tab-svg" viewBox="0 0 36 36" fill="none" xmlns="w3.org">
-                        <!-- Cerchio completo interrotto esclusivamente nel varco tra ore 10 e ore 12 -->
-                        <path d="M13.2 9.2C14.6 8.4 16.2 8 18 8C23.5 8 28 12.5 28 18C28 23.5 23.5 28 18 28C12.5 28 8 23.5 8 18C8 13.4 11.1 9.5 15.2 8.4" stroke="#ffffff" stroke-width="1.6"/>
+                        <!-- Cerchio interrotto nel varco esteso tra le ore 10 e le ore 12 -->
+                        <path d="M12.5 10.5C14.1 9.1 16.2 8.3 18.5 8.3C24 8.3 28.5 12.8 28.5 18.3C28.5 23.8 24 28.3 18.5 28.3C13 28.3 8.5 23.8 8.5 18.3C8.5 13.5 11.8 9.5 16.2 8.5" stroke="#ffffff" stroke-width="1.6"/>
                         
-                        <!-- Piccola linetta a ore 12 che scende verticalmente verso il centro per qualche millimetro -->
-                        <path d="M18 8V11.5" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round"/>
+                        <!-- Piccola linetta a ore 12 che scende verso il centro -->
+                        <path d="M18 8.3V11.8" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round"/>
                         
-                        <!-- Lancetta che parte da un cerchietto e si chiude a punta netta verso le ore 10 -->
-                        <circle cx="18" cy="18" r="1.8" fill="#ffffff"/> <!-- Cerchietto di partenza della lancetta -->
-                        <polygon points="17.2,17.4 18.2,18.4 11.1,11.1 11.5,10.2" fill="#ffffff"/> <!-- Profilo rastremato a punta -->
+                        <!-- Lancetta graduale: parte larga dal centro e sfiora le ore 10 senza toccare il bordo esterno -->
+                        <circle cx="18" cy="18.3" r="1.8" fill="#ffffff"/>
+                        <polygon points="17.1,17.6 18.3,18.6 12.4,11.9 12.1,11.5" fill="#ffffff"/> 
                     </svg>
                 </div>
                 <span>Timer</span>
