@@ -257,15 +257,14 @@
 
     <div class="tab-bar-container">
         <nav class="tab-bar">
-            <!-- Ore Locali: ESATTO CODICE ORIGINALE STRUTTURALE CHE AVEVI APPROVATO COME PERFETTO -->
+            <!-- Ore Locali: RIPRISTINATE CON SPESSORE OMOGENEO A 1.5PX SU OGNI TRACCIATO -->
             <div class="tab-item">
                 <div class="icon-wrapper">
                     <svg class="tab-svg" viewBox="0 0 36 36" fill="none" xmlns="w3.org">
-                        <circle cx="18" cy="18" r="11.5" stroke="#ffffff" stroke-width="1.8"/> 
-                        <path d="M6 18H30" stroke="#ffffff" stroke-width="1.8"/> 
-                        <path d="M18 6V30" stroke="#ffffff" stroke-width="1.2"/>
+                        <circle cx="18" cy="18" r="11.5" stroke="#ffffff" stroke-width="1.5"/> 
+                        <path d="M6 18H30" stroke="#ffffff" stroke-width="1.5"/> <!-- Equatore normalizzato a 1.5px -->
+                        <path d="M18 6V30" stroke="#ffffff" stroke-width="1.5"/>
                         <path d="M18 6.5C21.5 10 23 14 23 18C23 22 21.5 26 18 29.5M18 6.5C14.5 10 13 14 13 18C13 22 14.5 26 18 29.5" stroke="#ffffff" stroke-width="1.5"/>
-                        <!-- Linee orizzontali curve spostate leggermente verso il centro, senza stacchi neri dal bordo esterno -->
                         <path d="M8.5 12C11.5 13.2 14.5 13.8 18 13.8C21.5 13.8 24.5 13.2 27.5 12" stroke="#ffffff" stroke-width="1.5"/> 
                         <path d="M8.5 24C11.5 22.8 14.5 22.2 18 22.2C21.5 22.2 24.5 22.8 27.5 24" stroke="#ffffff" stroke-width="1.5"/> 
                     </svg>
@@ -273,20 +272,15 @@
                 <span>Ore locali</span>
             </div>
             
-            <!-- Sveglie: Piedi spostati a ore 8:00 e ore 4:00, accorciati e inspessiti, allarmi a mezzaluna del campo da calcio puliti -->
+            <!-- Sveglie: Piedi fusi spostati a ore 8:30 e ore 3:30, allarmi lunghi paralleli sul cerchio -->
             <div class="tab-item">
                 <div class="icon-wrapper">
                     <svg class="tab-svg" viewBox="0 0 36 36" fill="none" xmlns="w3.org" style="transform: scale(1.18);"> 
-                        <!-- Unica path geometrica continua: piedi posizionati a ore 8:00 e ore 4:00, accorciati, inspessiti e fusi a blocco con il cerchio -->
-                        <path d="M18,10.0 C13.4,10.0 9.7,13.7 9.7,18.3 C9.7,21.5 11.5,24.2 14.2,25.4 L12.4,27.4 C12.1,27.7 12.5,28.3 13.0,28.1 L15.1,26.4 C16.0,26.7 17.0,26.9 18,26.9 C19.0,26.9 20.0,26.7 20.9,26.4 L23.0,28.1 C23.5,28.3 23.9,27.7 23.6,27.4 L21.8,25.4 C24.5,24.2 26.3,21.5 26.3,18.3 C26.3,13.7 22.6,10.0 18,10.0 Z" fill="#ffffff"/>
-                        
-                        <!-- Lancette scure interne (ore 9:00 esatte) -->
+                        <path d="M18,10.0 C13.4,10.0 9.7,13.7 9.7,18.3 C9.7,21.6 11.6,24.3 14.4,25.4 L11.9,27.7 C11.5,28.1 11.9,28.7 12.5,28.5 L15.2,26.5 C16.1,26.8 17.0,26.9 18,26.9 C19.0,26.9 19.9,26.8 20.8,25.5 L23.5,28.5 C24.1,28.7 24.5,28.1 24.1,27.7 L21.6,25.4 C24.4,24.3 26.3,21.6 26.3,18.3 C26.3,13.7 22.6,10.0 18,10.0 Z" fill="#ffffff"/>
                         <path d="M18,18.3 H14.8" stroke="#1a1a1c" stroke-width="1.2" stroke-linecap="round"/> 
                         <path d="M18,18.3 V14.0" stroke="#1a1a1c" stroke-width="1.2" stroke-linecap="round"/> 
-                        
-                        <!-- Allarmi: Mezzelune del campo da calcio pulite, più sottili, adagiate in parallelo sul cerchio con stacco di 1.5px -->
-                        <path d="M13.8,9.5 C13.1,8.0 11.2,7.3 9.8,8.4 C8.6,9.4 9.3,11.2 11.0,11.3 C12.2,11.4 13.2,10.5 13.8,9.5 Z" fill="#ffffff"/>
-                        <path d="M22.2,9.5 C22.9,8.0 24.8,7.3 26.2,8.4 C27.4,9.4 26.7,11.2 25.0,11.3 C23.8,11.4 22.8,10.5 22.2,9.5 Z" fill="#ffffff"/>
+                        <path d="M13.6,9.6 C12.6,7.8 10.3,7.3 9.0,8.8 C7.8,10.2 8.7,11.9 10.8,11.8 C12.1,11.7 13.0,10.7 13.6,9.6 Z" fill="#ffffff"/>
+                        <path d="M22.4,9.6 C23.4,7.8 25.7,7.3 27.0,8.8 C28.2,10.2 27.3,11.9 25.2,11.8 C23.9,11.7 23.0,10.7 22.4,9.6 Z" fill="#ffffff"/>
                     </svg>
                 </div>
                 <span>Sveglie</span>
@@ -306,7 +300,7 @@
                 <span>Cronometro</span>
             </div>
             
-            <!-- Timer: REINTEGRATO ALLA STRUTTURA AD ARCO DI 45° DI MASSIMA PRECISIONE -->
+            <!-- Timer -->
             <div class="tab-item">
                 <div class="icon-wrapper">
                     <svg class="tab-svg" viewBox="0 0 36 36" fill="none" xmlns="w3.org" style="transform: scale(1.05);">
