@@ -94,13 +94,15 @@
             font-size: 15px; 
         } 
 
+        /* PALLINI CENTRALI: ALLONTANATI CON GAP AMENTATO A 8PX */
         .page-dots {
             display: flex;
-            gap: 6px;
+            gap: 8px; 
         }
+        /* PALLINI CENTRALI: INGRANDITI CON DIAMETRO A 8.5PX */
         .dot {
-            width: 7px;
-            height: 7px;
+            width: 8.5px;
+            height: 8.5px;
             border-radius: 50%;
         }
         .dot.active { background-color: #ffffff; }
@@ -165,7 +167,7 @@
             z-index: 999;
         }
         
-        /* ALTEZZA DELLA BARRA COSTRUTTIVAMENTE AUMENTATA A 65PX CON ICNE PERFETTAMENTE CENTRATE */
+        /* BARRA INFURIORE: DISTANZA INTERNA RIMODULATA A 10PX PER DIVIDERE ED ALLONTANARE LE ICONE */
         .tab-bar {
             width: 100%;
             max-width: 366px;
@@ -175,7 +177,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 16px; 
+            padding: 0 10px; 
             border: 0.8px solid rgba(255, 255, 255, 0.15); 
         }
         .tab-item {
@@ -206,7 +208,6 @@
             display: block;
         }
 
-        /* BOLLA ATTIVA STRINGATA DI POCHISSIMO AL 33.5% PER UNA PERFETTA RESA GEOMETRICA */
         .tab-item.active {
             background-color: #3d3d3f; 
             border-radius: 26px; 
