@@ -148,6 +148,10 @@
             height: 38px;
             margin-bottom: 0px;
         }
+        .tab-item .tab-svg { 
+            width: 38px; 
+            height: 38px; 
+        }
         .lap-block-cent { width: 22px; text-align: left; }
 
         .tab-bar-container {
@@ -193,16 +197,10 @@
             display: block;
         }
         
-        /* RIPRISTINATE LE ICONE VETTORIALI ORIGINALI A DIMENSIONE PIENA (38PX SVGBOX) */
-        .tab-item .tab-svg { 
-            width: 38px; 
-            height: 38px; 
-        }
-        
-        /* IMMAGINE ADEGUATA PROPORZIONALMENTE ALLA GRANDEZZA REALE DELLE ALTRE ICONE E CENTRATA */
+        /* SCALATURA PROPORZIONALE A 22PX PER COMPENSARE LO SPESSORE DELLE ALTRE ICONE VETTORIALI */
         .tab-item .tab-png-icon {
-            width: 38px; 
-            height: 38px; 
+            width: 22px; 
+            height: 22px; 
             object-fit: contain;
             display: block;
             image-rendering: -webkit-optimize-contrast;
@@ -254,7 +252,7 @@
 
     <div class="tab-bar-container">
         <nav class="tab-bar">
-            <!-- Ore Locali: Ripristinate le dimensioni d'impatto originarie -->
+            <!-- Ore Locali -->
             <div class="tab-item">
                 <div class="icon-wrapper">
                     <svg class="tab-svg" viewBox="0 0 36 36" fill="none" xmlns="w3.org">
@@ -269,7 +267,7 @@
                 <span>Ore locali</span>
             </div>
             
-            <!-- Sveglie: Immagine scalata per accoppiarsi simmetricamente alle altre e centrata -->
+            <!-- Sveglie: Ridotta e bilanciata simmetricamente a 22px -->
             <div class="tab-item">
                 <div class="icon-wrapper">
                     <img src="sveglia.png" class="tab-png-icon" alt="Sveglie">
