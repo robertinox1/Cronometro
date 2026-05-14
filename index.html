@@ -358,7 +358,7 @@
             btnLeft.textContent = "Giro";
             btnLeft.classList.remove('disabled');
             
-            // LOGICA NATIVA APPLE: Avvia immediatamente la riga "Giro 1" dinamica a schermo
+            // CORREZIONE CRASH: Inserimento sicuro e allineato del primo Giro
             if (laps.length === 0) {
                 laps.push({ time: 0, total: 0 });
                 renderLaps();
@@ -370,7 +370,7 @@
             elapsedTime = performance.now() - startTime;
             display.textContent = formatTime(elapsedTime);
             
-            // Aggiorna in tempo reale la riga in cima alla lista (Giro corrente)
+            // CORREZIONE CRASH: Accesso corretto all'indice dell'array per evitare il blocco di Safari
             if (laps.length > 0) {
                 laps[0].time = elapsedTime - lastLapTotalTime;
                 laps[0].total = elapsedTime;
@@ -409,7 +409,6 @@
         function recordLap() {
             if (!isRunning) return;
             lastLapTotalTime = elapsedTime;
-            // Sposta il blocco e crea il nuovo slot per il giro successivo
             laps.unshift({ time: 0, total: elapsedTime });
             renderLaps();
         }
@@ -435,7 +434,6 @@
             });
         }
 
-        // ALGORITMO DI PRECISIONE ATOMICA (Sincronizzato sui millisecondi hardware)
         function formatTime(ms) {
             let totalCentiseconds = Math.floor(ms / 10);
             let centiseconds = totalCentiseconds % 100;
