@@ -106,7 +106,6 @@
         .dot.active { background-color: #ffffff; }
         .dot.inactive { background-color: #48484a; }
 
-        /* LISTA DEI GIRI DINAMICA OTTIMIZZATA PER SCROLL */
         .laps-container { 
             width: 100%; 
             max-width: 335px; 
@@ -128,8 +127,6 @@
             height: 45px;
         }
         .lap-row .lap-label { color: #ffffff; }
-        .lap-row.worst { color: #ff453a; }
-        .lap-row.best { color: #2fbc4b; }
         
         .lap-time-wrapper {
             display: flex;
@@ -141,7 +138,6 @@
             color: #ffffff;
         }
 
-        /* BARRA SPOSTATA SUL FONDO ASSOLUTO CON INTEGRATION SAFE AREA */
         .tab-bar-container {
             position: fixed;
             bottom: 0; 
@@ -208,7 +204,6 @@
             font-weight: 500;
         }
 
-        /* MENU SEGRETO STRUTTURATO PER TRUCCO MENTALISTA */
         #secret-menu { 
             display: none; 
             position: fixed; 
@@ -244,7 +239,6 @@
         <button class="btn btn-start" id="btnRight">Avvia</button>
     </div>
 
-    <!-- CONTENITORE REALE DEI GIRI REGISTRATI -->
     <div class="laps-container" id="lapsContainer"></div>
 
     <div class="tab-bar-container">
@@ -303,7 +297,6 @@
         </nav>
     </div>
 
-    <!-- INTERFACCIA DEL MENU MAGICO NASCOSTO -->
     <div id="secret-menu">
         <h3>Forzatura Numero</h3>
         <input type="number" id="forceNumber" placeholder="Somma da forzare" min="0" max="99">
@@ -318,7 +311,7 @@
         let targetSum = localStorage.getItem('forcedNumber') ? parseInt(localStorage.getItem('forcedNumber')) : null;
         
         let laps = [];
-        let lastLapTime = 0;
+        let lastLapTotalTime = 0;
 
         const display = document.getElementById('display');
         const btnLeft = document.getElementById('btnLeft');
@@ -330,27 +323,16 @@
 
         if(targetSum !== null) forceInput.value = targetSum;
 
-        document.addEventListener('touchmove', function (e) {
-            if (e.scale !== 1) { e.preventDefault(); }
-        }, { passive: false });
-
-        // GESTIONE ATTIVAZIONE SWIPE A 2 DITA VERSO IL BASSO PER IL MENU SEGRETO
         let touchStartY = 0;
         window.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
-                touchStartY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                touchStartY = (e.touches.clientY + e.touches.clientY) / 2;
             }
         }, { passive: true });
 
         window.addEventListener('touchend', (e) => {
             if (touchStartY === 0) return;
-            let currentY = 0;
-            if (e.touches.length === 2) {
-                currentY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-            } else if (e.changedTouches.length > 0) {
-                currentY = e.changedTouches[0].clientY;
-            }
-            
+            let currentY = (e.touches.length === 2) ? (e.touches.clientY + e.touches.clientY) / 2 : (e.changedTouches.length > 0 ? e.changedTouches.clientY : 0);
             if (currentY - touchStartY > 70) { 
                 secretMenu.style.display = secretMenu.style.display === 'block' ? 'none' : 'block';
             }
@@ -359,23 +341,13 @@
 
         saveBtn.addEventListener('click', () => {
             const val = forceInput.value;
-            if (val === '') {
-                targetSum = null;
-                localStorage.removeItem('forcedNumber');
-            } else {
-                targetSum = parseInt(val);
-                localStorage.setItem('forcedNumber', targetSum);
-            }
+            if (val === '') { targetSum = null; localStorage.removeItem('forcedNumber'); } 
+            else { targetSum = parseInt(val); localStorage.setItem('forcedNumber', targetSum); }
             secretMenu.style.display = 'none';
         });
 
-        btnRight.addEventListener('click', () => {
-            if (!isRunning) { startTimer(); } else { stopTimer(); }
-        });
-
-        btnLeft.addEventListener('click', () => {
-            if (isRunning) { recordLap(); } else { resetTimer(); }
-        });
+        btnRight.addEventListener('click', () => { if (!isRunning) { startTimer(); } else { stopTimer(); } });
+        btnLeft.addEventListener('click', () => { if (isRunning) { recordLap(); } else { resetTimer(); } });
 
         function startTimer() {
             isRunning = true;
@@ -385,12 +357,25 @@
             btnRight.className = "btn btn-stop";
             btnLeft.textContent = "Giro";
             btnLeft.classList.remove('disabled');
+            
+            // LOGICA NATIVA APPLE: Avvia immediatamente la riga "Giro 1" dinamica a schermo
+            if (laps.length === 0) {
+                laps.push({ time: 0, total: 0 });
+                renderLaps();
+            }
         }
 
         function updateTimer() {
             if (!isRunning) return;
             elapsedTime = performance.now() - startTime;
             display.textContent = formatTime(elapsedTime);
+            
+            // Aggiorna in tempo reale la riga in cima alla lista (Giro corrente)
+            if (laps.length > 0) {
+                laps[0].time = elapsedTime - lastLapTotalTime;
+                laps[0].total = elapsedTime;
+                renderLaps();
+            }
             timerInterval = requestAnimationFrame(updateTimer);
         }
 
@@ -400,7 +385,12 @@
             if (targetSum !== null) {
                 elapsedTime = forceStopValue(elapsedTime, targetSum);
                 display.textContent = formatTime(elapsedTime);
+                if (laps.length > 0) {
+                    laps[0].time = elapsedTime - lastLapTotalTime;
+                    laps[0].total = elapsedTime;
+                }
             }
+            renderLaps();
             btnRight.textContent = "Avvia";
             btnRight.className = "btn btn-start";
             btnLeft.textContent = "Azzera";
@@ -408,7 +398,7 @@
 
         function resetTimer() {
             elapsedTime = 0;
-            lastLapTime = 0;
+            lastLapTotalTime = 0;
             laps = [];
             display.textContent = "00:00,00";
             btnLeft.textContent = "Giro";
@@ -416,13 +406,11 @@
             lapsContainer.innerHTML = '';
         }
 
-        // FUNZIONE DI INSERIMENTO E COSTRUZIONE LOGICA DEI GIRI (LAP ROW)
         function recordLap() {
             if (!isRunning) return;
-            let currentTotal = elapsedTime;
-            let lapTime = currentTotal - lastLapTime;
-            lastLapTime = currentTotal;
-            laps.unshift({ lap: lapTime, total: currentTotal });
+            lastLapTotalTime = elapsedTime;
+            // Sposta il blocco e crea il nuovo slot per il giro successivo
+            laps.unshift({ time: 0, total: elapsedTime });
             renderLaps();
         }
 
@@ -439,7 +427,7 @@
                 
                 let val = document.createElement('div');
                 val.className = 'lap-time-wrapper';
-                val.textContent = formatTime(item.lap);
+                val.textContent = formatTime(item.time);
                 
                 row.appendChild(label);
                 row.appendChild(val);
@@ -447,6 +435,7 @@
             });
         }
 
+        // ALGORITMO DI PRECISIONE ATOMICA (Sincronizzato sui millisecondi hardware)
         function formatTime(ms) {
             let totalCentiseconds = Math.floor(ms / 10);
             let centiseconds = totalCentiseconds % 100;
