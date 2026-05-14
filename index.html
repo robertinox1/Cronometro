@@ -66,7 +66,7 @@
             width: 100%;
             max-width: 345px;
             height: 82px;
-            margin-bottom: 28px;
+            margin-bottom: 18px;
             flex-shrink: 0;
         }
         .btn { 
@@ -98,7 +98,6 @@
             display: flex;
             gap: 8px; 
         }
-        /* PALLINI CENTRALI: RIMICCIOLITI DI POCO A 7.2PX PERFETTI */
         .dot {
             width: 7.2px;
             height: 7.2px;
@@ -107,13 +106,15 @@
         .dot.active { background-color: #ffffff; }
         .dot.inactive { background-color: #48484a; }
 
+        /* LISTA DEI GIRI DINAMICA OTTIMIZZATA PER SCROLL */
         .laps-container { 
             width: 100%; 
             max-width: 335px; 
             border-top: 0.3px solid #2c2c2e; 
             overflow-y: auto; 
             flex-grow: 1;
-            margin-bottom: 136px; 
+            margin-bottom: calc(85px + env(safe-area-inset-bottom)); 
+            -webkit-overflow-scrolling: touch;
         }
         
         .lap-row {
@@ -124,11 +125,11 @@
             font-family: -apple-system, "SF Pro Text", sans-serif;
             font-size: 16px;
             border-bottom: 0.3px solid #2c2c2e;
-            opacity: 0;
             height: 45px;
         }
-        .lap-row.visible { opacity: 1; }
         .lap-row .lap-label { color: #ffffff; }
+        .lap-row.worst { color: #ff453a; }
+        .lap-row.best { color: #2fbc4b; }
         
         .lap-time-wrapper {
             display: flex;
@@ -139,33 +140,19 @@
             font-weight: 400; 
             color: #ffffff;
         }
-        .lap-block-minsec { width: 44px; text-align: right; }
-        .lap-block-divider { width: 8px; text-align: center; }
-        .tab-item .icon-wrapper {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            height: 38px;
-            margin-bottom: 0px;
-        }
-        .tab-item .tab-svg { 
-            width: 38px; 
-            height: 38px; 
-        }
-        .lap-block-cent { width: 22px; text-align: left; }
 
+        /* BARRA SPOSTATA SUL FONDO ASSOLUTO CON INTEGRATION SAFE AREA */
         .tab-bar-container {
             position: fixed;
-            bottom: 34px; 
+            bottom: 0; 
             left: 0;
             width: 100%;
-            padding: 0 16px;
+            padding: 4px 16px calc(12px + env(safe-area-inset-bottom)) 16px;
             display: flex;
             justify-content: center;
             z-index: 999;
+            background-color: #000000;
         }
-        
         .tab-bar {
             width: 100%;
             max-width: 366px;
@@ -206,7 +193,6 @@
             display: block;
         }
 
-        /* BOLLA ATTIVA: STRETTA DI POCO AL 30.5% PER COMPATTEZZA MASSIMA */
         .tab-item.active {
             background-color: #3d3d3f; 
             border-radius: 26px; 
@@ -221,6 +207,26 @@
             color: var(--tab-active); 
             font-weight: 500;
         }
+
+        /* MENU SEGRETO STRUTTURATO PER TRUCCO MENTALISTA */
+        #secret-menu { 
+            display: none; 
+            position: fixed; 
+            top: 40%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            background-color: #1c1c1e; 
+            border: 1px solid #3a3a3c; 
+            border-radius: 14px; 
+            padding: 20px; 
+            width: 280px; 
+            z-index: 99999; 
+            text-align: center; 
+            box-shadow: 0 0 20px rgba(0,0,0,0.8); 
+        }
+        #secret-menu h3 { font-family: -apple-system, sans-serif; color: white; margin-bottom: 15px; font-size: 17px; }
+        #secret-menu input { width: 80%; padding: 10px; background-color: #2c2c2e; border: 1px solid #3a3a3c; border-radius: 8px; color: white; font-size: 20px; text-align: center; margin-bottom: 15px; outline: none; }
+        #secret-menu button { background-color: #0a84ff; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 16px; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -238,16 +244,8 @@
         <button class="btn btn-start" id="btnRight">Avvia</button>
     </div>
 
-    <div class="laps-container" id="lapsContainer">
-        <div class="lap-row" id="lap-row-placeholder">
-            <span class="lap-label">Giro 1</span>
-            <div class="lap-time-wrapper">
-                <span class="lap-block-minsec" id="live-lap-minsec">00:00</span>
-                <span class="lap-block-divider">,</span>
-                <span class="lap-block-cent" id="live-lap-cent">00</span>
-            </div>
-        </div>
-    </div>
+    <!-- CONTENITORE REALE DEI GIRI REGISTRATI -->
+    <div class="laps-container" id="lapsContainer"></div>
 
     <div class="tab-bar-container">
         <nav class="tab-bar">
@@ -305,23 +303,78 @@
         </nav>
     </div>
 
+    <!-- INTERFACCIA DEL MENU MAGICO NASCOSTO -->
+    <div id="secret-menu">
+        <h3>Forzatura Numero</h3>
+        <input type="number" id="forceNumber" placeholder="Somma da forzare" min="0" max="99">
+        <button id="saveBtn">Salva Configurazione</button>
+    </div>
+
     <script>
         let startTime = 0;
         let elapsedTime = 0;
         let timerInterval = null;
         let isRunning = false;
         let targetSum = localStorage.getItem('forcedNumber') ? parseInt(localStorage.getItem('forcedNumber')) : null;
+        
+        let laps = [];
+        let lastLapTime = 0;
 
         const display = document.getElementById('display');
         const btnLeft = document.getElementById('btnLeft');
         const btnRight = document.getElementById('btnRight');
+        const lapsContainer = document.getElementById('lapsContainer');
+        const secretMenu = document.getElementById('secret-menu');
+        const forceInput = document.getElementById('forceNumber');
+        const saveBtn = document.getElementById('saveBtn');
+
+        if(targetSum !== null) forceInput.value = targetSum;
+
+        document.addEventListener('touchmove', function (e) {
+            if (e.scale !== 1) { e.preventDefault(); }
+        }, { passive: false });
+
+        // GESTIONE ATTIVAZIONE SWIPE A 2 DITA VERSO IL BASSO PER IL MENU SEGRETO
+        let touchStartY = 0;
+        window.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 2) {
+                touchStartY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+            }
+        }, { passive: true });
+
+        window.addEventListener('touchend', (e) => {
+            if (touchStartY === 0) return;
+            let currentY = 0;
+            if (e.touches.length === 2) {
+                currentY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+            } else if (e.changedTouches.length > 0) {
+                currentY = e.changedTouches[0].clientY;
+            }
+            
+            if (currentY - touchStartY > 70) { 
+                secretMenu.style.display = secretMenu.style.display === 'block' ? 'none' : 'block';
+            }
+            touchStartY = 0;
+        });
+
+        saveBtn.addEventListener('click', () => {
+            const val = forceInput.value;
+            if (val === '') {
+                targetSum = null;
+                localStorage.removeItem('forcedNumber');
+            } else {
+                targetSum = parseInt(val);
+                localStorage.setItem('forcedNumber', targetSum);
+            }
+            secretMenu.style.display = 'none';
+        });
 
         btnRight.addEventListener('click', () => {
             if (!isRunning) { startTimer(); } else { stopTimer(); }
         });
 
         btnLeft.addEventListener('click', () => {
-            if (!isRunning) resetTimer();
+            if (isRunning) { recordLap(); } else { resetTimer(); }
         });
 
         function startTimer() {
@@ -355,9 +408,43 @@
 
         function resetTimer() {
             elapsedTime = 0;
+            lastLapTime = 0;
+            laps = [];
             display.textContent = "00:00,00";
             btnLeft.textContent = "Giro";
             btnLeft.classList.add('disabled');
+            lapsContainer.innerHTML = '';
+        }
+
+        // FUNZIONE DI INSERIMENTO E COSTRUZIONE LOGICA DEI GIRI (LAP ROW)
+        function recordLap() {
+            if (!isRunning) return;
+            let currentTotal = elapsedTime;
+            let lapTime = currentTotal - lastLapTime;
+            lastLapTime = currentTotal;
+            laps.unshift({ lap: lapTime, total: currentTotal });
+            renderLaps();
+        }
+
+        function renderLaps() {
+            lapsContainer.innerHTML = '';
+            laps.forEach((item, index) => {
+                let lapNum = laps.length - index;
+                let row = document.createElement('div');
+                row.className = 'lap-row';
+                
+                let label = document.createElement('span');
+                label.className = 'lap-label';
+                label.textContent = `Giro ${lapNum}`;
+                
+                let val = document.createElement('div');
+                val.className = 'lap-time-wrapper';
+                val.textContent = formatTime(item.lap);
+                
+                row.appendChild(label);
+                row.appendChild(val);
+                lapsContainer.appendChild(row);
+            });
         }
 
         function formatTime(ms) {
