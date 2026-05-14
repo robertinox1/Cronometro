@@ -358,7 +358,7 @@
             btnLeft.textContent = "Giro";
             btnLeft.classList.remove('disabled');
             
-            // AGGIUSTAMENTO CHIAVE SAFARI: inserimento corretto nell'array tramite notazione indice [0]
+            // CORREZIONE INDICE NOTATION: Primo inserimento pulito del record
             if (laps.length === 0) {
                 laps.push({ time: 0, total: 0 });
                 renderLaps();
@@ -370,7 +370,7 @@
             elapsedTime = performance.now() - startTime;
             display.textContent = formatTime(elapsedTime);
             
-            // AGGIUSTAMENTO CHIAVE SAFARI: aggiorna i parametri del giro corrente accedendo in modo sicuro all'array
+            // CORREZIONE INDICE NOTATION: Accesso sicuro all'elemento dell'array per evitare il crash di Safari
             if (laps.length > 0) {
                 laps[0].time = elapsedTime - lastLapTotalTime;
                 laps[0].total = elapsedTime;
@@ -384,7 +384,7 @@
             cancelAnimationFrame(timerInterval);
             if (targetSum !== null) {
                 elapsedTime = forceStopValue(elapsedTime, targetSum);
-                display.textContent = formatTime(elapsedTime);
+                display.textContent = formatTime(elapsedMs = elapsedTime);
                 if (laps.length > 0) {
                     laps[0].time = elapsedTime - lastLapTotalTime;
                     laps[0].total = elapsedTime;
