@@ -257,52 +257,49 @@
 
     <div class="tab-bar-container">
         <nav class="tab-bar">
-            <!-- Ore Locali: Linee orizzontali spostate verso il centro, linee verticali allargate -->
+            <!-- Ore Locali: Bloccato e non modificato -->
             <div class="tab-item">
                 <div class="icon-wrapper">
                     <svg class="tab-svg" viewBox="0 0 36 36" fill="none" xmlns="w3.org" style="transform: scale(0.92);">
                         <circle cx="18" cy="18" r="11" stroke="#ffffff" stroke-width="1.5"/> 
                         <path d="M7 18H29" stroke="#ffffff" stroke-width="1.5"/> 
                         <path d="M18 7V29" stroke="#ffffff" stroke-width="1.5"/>
-                        <!-- Linee verticali a curvatura allargata verso l'esterno -->
-                        <path d="M18 7C22.2 10.2 23.5 14 23.5 18C23.5 22 22.2 25.8 18 29M18 7C13.8 10.2 12.5 14 12.5 18C12.5 22 13.8 25.8 18 29" stroke="#ffffff" stroke-width="1.5"/>
-                        <!-- Linee orizzontali curve spostate leggermente più verso il centro (equatore) -->
-                        <path d="M9.5 11.2C12.2 12.5 15.1 12.9 18 12.9C20.9 12.9 23.8 12.5 26.5 11.2" stroke="#ffffff" stroke-width="1.5"/> 
-                        <path d="M9.5 24.8C12.2 23.5 15.1 23.1 18 23.1C20.9 23.1 23.8 23.5 26.5 24.8" stroke="#ffffff" stroke-width="1.5"/> 
+                        <path d="M18 7C21.2 10.2 22.5 14 22.5 18C22.5 22 21.2 25.8 18 29M18 7C14.8 10.2 13 14 13 18C13 22 14.8 25.8 18 29" stroke="#ffffff" stroke-width="1.5"/>
+                        <path d="M9.8 9.6C12.4 11.2 15.1 11.6 18 11.6C20.9 11.6 23.6 11.2 26.2 9.6" stroke="#ffffff" stroke-width="1.5"/> 
+                        <path d="M9.8 26.4C12.4 24.8 15.1 24.4 18 24.4C20.9 24.4 23.6 24.8 26.2 26.4" stroke="#ffffff" stroke-width="1.5"/> 
                     </svg>
                 </div>
                 <span>Ore locali</span>
             </div>
             
-            <!-- Sveglie: Piedi spessi completamente fusi, allarmi a forma di mezzaluna -->
+            <!-- Sveglie: Piedi fusi e corti nello stesso tracciato, allarmi a mezzaluna affusolata staccati di 1.2px -->
             <div class="tab-item">
                 <div class="icon-wrapper">
                     <svg class="tab-svg" viewBox="0 0 36 36" fill="none" xmlns="w3.org" style="transform: scale(1.18);"> 
-                        <!-- Scocca fusa con piedini spessi, continui e corti orientati verso l'esterno -->
-                        <path d="M18 27.5 C13.2 27.5 9.5 23.6 9.5 18.7 C9.5 13.8 13.2 9.9 18 9.9 C22.8 9.9 26.5 13.8 26.5 18.7 C26.5 23.6 22.8 27.5 18 27.5 Z 
-                                 M11.0 25.8 L9.0 27.8 C8.5 28.3 9.1 28.8 9.7 28.5 L12.0 26.4 Z 
-                                 M25.0 25.8 L27.0 27.8 C27.5 28.3 26.9 28.8 26.3 28.5 L24.0 26.4 Z" fill="#ffffff"/>
+                        <!-- Fusione totale in un unico cammino vettoriale continuo per eliminare qualsiasi distacco nero inferiore -->
+                        <path d="M18,27.5 C13.2,27.5 9.5,23.6 9.5,18.7 C9.5,13.8 13.2,9.9 18,9.9 C22.8,9.9 26.5,13.8 26.5,18.7 C26.5,23.6 22.8,27.5 18,27.5 Z M9.5,25.4 L7.3,27.3 C6.9,27.7 7.4,28.4 8.0,28.2 L11.0,26.4 Z M26.5,25.4 L28.7,27.3 C29.1,27.7 28.6,28.4 28.0,28.2 L25.0,26.4 Z" fill="#ffffff"/>
                         
                         <!-- Lancette spessore 1.2px (ore 9 spaccate) -->
                         <path d="M18 18.7H14.8" stroke="#1a1a1c" stroke-width="1.2" stroke-linecap="round"/> 
                         <path d="M18 18.7V14.1" stroke="#1a1a1c" stroke-width="1.2" stroke-linecap="round"/> 
                         
-                        <!-- Allarmi superiori modificati a forma di mezzaluna allungata -->
-                        <path d="M14.5 10.5 C14.3 8.3 12.0 7.8 10.4 9.0 C9.2 10.1 10.0 12.3 12.0 12.3 C12.6 12.3 13.8 11.5 14.5 10.5 Z" fill="#ffffff"/>
-                        <path d="M21.5 10.5 C21.7 8.3 24.0 7.8 25.6 9.0 C26.8 10.1 26.0 12.3 24.0 12.3 C23.4 12.3 22.2 11.5 21.5 10.5 Z" fill="#ffffff"/>
+                        <!-- Allarmi: Mezzelune affusolate con piccolo distacco nero calcolato dal cerchio centrale -->
+                        <path d="M14.6,10.0 C14.4,7.8 11.9,7.1 10.3,8.5 C9.2,9.5 9.8,11.3 11.8,11.5 C12.6,11.6 13.8,11.0 14.6,10.0 Z" fill="#ffffff"/>
+                        <path d="M21.4,10.0 C21.6,7.8 24.1,7.1 25.7,8.5 C26.8,9.5 26.2,11.3 24.2,11.5 C23.4,11.6 22.2,11.0 21.4,10.0 Z" fill="#ffffff"/>
                     </svg>
                 </div>
                 <span>Sveglie</span>
             </div>
             
-            <!-- Cronometro (Attivo): Spessore linea interna ridotto a 1.1px -->
+            <!-- Cronometro (Attivo): Pallino nero ridotto a 1.0px e lancetta accorciata millimetricamente -->
             <div class="tab-item active">
                 <div class="icon-wrapper">
                     <svg class="tab-svg" viewBox="0 0 36 36" fill="none" xmlns="w3.org" style="transform: scale(1.22);"> 
                         <circle cx="18" cy="19.5" r="8.5" fill="var(--tab-active)"/>
-                        <circle cx="18" cy="19.5" r="1.6" fill="black"/>
-                        <!-- Spessore della linea scura interna ridotto millimetricamente a 1.1px -->
-                        <path d="M18 17.9V13.7" stroke="black" stroke-width="1.1" stroke-linecap="round"/>
+                        <!-- Pallino al centro rimpicciolito -->
+                        <circle cx="18" cy="19.5" r="1.0" fill="black"/>
+                        <!-- Linea accorciata di pochissimo (limite superiore portato a 14.1) -->
+                        <path d="M18 18.5V14.1" stroke="black" stroke-width="1.1" stroke-linecap="round"/>
                         <rect x="17.2" y="9.2" width="1.6" height="1.6" rx="0.3" fill="var(--tab-active)"/> 
                         <rect x="24.7" y="11.2" width="1.6" height="1.6" rx="0.3" transform="rotate(52 24.7 11.2)" fill="var(--tab-active)"/> 
                     </svg>
@@ -310,16 +307,16 @@
                 <span>Cronometro</span>
             </div>
             
-            <!-- Timer: Freccia accorciata di pochissimo -->
+            <!-- Timer: Cerchietto di origine centrale rimpicciolito (r=1.0) per slanciare la freccia -->
             <div class="tab-item">
                 <div class="icon-wrapper">
                     <svg class="tab-svg" viewBox="0 0 36 36" fill="none" xmlns="w3.org" style="transform: scale(1.05);">
                         <path d="M18 9.5 A 8.5 8.5 0 1 1 12.0 12.0" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" fill="none"/>
                         <path d="M18 9.5V11.7" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round"/>
                         
-                        <!-- Freccia accorciata di pochissimo (lunghezza del poligono ridotta a -5.8) -->
                         <g transform="translate(18, 18) rotate(-45)">
-                            <circle cx="0" cy="0" r="1.8" fill="#ffffff"/>
+                            <!-- Cerchio centrale rimpicciolito per un innesto armonioso della freccia -->
+                            <circle cx="0" cy="0" r="1.0" fill="#ffffff"/>
                             <polygon points="-1.5,0 1.5,0 0.5,-5.8 -0.5,-5.8" fill="#ffffff"/>
                         </g>
                     </svg>
@@ -327,12 +324,6 @@
                 <span>Timer</span>
             </div>
         </nav>
-    </div>
-
-    <div id="secret-menu">
-        <h3>Menu Segreto</h3>
-        <input type="number" id="forceNumber" placeholder="Numero da forzare" min="0" max="99">
-        <button id="saveBtn">Salva</button>
     </div>
 
     <script>
