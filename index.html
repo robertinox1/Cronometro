@@ -204,9 +204,9 @@
             display: block;
         }
 
-        /* BOLLA ATTIVA RESA DEL COLORE GRIGIO PIÙ SCURO DI SISTEMA */
+        /* BOLLA ATTIVA SETTATA SULLA VIA DI MEZZO PERFETTA */
         .tab-item.active {
-            background-color: #2c2c2e; /* Grigio scurito stabilmente */
+            background-color: #363638; /* Grigio medio calibrato */
             border-radius: 26px; 
             height: calc(100% - 8px); 
             margin: 4px 0; 
@@ -272,23 +272,19 @@
                 <span>Sveglie</span>
             </div>
             
-            <!-- Cronometro: Modifiche strutturali su tasti, perno centrale ingrandito e colorato di grigio sottostante -->
+            <!-- Cronometro: Perno e linea interna coordinati al nuovo colore di sfondo della bolla (#363638) -->
             <div class="tab-item active">
                 <div class="icon-wrapper">
                     <svg class="tab-svg" viewBox="0 0 36 36" fill="none" xmlns="w3.org" style="transform: scale(1.22);"> 
-                        <!-- Quadrante principale arancione -->
                         <circle cx="18" cy="19.5" r="8.5" fill="var(--tab-active)" stroke="var(--tab-active)" stroke-width="1.6"/> 
                         
-                        <!-- Perno centrale ingrandito (r=1.5) e dipinto del colore grigio sottostante (#2c2c2e) -->
-                        <circle cx="18" cy="19.5" r="1.5" fill="#2c2c2e"/>
+                        <!-- Perno centrale rinfrescato con il colore di sfondo della bolla corrente -->
+                        <circle cx="18" cy="19.5" r="1.5" fill="#363638"/>
                         
-                        <!-- Lancetta scura coordinata -->
-                        <path d="M18 18.2V14.2" stroke="black" stroke-width="1.6" stroke-linecap="round"/> 
+                        <!-- Linea interna modificata di conseguenza per abbinarsi al perno -->
+                        <path d="M18 18.2V14.2" stroke="#363638" stroke-width="1.6" stroke-linecap="round"/> 
                         
-                        <!-- Tasto superiore allungato di pochissimo (altezza variata da 1.6 a 2.1 e alzato a y=8.7) -->
                         <rect x="17.2" y="8.7" width="1.6" height="2.1" rx="0.3" fill="var(--tab-active)"/> 
-                        
-                        <!-- Tasto obliquo destro allungato di pochissimo (altezza variata a 2.1) spinto all'esterno -->
                         <rect x="25.0" y="10.8" width="1.6" height="2.1" rx="0.3" transform="rotate(52 25.0 10.8)" fill="var(--tab-active)"/> 
                     </svg>
                 </div>
