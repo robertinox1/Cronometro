@@ -164,16 +164,18 @@
             justify-content: center;
             z-index: 999;
         }
+        
+        /* ALTEZZA DELLA BARRA COSTRUTTIVAMENTE AUMENTATA A 65PX CON ICNE PERFETTAMENTE CENTRATE */
         .tab-bar {
             width: 100%;
             max-width: 366px;
-            height: 60px; 
+            height: 65px; 
             background-color: #1a1a1c; 
-            border-radius: 30px; 
+            border-radius: 32.5px; 
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 16px; /* Spazio riallargato per ridistribuire le icone verso l'esterno */
+            padding: 0 16px; 
             border: 0.8px solid rgba(255, 255, 255, 0.15); 
         }
         .tab-item {
@@ -184,7 +186,7 @@
             font-family: -apple-system, "SF Pro Text", sans-serif;
             font-size: 10px;
             font-weight: 400;
-            width: 20%; /* Calibrato per bilanciare la nuova ampiezza della bolla */
+            width: 20%; 
             height: 100%;
             position: relative;
             text-align: center;
@@ -204,13 +206,13 @@
             display: block;
         }
 
-        /* BOLLA ATTIVA ESPANSA AL 36% PER COPRIRE AL MEGLIO LO SPAZIO COME SU IOS ORIGINALE */
+        /* BOLLA ATTIVA STRINGATA DI POCHISSIMO AL 33.5% PER UNA PERFETTA RESA GEOMETRICA */
         .tab-item.active {
             background-color: #3d3d3f; 
             border-radius: 26px; 
             height: calc(100% - 8px); 
             margin: 4px 0; 
-            width: 36%; 
+            width: 33.5%; 
         }
         .tab-item.active .icon-wrapper {
             background-color: transparent;
