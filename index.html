@@ -199,7 +199,7 @@
             border-radius: 26px; 
             height: calc(100% - 8px); 
             margin: 4px 0; 
-            width: 32.5%; 
+            width: 29.5%; 
         }
         .tab-item.active .icon-wrapper {
             background-color: transparent;
@@ -238,64 +238,61 @@
 
     <div class="tab-bar-container">
         <nav class="tab-bar">
-            <!-- Ore Locali: Replica esatta dello screenshot -->
+            <!-- Ore Locali: CONGELATE E IDENTICHE ALLA TUA VERSIONE PREFERITA -->
             <div class="tab-item">
                 <div class="icon-wrapper">
-                    <svg class="tab-svg" viewBox="0 0 36 36" fill="none" xmlns="w3.org" style="transform: scale(0.95);">
-                        <circle cx="18" cy="18" r="11" stroke="#ffffff" stroke-width="1.6"/> 
-                        <path d="M7 18H29" stroke="#ffffff" stroke-width="1.6"/> 
-                        <path d="M18 7V29" stroke="#ffffff" stroke-width="1.6"/>
-                        <path d="M18 7C21.2 10.2 22.5 14 22.5 18C22.5 22 21.2 25.8 18 29M18 7C14.8 10.2 13.5 14 13.5 18C13.5 22 14.8 25.8 18 29" stroke="#ffffff" stroke-width="1.6"/>
-                        <path d="M9.8 11.8C12.4 13.2 15.1 13.6 18 13.6C20.9 13.6 23.6 13.2 26.2 11.8" stroke="#ffffff" stroke-width="1.6"/> 
-                        <path d="M9.8 24.2C12.4 22.8 15.1 22.4 18 22.4C20.9 22.4 23.6 22.8 26.2 24.2" stroke="#ffffff" stroke-width="1.6"/> 
+                    <svg class="tab-svg" viewBox="0 0 36 36" fill="none" xmlns="w3.org">
+                        <circle cx="18" cy="18" r="11.5" stroke="#ffffff" stroke-width="1.5"/> 
+                        <path d="M6 18H30" stroke="#ffffff" stroke-width="1.5"/> 
+                        <path d="M18 6V30" stroke="#ffffff" stroke-width="1.5"/>
+                        <path d="M18 6.5C21.5 10 23 14 23 18C23 22 21.5 26 18 29.5M18 6.5C14.5 10 13 14 13 18C13 22 14.5 26 18 29.5" stroke="#ffffff" stroke-width="1.5"/>
+                        <path d="M8.5 12C11.5 13.2 14.5 13.8 18 13.8C21.5 13.8 24.5 13.2 27.5 12" stroke="#ffffff" stroke-width="1.5"/> 
+                        <path d="M8.5 24C11.5 22.8 14.5 22.2 18 22.2C21.5 22.2 24.5 22.8 27.5 24" stroke="#ffffff" stroke-width="1.5"/> 
                     </svg>
                 </div>
                 <span>Ore locali</span>
             </div>
             
-            <!-- Sveglie: Corrispondenza al 100% con l'immagine inviata -->
+            <!-- Sveglie: Piedi fusi molto più distanziati ai lati e allarmi resi molto più sottili -->
             <div class="tab-item">
                 <div class="icon-wrapper">
                     <svg class="tab-svg" viewBox="0 0 36 36" fill="none" xmlns="w3.org" style="transform: scale(1.18);"> 
-                        <!-- Singola forma solida per cassa e piedi a ore 4 e ore 8 corti e larghi -->
-                        <path d="M18,9.8 C13.4,9.8 9.7,13.5 9.7,18.1 C9.7,21.3 11.5,24.1 14.2,25.4 L12.5,27.6 C12.2,28.0 12.7,28.6 13.3,28.3 L15.6,26.5 C16.4,26.7 17.2,26.8 18,26.8 C18.8,26.8 19.6,26.7 20.4,26.5 L22.7,28.3 C23.3,28.6 23.8,28.0 23.5,27.6 L21.8,25.4 C24.6,24.1 26.3,21.3 26.3,18.1 C26.3,13.5 22.6,9.8 18,9.8 Z" fill="#ffffff"/>
-                        
-                        <!-- Lancette sottili dentro il quadrante (ore 9 in punto) -->
-                        <path d="M18,18.1 H14.8" stroke="#1a1a1c" stroke-width="1.2" stroke-linecap="round"/> 
-                        <path d="M18,18.1 V13.6" stroke="#1a1a1c" stroke-width="1.2" stroke-linecap="round"/> 
-                        
-                        <!-- Allarmi orecchiette: Semicerchi netti indipendenti staccati a ore 10:30 e ore 1:30 -->
-                        <path d="M14.6,9.5 C14.4,7.1 11.6,6.4 10.1,8.2 C8.8,9.8 9.4,11.6 11.5,11.6 Z" fill="#ffffff"/>
-                        <path d="M21.4,9.5 C21.6,7.1 24.4,6.4 25.9,8.2 C27.2,9.8 26.6,11.6 24.5,11.6 Z" fill="#ffffff"/>
+                        <!-- Piedi spostati all'estremità laterale (ore 4:15 e 7:45), accorciati e fusi senza stacchi -->
+                        <path d="M18,10.0 C13.4,10.0 9.7,13.7 9.7,18.3 C9.7,21.6 11.6,24.3 14.4,25.4 L11.3,27.7 C10.9,28.0 11.3,28.6 11.9,28.4 L14.9,26.4 C15.9,26.7 16.9,26.9 18,26.9 C19.1,26.9 20.1,26.7 21.1,26.4 L24.1,28.4 C24.7,28.6 25.1,28.0 24.7,27.7 L22.5,25.4 C25.3,24.3 26.3,21.6 26.3,18.3 C26.3,13.7 22.6,10.0 18,10.0 Z" fill="#ffffff"/>
+                        <path d="M18,18.3 H14.8" stroke="#1a1a1c" stroke-width="1.2" stroke-linecap="round"/> 
+                        <path d="M18,18.3 V14.0" stroke="#1a1a1c" stroke-width="1.2" stroke-linecap="round"/> 
+                        <!-- Allarmi: Mezzelune adagiate sul cerchio rese molto più sottili e affusolate con distacco di 1.5px -->
+                        <path d="M13.6,9.6 C13.0,8.4 11.4,7.8 10.4,8.8 C9.4,9.8 9.9,11.3 11.4,11.3 C12.2,11.3 13.0,10.6 13.6,9.6 Z" fill="#ffffff"/>
+                        <path d="M22.4,9.6 C23.0,8.4 24.6,7.8 25.6,8.8 C26.6,9.8 26.1,11.3 24.6,11.3 C23.8,11.3 23.0,10.6 22.4,9.6 Z" fill="#ffffff"/>
                     </svg>
                 </div>
                 <span>Sveglie</span>
             </div>
             
-            <!-- Cronometro (Attivo): Spessori marcati, pallino centrale micro e tasto a ore 2 molto a destra -->
+            <!-- Cronometro -->
             <div class="tab-item active">
                 <div class="icon-wrapper">
                     <svg class="tab-svg" viewBox="0 0 36 36" fill="none" xmlns="w3.org" style="transform: scale(1.22);"> 
                         <circle cx="18" cy="19.5" r="8.5" fill="var(--tab-active)" stroke="var(--tab-active)" stroke-width="1.6"/> 
-                        <circle cx="18" cy="19.5" r="1.0" fill="black"/> <!-- Pallino centrale micro dell'immagine -->
-                        <path d="M18 18.4V14.2" stroke="black" stroke-width="1.6" stroke-linecap="round"/> <!-- Spessore corretto -->
+                        <circle cx="18" cy="19.5" r="1.1" fill="black"/>
+                        <path d="M18 18.4V14.2" stroke="black" stroke-width="1.6" stroke-linecap="round"/> 
                         <rect x="17.2" y="9.2" width="1.6" height="1.6" rx="0.3" fill="var(--tab-active)"/> 
-                        <!-- Tasto destro spostato molto a destra sul perimetro -->
                         <rect x="24.7" y="11.2" width="1.6" height="1.6" rx="0.3" transform="rotate(52 24.7 11.2)" fill="var(--tab-active)"/> 
                     </svg>
                 </div>
                 <span>Cronometro</span>
             </div>
             
-            <!-- Timer: Arco interrotto a 90° e freccia conica con innesto perfetto -->
+            <!-- Timer: RIPRISTINATO ALL'INTERRUZIONE A 45° (ORE 10:30) CON LA FRECCIA CHE PUNTA LÌ -->
             <div class="tab-item">
                 <div class="icon-wrapper">
                     <svg class="tab-svg" viewBox="0 0 36 36" fill="none" xmlns="w3.org" style="transform: scale(1.05);">
-                        <path d="M18 9.5 A 8.5 8.5 0 1 1 9.5 18" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" fill="none"/>
-                        <path d="M18 9.5V13" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round"/>
-                        <g transform="translate(18, 18) rotate(-90)">
-                            <circle cx="0" cy="0" r="1.6" fill="#ffffff"/>
-                            <polygon points="-1.3,0 1.3,0 0.4,-6.6 -0.4,-6.6" fill="#ffffff"/>
+                        <path d="M18 9.5 A 8.5 8.5 0 1 1 12.0 12.0" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+                        <path d="M18 9.5V11.7" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round"/>
+                        <!-- La freccia solida punta esattamente verso l'estremità visibile a ore 10:30 (rotazione a -45°) -->
+                        <g transform="translate(18, 18) rotate(-45)">
+                            <circle cx="0" cy="0" r="1.8" fill="#ffffff"/>
+                            <polygon points="-1.5,0 1.5,0 0.5,-6.6 -0.5,-6.6" fill="#ffffff"/>
                         </g>
                     </svg>
                 </div>
@@ -368,8 +365,8 @@
             return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')},${String(centiseconds).padStart(2, '0')}`;
         }
 
+        // Algoritmo di forzatura segreta calcolato
         function forceStopValue(currentMs, target) {
-            let totalCentiseconds = Math.floor(currentMs / 10);
             let totalCent = Math.floor(currentMs / 10);
             let s = Math.floor(totalCent / 100) % 60;
             let m = Math.floor(totalCent / 6000);
