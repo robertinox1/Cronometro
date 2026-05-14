@@ -183,23 +183,27 @@
             width: 24%;
             height: 100%;
             position: relative;
+            text-align: center;
         }
         .tab-item span {
             color: #ffffff; 
             margin-top: -1px; 
             letter-spacing: -0.1px;
+            width: 100%;
+            display: block;
         }
         .tab-item .tab-svg { 
-            width: 38px; 
-            height: 38px; 
+            width: 25px; 
+            height: 25px; 
         }
         
-        /* COSTRUZIONE ANTISFOCATURA ED EQUALIZZAZIONE CON ORE LOCALI (23PX) */
+        /* DIMENSIONI ADEGUATE A ORE LOCALI, CENTRATURA RISPETTO ALLA SCRITTA ED ELIMINAZIONE SFOCATURE */
         .tab-item .tab-png-icon {
-            width: 23px; 
-            height: 23px; 
+            width: 25px; 
+            height: 25px; 
             object-fit: contain;
-            image-rendering: -webkit-optimize-contrast; /* Blocca l'antialiasing sfocato di iOS */
+            display: block;
+            image-rendering: -webkit-optimize-contrast;
             image-rendering: crisp-edges;
             image-rendering: pixelated;
         }
@@ -248,7 +252,7 @@
 
     <div class="tab-bar-container">
         <nav class="tab-bar">
-            <!-- Ore Locali -->
+            <!-- Ore Locali: Bloccato a 25px -->
             <div class="tab-item">
                 <div class="icon-wrapper">
                     <svg class="tab-svg" viewBox="0 0 36 36" fill="none" xmlns="w3.org">
@@ -263,7 +267,7 @@
                 <span>Ore locali</span>
             </div>
             
-            <!-- Sveglie: Icona PNG calibrata in alta definizione -->
+            <!-- Sveglie: Immagine PNG allineata e centrata perfettamente sulla scritta -->
             <div class="tab-item">
                 <div class="icon-wrapper">
                     <img src="sveglia.png" class="tab-png-icon" alt="Sveglie">
@@ -274,7 +278,7 @@
             <!-- Cronometro -->
             <div class="tab-item active">
                 <div class="icon-wrapper">
-                    <svg class="tab-svg" viewBox="0 0 36 36" fill="none" xmlns="w3.org" style="transform: scale(1.22);"> 
+                    <svg class="tab-svg" viewBox="0 0 36 36" fill="none" xmlns="w3.org" style="transform: scale(1.15);"> 
                         <circle cx="18" cy="19.5" r="8.5" fill="var(--tab-active)" stroke="var(--tab-active)" stroke-width="1.6"/> 
                         <circle cx="18" cy="19.5" r="1.1" fill="black"/>
                         <path d="M18 18.4V14.2" stroke="black" stroke-width="1.6" stroke-linecap="round"/> 
