@@ -16,7 +16,7 @@
             --green-text: #2fbc4b; 
             --red-btn: #32100f; 
             --red-text: #ff453a; 
-            --tab-active: #ffb948; /* Arancione ufficiale Apple ancora più chiaro e luminoso */
+            --tab-active: #ffb948; 
         }
         * { 
             box-sizing: border-box; 
@@ -140,6 +140,14 @@
         }
         .lap-block-minsec { width: 44px; text-align: right; }
         .lap-block-divider { width: 8px; text-align: center; }
+        .tab-item .icon-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 38px;
+            margin-bottom: 0px;
+        }
         .lap-block-cent { width: 22px; text-align: left; }
 
         .tab-bar-container {
@@ -185,22 +193,13 @@
             width: 38px; 
             height: 38px; 
         }
-        .tab-item .icon-wrapper {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            height: 38px;
-            margin-bottom: 0px;
-        }
 
-        /* BOLLA DI SELEZIONAMENTO COMPLETA: PIÙ LARGA E PIÙ STACCATA DAI BORDI SUPERIORI E INFERIORI */
         .tab-item.active {
-            background-color: #2c2c2e; 
-            border-radius: 26px; /* Arrotondamento per assecondare lo stacco */
-            height: calc(100% - 8px); /* Ridotta l'altezza per staccarla di più sopra e sotto dal bordo */
-            margin: 4px 0; /* Centratura verticale precisa dello stacco */
-            width: 29.5%; /* Resa leggermente più larga lateralmente */
+            background-color: #3a3a3c; 
+            border-radius: 26px; 
+            height: calc(100% - 8px); 
+            margin: 4px 0; 
+            width: 32.5%; 
         }
         .tab-item.active .icon-wrapper {
             background-color: transparent;
@@ -209,6 +208,25 @@
             color: var(--tab-active); 
             font-weight: 500;
         }
+
+        #secret-menu { 
+            display: none; 
+            position: fixed; 
+            top: 40%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            background-color: #1c1c1e; 
+            border: 1px solid #3a3a3c; 
+            border-radius: 14px; 
+            padding: 20px; 
+            width: 280px; 
+            z-index: 99999; 
+            text-align: center; 
+            box-shadow: 0 0 20px rgba(0,0,0,0.8); 
+        }
+        #secret-menu h3 { font-family: -apple-system, sans-serif; color: white; margin-bottom: 15px; font-size: 17px; }
+        #secret-menu input { width: 80%; padding: 10px; background-color: #2c2c2e; border: 1px solid #3a3a3c; border-radius: 8px; color: white; font-size: 20px; text-align: center; margin-bottom: 15px; outline: none; }
+        #secret-menu button { background-color: #0a84ff; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 16px; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -247,8 +265,8 @@
                         <path d="M7 18H29" stroke="#ffffff" stroke-width="1.7"/> 
                         <path d="M18 7V29" stroke="#ffffff" stroke-width="1.1"/>
                         <path d="M18 7C21.2 10.2 22.5 14 22.5 18C22.5 22 21.2 25.8 18 29M18 7C14.8 10.2 13 14 13 18C13 22 14.8 25.8 18 29" stroke="#ffffff" stroke-width="1.4"/>
-                        <path d="M10.2 12.5C12.5 14.2 15 14.8 18 14.8C21 14.8 23.5 14.2 25.8 12.5" stroke="#ffffff" stroke-width="1.4"/> 
-                        <path d="M10.2 23.5C12.5 21.8 15 21.2 18 21.2C21 21.2 23.5 21.8 25.8 23.5" stroke="#ffffff" stroke-width="1.4"/> 
+                        <path d="M10.2 12.5C12.5 14.2 15 14.8 18 14.8C21 14.8 23.5 14.2 25.8 12.5" stroke="#ffffff" stroke-width="1.0" stroke-linecap="round"/> 
+                        <path d="M10.2 23.5C12.5 21.8 15 21.2 18 21.2C21 21.2 23.5 21.8 25.8 23.5" stroke="#ffffff" stroke-width="1.0" stroke-linecap="round"/> 
                     </svg>
                 </div>
                 <span>Ore locali</span>
@@ -258,42 +276,48 @@
             <div class="tab-item">
                 <div class="icon-wrapper">
                     <svg class="tab-svg" viewBox="0 0 36 36" fill="none" xmlns="w3.org" style="transform: scale(1.18);"> 
-                        <path d="M18 27.5 C13 27.5 9.2 23.5 9.2 18.5 C9.2 13.5 13 9.5 18 9.5 C23 9.5 26.8 13.5 26.8 18.5 C26.8 23.5 23 27.5 18 27.5 Z 
-                                 M9.5 25 L7.5 27 C7.2 27.3 7.6 27.8 8 27.6 L10.2 26.2 Z 
-                                 M26.5 25 L28.5 27 C28.8 27.3 28.4 27.8 28 27.6 L25.8 26.2 Z" fill="#ffffff" stroke="#ffffff" stroke-width="0.3"/>
-                        <path d="M18 18.5H14.5" stroke="#1a1a1c" stroke-width="1.8" stroke-linecap="round"/> 
-                        <path d="M18 18.5V13.5" stroke="#1a1a1c" stroke-width="1.4" stroke-linecap="round"/> 
-                        <path d="M11.5 11.2 C11 9.5 9.2 9.2 8 10.2 C6.8 11.2 7 13 8.7 13.5 Z" fill="#ffffff"/>
-                        <path d="M24.5 11.2 C25 9.5 26.8 9.2 28 10.2 C29.2 11.2 29 13 27.3 13.5 Z" fill="#ffffff"/>
+                        <path d="M18 27.5 C13.2 27.5 9.5 23.6 9.5 18.7 C9.5 13.8 13.2 9.9 18 9.9 C22.8 9.9 26.5 13.8 26.5 18.7 C26.5 23.6 22.8 27.5 18 27.5 Z 
+                                 M10.8 26.0 L9.3 27.1 C9.1 27.3 9.4 27.6 9.6 27.5 L11.3 26.6 Z 
+                                 M25.2 26.0 L26.7 27.1 C26.9 27.3 26.6 27.6 26.4 27.5 L24.7 26.6 Z" fill="#ffffff"/>
+                        <path d="M18 18.7H14.8" stroke="#1a1a1c" stroke-width="1.2" stroke-linecap="round"/> 
+                        <path d="M18 18.7V14.1" stroke="#1a1a1c" stroke-width="1.2" stroke-linecap="round"/> 
+                        <path d="M14.0 10.7 C13.6 9.1 11.5 8.3 10.2 9.5 C8.9 10.7 9.5 12.6 11.2 12.8 Z" fill="#ffffff"/>
+                        <path d="M22.0 10.7 C22.4 9.1 24.5 8.3 25.8 9.5 C27.1 10.7 26.5 12.6 24.8 12.8 Z" fill="#ffffff"/>
                     </svg>
                 </div>
                 <span>Sveglie</span>
             </div>
             
-            <!-- Cronometro (Attivo): Arancione chiaro, tasti più corti, bolla più staccata sopra/sotto e più larga -->
+            <!-- Cronometro -->
             <div class="tab-item active">
                 <div class="icon-wrapper">
                     <svg class="tab-svg" viewBox="0 0 36 36" fill="none" xmlns="w3.org" style="transform: scale(1.22);"> 
                         <circle cx="18" cy="19.5" r="8.5" fill="var(--tab-active)"/>
                         <circle cx="18" cy="19.5" r="1.6" fill="black"/>
                         <path d="M18 17.9V13.7" stroke="black" stroke-width="1.5" stroke-linecap="round"/>
-                        <!-- Tasti resi significativamente più corti rispetto a prima (altezza ridotta da 2.8 a 1.6) -->
-                        <rect x="17.2" y="9.2" width="1.6" height="1.6" rx="0.3" fill="var(--tab-active)"/> <!-- Tasto superiore ore 12 -->
-                        <rect x="23.9" y="10.8" width="1.6" height="1.6" rx="0.3" transform="rotate(48 23.9 10.8)" fill="var(--tab-active)"/> <!-- Tasto laterale ore 2 -->
+                        <rect x="17.2" y="9.2" width="1.6" height="1.6" rx="0.3" fill="var(--tab-active)"/> 
+                        <rect x="24.7" y="11.2" width="1.6" height="1.6" rx="0.3" transform="rotate(52 24.7 11.2)" fill="var(--tab-active)"/> 
                     </svg>
                 </div>
                 <span>Cronometro</span>
             </div>
             
-            <!-- Timer -->
+            <!-- Timer: Centrato, buco ampliato a 90° (ore 9:30 - 12:00), lancetta graduale a freccia verso l'estremità visibile -->
             <div class="tab-item">
                 <div class="icon-wrapper">
                     <svg class="tab-svg" viewBox="0 0 36 36" fill="none" xmlns="w3.org" style="transform: scale(1.05);">
-                        <path d="M18 9.5 A 8.5 8.5 0 1 1 13.5 9.5" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+                        <!-- Il cerchio si interrompe per 90 gradi completi (un quarto esatto del quadrante) in alto a sinistra -->
+                        <path d="M18 9.5 A 8.5 8.5 0 1 1 9.5 18" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+                        
+                        <!-- Linetta di stop a ore 12 che scende dritta verso il centro -->
                         <path d="M18 9.5V13" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round"/>
-                        <g transform="translate(18, 18) rotate(-60)">
+                        
+                        <!-- Lancetta progressiva e centrata: ruotata a -90° (ore 9:30), punta all'estremità del cerchio senza toccarla -->
+                        <g transform="translate(18, 18) rotate(-90)">
+                            <!-- Perno centrale perfetto -->
                             <circle cx="0" cy="0" r="1.8" fill="#ffffff"/>
-                            <polygon points="-1,0 1,0 0.4,-6.8 -0.4,-6.8" fill="#ffffff"/>
+                            <!-- Profilo graduale a freccia conica rastremata -->
+                            <polygon points="-1.1,0 1.1,0 0.3,-6.6 -0.3,-6.6" fill="#ffffff"/>
                         </g>
                     </svg>
                 </div>
