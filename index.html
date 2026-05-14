@@ -257,7 +257,7 @@
 
     <div class="tab-bar-container">
         <nav class="tab-bar">
-            <!-- Ore Locali: BLOCCHETTO PERFETTO NON MODIFICATO -->
+            <!-- Ore Locali: CONGELATE E IDENTICHE ALLA TUA VERSIONE PREFERITA -->
             <div class="tab-item">
                 <div class="icon-wrapper">
                     <svg class="tab-svg" viewBox="0 0 36 36" fill="none" xmlns="w3.org" style="transform: scale(0.92);">
@@ -265,27 +265,31 @@
                         <path d="M7 18H29" stroke="#ffffff" stroke-width="1.5"/> 
                         <path d="M18 7V29" stroke="#ffffff" stroke-width="1.5"/>
                         <path d="M18 7C21.2 10.2 22.5 14 22.5 18C22.5 22 21.2 25.8 18 29M18 7C14.8 10.2 13 14 13 18C13 22 14.8 25.8 18 29" stroke="#ffffff" stroke-width="1.5"/>
-                        <path d="M9.8 10.3C12.4 11.4 15.1 11.8 18 11.8C21 11.8 23.6 11.4 26.2 10.3" stroke="#ffffff" stroke-width="1.5"/> 
-                        <path d="M9.8 25.7C12.4 24.6 15.1 24.2 18 24.2C21 24.2 23.6 24.6 26.2 25.7" stroke="#ffffff" stroke-width="1.5"/> 
+                        <path d="M9.5 11.2C12.2 12.5 15.1 12.9 18 12.9C20.9 12.9 23.8 12.5 26.5 11.2" stroke="#ffffff" stroke-width="1.5"/> 
+                        <path d="M9.5 24.8C12.2 23.5 15.1 23.1 18 23.1C20.9 23.1 23.8 23.5 26.5 24.8" stroke="#ffffff" stroke-width="1.5"/> 
                     </svg>
                 </div>
                 <span>Ore locali</span>
             </div>
             
-            <!-- Sveglie: RICOSTRUITA INTERAMENTE DA ZERO CON ANCORAGGIO GEOMETRICO UNICO -->
+            <!-- Sveglie: Piedi fusi corti e allargati lateralmente, allarmi sottili in obliquo lungo il cerchio -->
             <div class="tab-item">
                 <div class="icon-wrapper">
                     <svg class="tab-svg" viewBox="0 0 36 36" fill="none" xmlns="w3.org" style="transform: scale(1.18);"> 
-                        <!-- Sfondo bianco solido strutturale in un'unica path per evitare separazioni -->
-                        <path d="M18,9.6 C13.3,9.6 9.5,13.4 9.5,18.2 C9.5,21.5 11.4,24.4 14.2,25.8 L12.3,28.2 C12.1,28.5 12.6,29.0 13.1,28.8 L15.6,26.8 C16.4,27.0 17.2,27.1 18,27.1 C18.8,27.1 19.6,27.0 20.4,26.8 L22.9,28.8 C23.4,29.0 23.9,28.5 23.7,28.2 L21.8,25.8 C24.6,24.4 26.5,21.5 26.5,18.2 C26.5,13.4 22.7,9.6 18,9.6 Z" fill="#ffffff"/>
+                        <!-- Unica path continua: piedi accorciati e spostati stabilmente molto più all'esterno verso i lati, senza stacchi neri -->
+                        <path d="M18,9.6 C13.3,9.6 9.5,13.4 9.5,18.2 C9.5,21.5 11.4,24.4 14.2,25.8 L11.0,28.0 C10.6,28.3 11.0,28.8 11.6,28.6 L14.7,26.4 C15.8,26.9 16.9,27.1 18,27.1 C19.1,27.1 20.2,26.9 21.3,26.4 L24.4,28.6 C25.0,28.8 25.4,28.3 25.0,28.0 L21.8,25.8 C24.6,24.4 26.5,21.5 26.5,18.2 C26.5,13.4 22.7,9.6 18,9.6 Z" fill="#ffffff"/>
                         
-                        <!-- Lancette coordinate (ore 9:00 esatte) scavate direttamente sul corpo -->
+                        <!-- Lancette scavate (ore 9:00 esatte) -->
                         <path d="M18,18.2 H14.6" stroke="#1a1a1c" stroke-width="1.2" stroke-linecap="round"/> 
                         <path d="M18,18.2 V13.6" stroke="#1a1a1c" stroke-width="1.2" stroke-linecap="round"/> 
                         
-                        <!-- Allarmi a mezzaluna affusolata più lunghi con distacco geometrico calcolato di 1.5px -->
-                        <path d="M14.6,9.5 C14.4,6.9 11.3,6.2 9.7,8.1 C8.0,9.9 8.8,11.9 11.5,11.6 Z" fill="#ffffff"/>
-                        <path d="M21.4,9.5 C21.6,6.9 24.7,6.2 26.3,8.1 C28.0,9.9 27.2,11.9 24.5,11.6 Z" fill="#ffffff"/>
+                        <!-- Allarmi: Mezzelune rese molto più sottili, allungate e ruotate in obliquo per seguire in parallelo la curvatura del cerchio, staccate di 1.5px -->
+                        <g transform="translate(18, 18.2)">
+                            <!-- Mezzaluna sinistra sottile inclinata a -38 gradi -->
+                            <path d="M-4.2,-9.4 C-4.8,-11.2 -7.2,-12.3 -8.8,-11.2 C-10.0,-10.3 -9.8,-8.5 -8.2,-8.0 Z" fill="#ffffff" transform="rotate(-5)"/>
+                            <!-- Mezzaluna destra sottile inclinata a 38 gradi -->
+                            <path d="M4.2,-9.4 C4.8,-11.2 7.2,-12.3 8.8,-11.2 C10.0,-10.3 9.8,-8.5 8.2,-8.0 Z" fill="#ffffff" transform="rotate(5)"/>
+                        </g>
                     </svg>
                 </div>
                 <span>Sveglie</span>
@@ -305,13 +309,13 @@
                 <span>Cronometro</span>
             </div>
             
-            <!-- Timer -->
+            <!-- Timer: CONGELATO E IDENTICO ALLA TUA VERSIONE PREFERITA -->
             <div class="tab-item">
                 <div class="icon-wrapper">
                     <svg class="tab-svg" viewBox="0 0 36 36" fill="none" xmlns="w3.org" style="transform: scale(1.05);">
-                        <path d="M18 9.5 A 8.5 8.5 0 1 1 9.5 18" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" fill="none"/>
-                        <path d="M18 9.5V13" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round"/>
-                        <g transform="translate(18, 18) rotate(-90)">
+                        <path d="M18 9.5 A 8.5 8.5 0 1 1 12.0 12.0" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+                        <path d="M18 9.5V11.7" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round"/>
+                        <g transform="translate(18, 18) rotate(-45)">
                             <circle cx="0" cy="0" r="1.8" fill="#ffffff"/>
                             <polygon points="-1.5,0 1.5,0 0.5,-6.6 -0.5,-6.6" fill="#ffffff"/>
                         </g>
