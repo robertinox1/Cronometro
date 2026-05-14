@@ -66,7 +66,7 @@
             width: 100%;
             max-width: 345px;
             height: 82px;
-            margin-bottom: 18px;
+            margin-bottom: 28px;
             flex-shrink: 0;
         }
         .btn { 
@@ -112,8 +112,7 @@
             border-top: 0.3px solid #2c2c2e; 
             overflow-y: auto; 
             flex-grow: 1;
-            margin-bottom: calc(85px + env(safe-area-inset-bottom)); 
-            -webkit-overflow-scrolling: touch;
+            margin-bottom: 136px; 
         }
         
         .lap-row {
@@ -124,8 +123,10 @@
             font-family: -apple-system, "SF Pro Text", sans-serif;
             font-size: 16px;
             border-bottom: 0.3px solid #2c2c2e;
+            opacity: 0;
             height: 45px;
         }
+        .lap-row.visible { opacity: 1; }
         .lap-row .lap-label { color: #ffffff; }
         
         .lap-time-wrapper {
@@ -137,18 +138,33 @@
             font-weight: 400; 
             color: #ffffff;
         }
+        .lap-block-minsec { width: 44px; text-align: right; }
+        .lap-block-divider { width: 8px; text-align: center; }
+        .tab-item .icon-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 38px;
+            margin-bottom: 0px;
+        }
+        .tab-svg { 
+            width: 38px; 
+            height: 38px; 
+        }
+        .lap-block-cent { width: 22px; text-align: left; }
 
         .tab-bar-container {
             position: fixed;
-            bottom: 0; 
+            bottom: 34px; 
             left: 0;
             width: 100%;
-            padding: 4px 16px calc(12px + env(safe-area-inset-bottom)) 16px;
+            padding: 0 16px;
             display: flex;
             justify-content: center;
             z-index: 999;
-            background-color: #000000;
         }
+        
         .tab-bar {
             width: 100%;
             max-width: 366px;
@@ -182,13 +198,6 @@
             display: block;
         }
 
-        .tab-item .tab-png-icon {
-            width: 28px; 
-            height: 28px; 
-            object-fit: contain;
-            display: block;
-        }
-
         .tab-item.active {
             background-color: #3d3d3f; 
             border-radius: 26px; 
@@ -203,25 +212,6 @@
             color: var(--tab-active); 
             font-weight: 500;
         }
-
-        #secret-menu { 
-            display: none; 
-            position: fixed; 
-            top: 40%; 
-            left: 50%; 
-            transform: translate(-50%, -50%); 
-            background-color: #1c1c1e; 
-            border: 1px solid #3a3a3c; 
-            border-radius: 14px; 
-            padding: 20px; 
-            width: 280px; 
-            z-index: 99999; 
-            text-align: center; 
-            box-shadow: 0 0 20px rgba(0,0,0,0.8); 
-        }
-        #secret-menu h3 { font-family: -apple-system, sans-serif; color: white; margin-bottom: 15px; font-size: 17px; }
-        #secret-menu input { width: 80%; padding: 10px; background-color: #2c2c2e; border: 1px solid #3a3a3c; border-radius: 8px; color: white; font-size: 20px; text-align: center; margin-bottom: 15px; outline: none; }
-        #secret-menu button { background-color: #0a84ff; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 16px; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -239,231 +229,191 @@
         <button class="btn btn-start" id="btnRight">Avvia</button>
     </div>
 
-    <div class="laps-container" id="lapsContainer"></div>
+    <div class="laps-container" id="lapsContainer">
+        <div class="lap-row" id="lap-row-placeholder">
+            <span class="lap-label">Giro 1</span>
+            <div class="lap-time-wrapper">
+                <span class="lap-block-minsec" id="live-lap-minsec">00:00</span>
+                <span class="lap-block-divider">,</span>
+                <span class="lap-block-cent" id="live-lap-cent">00</span>
+            </div>
+        </div>
+    </div>
 
     <div class="tab-bar-container">
         <nav class="tab-bar">
-            <!-- Ore Locali -->
             <div class="tab-item">
                 <div class="icon-wrapper">
-                    <svg class="tab-svg" viewBox="0 0 36 36" fill="none" xmlns="w3.org">
+                    <svg class="tab-svg" viewBox="0 0 36 36" fill="none">
                         <circle cx="18" cy="18" r="10" stroke="#ffffff" stroke-width="1.4"/> 
-                        <path d="M8 18H28" stroke="#ffffff" stroke-width="1.4"/> 
-                        <path d="M18 8V28" stroke="#ffffff" stroke-width="1.4"/>
-                        <path d="M18 8C21.0 11.2 22.2 14 22.2 18C22.2 22 21.0 24.8 18 28M18 8C15.0 11.2 13.8 14 13.8 18C13.8 22 15.0 24.8 18 28" stroke="#ffffff" stroke-width="1.4"/>
-                        <path d="M9.8 12.6C12.4 13.7 15.1 14.1 18 14.1C20.9 14.1 23.6 13.7 26.2 12.6" stroke="#ffffff" stroke-width="1.4"/> 
-                        <path d="M9.8 23.4C12.4 22.3 15.1 21.9 18 21.9C20.9 21.9 23.6 22.3 26.2 23.4" stroke="#ffffff" stroke-width="1.4"/> 
+                        <path d="M18 10V18H24" stroke="#ffffff" stroke-width="1.4"/>
                     </svg>
                 </div>
                 <span>Ore locali</span>
             </div>
-            
-            <!-- Sveglie -->
-            <div class="tab-item">
-                <div class="icon-wrapper">
-                    <img src="sveglia.png" class="tab-png-icon" alt="Sveglie">
-                </div>
-                <span>Sveglie</span>
-            </div>
-            
-            <!-- Cronometro -->
             <div class="tab-item active">
                 <div class="icon-wrapper">
-                    <svg class="tab-svg" viewBox="0 0 36 36" fill="none" xmlns="w3.org" style="transform: scale(1.22);"> 
-                        <circle cx="18" cy="19.5" r="8.5" fill="var(--tab-active)" stroke="var(--tab-active)" stroke-width="1.6"/> 
-                        <circle cx="18" cy="19.5" r="1.5" fill="#3d3d3f"/>
-                        <path d="M18 18.2V14.2" stroke="#3d3d3f" stroke-width="1.6" stroke-linecap="round"/> 
-                        <rect x="17.2" y="8.7" width="1.6" height="2.1" rx="0.3" fill="var(--tab-active)"/> 
-                        <rect x="25.0" y="10.8" width="1.6" height="2.1" rx="0.3" transform="rotate(52 25.0 10.8)" fill="var(--tab-active)"/> 
+                    <svg class="tab-svg" viewBox="0 0 36 36" fill="none">
+                        <circle cx="18" cy="18" r="10" stroke="#ffb347" stroke-width="1.4"/> 
+                        <path d="M18 12V18L22 20" stroke="#ffb347" stroke-width="1.4"/>
                     </svg>
                 </div>
                 <span>Cronometro</span>
             </div>
-            
-            <!-- Timer -->
-            <div class="tab-item">
-                <div class="icon-wrapper">
-                    <svg class="tab-svg" viewBox="0 0 36 36" fill="none" xmlns="w3.org" style="transform: scale(1.05);">
-                        <path d="M18 9.5 A 8.5 8.5 0 1 1 12.0 12.0" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" fill="none"/>
-                        <path d="M18 9.5V11.7" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round"/>
-                        <g transform="translate(18, 18) rotate(-45)">
-                            <circle cx="0" cy="0" r="1.8" fill="#ffffff"/>
-                            <polygon points="-1.5,0 1.5,0 0.5,-6.6 -0.5,-6.6" fill="#ffffff"/>
-                        </g>
-                    </svg>
-                </div>
-                <span>Timer</span>
-            </div>
         </nav>
     </div>
 
-    <div id="secret-menu">
-        <h3>Forzatura Numero</h3>
-        <input type="number" id="forceNumber" placeholder="Somma da forzare" min="0" max="99">
-        <button id="saveBtn">Salva Configurazione</button>
-    </div>
-
     <script>
+        // --- LOGICA DI CONTROLLO INTERNA DEL CRONOMETRO ---
         let startTime = 0;
         let elapsedTime = 0;
         let timerInterval = null;
         let isRunning = false;
-        let targetSum = localStorage.getItem('forcedNumber') ? parseInt(localStorage.getItem('forcedNumber')) : null;
-        
-        let laps = [];
-        let lastLapTotalTime = 0;
 
-        const display = document.getElementById('display');
-        const btnLeft = document.getElementById('btnLeft');
-        const btnRight = document.getElementById('btnRight');
-        const lapsContainer = document.getElementById('lapsContainer');
-        const secretMenu = document.getElementById('secret-menu');
-        const forceInput = document.getElementById('forceNumber');
-        const saveBtn = document.getElementById('saveBtn');
-
-        if(targetSum !== null) forceInput.value = targetSum;
+        // Recupera in modo persistente il numero salvato all'avvio della pagina
+        let forcedNumber = null; 
+        const savedNumber = localStorage.getItem('magic_forced_number');
+        if (savedNumber !== null) {
+            forcedNumber = parseInt(savedNumber, 10);
+        }
 
         let touchStartY = 0;
+
+        const displayEl = document.getElementById('display');
+        const btnLeft = document.getElementById('btnLeft');
+        const btnRight = document.getElementById('btnRight');
+
+        function formatTime(ms) {
+            let totalSeconds = Math.floor(ms / 1000);
+            let minutes = Math.floor(totalSeconds / 60);
+            let seconds = totalSeconds % 60;
+            let cents = Math.floor((ms % 1000) / 10);
+
+            let minStr = minutes.toString().padStart(2, '0');
+            let secStr = seconds.toString().padStart(2, '0');
+            let centStr = cents.toString().padStart(2, '0');
+
+            return `${minStr}:${secStr},${centStr}`;
+        }
+
+        function updateDisplay() {
+            let now = Date.now();
+            let currentElapsed = elapsedTime + (now - startTime);
+            displayEl.textContent = formatTime(currentElapsed);
+        }
+
+        // --- IL MECCANISMO DI FORZATURA (Allo Stop) ---
+        function getForcedCents(minutes, seconds, targetSum) {
+            let sumComponents = 0;
+            let minStr = minutes.toString().padStart(2, '0');
+            let secStr = seconds.toString().padStart(2, '0');
+            
+            for (let char of (minStr + secStr)) {
+                sumComponents += parseInt(char, 10);
+            }
+
+            for (let c = 0; c < 100; c++) {
+                let cStr = c.toString().padStart(2, '0');
+                let cSum = parseInt(cStr.charAt(0), 10) + parseInt(cStr.charAt(1), 10);
+                if ((sumComponents + cSum) === targetSum) {
+                    return c;
+                }
+            }
+            
+            for (let c = 0; c < 100; c++) {
+                let cStr = c.toString().padStart(2, '0');
+                let cSum = parseInt(cStr.charAt(0), 10) + parseInt(cStr.charAt(1), 10);
+                if ((sumComponents + cSum) % 9 === targetSum % 9) {
+                    return c;
+                }
+            }
+            return 0;
+        }
+
+        btnRight.addEventListener('click', () => {
+            if (!isRunning) {
+                isRunning = true;
+                startTime = Date.now();
+                timerInterval = setInterval(updateDisplay, 10);
+                
+                btnRight.textContent = "Interrompi";
+                btnRight.className = "btn btn-stop";
+                
+                btnLeft.textContent = "Giro";
+                btnLeft.className = "btn btn-lap";
+            } else {
+                isRunning = false;
+                clearInterval(timerInterval);
+                let finalElapsed = elapsedTime + (Date.now() - startTime);
+
+                if (forcedNumber !== null) {
+                    let totalSeconds = Math.floor(finalElapsed / 1000);
+                    let minutes = Math.floor(totalSeconds / 60);
+                    let seconds = totalSeconds % 60;
+
+                    let forcedCents = getForcedCents(minutes, seconds, forcedNumber);
+                    finalElapsed = (minutes * 60 * 1000) + (seconds * 1000) + (forcedCents * 10);
+                }
+
+                elapsedTime = finalElapsed;
+                displayEl.textContent = formatTime(elapsedTime);
+
+                btnRight.textContent = "Avvia";
+                btnRight.className = "btn btn-start";
+                
+                btnLeft.textContent = "Ripristina";
+                btnLeft.className = "btn btn-lap";
+            }
+        });
+
+        btnLeft.addEventListener('click', () => {
+            if (!isRunning && btnLeft.textContent === "Ripristina") {
+                elapsedTime = 0;
+                displayEl.textContent = "00:00,00";
+                btnLeft.textContent = "Giro";
+                btnLeft.className = "btn btn-lap disabled";
+                // NOTA: forcedNumber NON viene azzerato qui per rimanere permanente
+            }
+        });
+
+        // --- RILEVAMENTO DELLO SWIPE CON DUE DITA (MENU SEGRETO PERSISTENTE) ---
         window.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
-                touchStartY = (e.touches.clientY + e.touches.clientY) / 2;
+                touchStartY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
             }
         }, { passive: true });
 
         window.addEventListener('touchend', (e) => {
-            if (touchStartY === 0) return;
-            let currentY = (e.touches.length === 2) ? (e.touches.clientY + e.touches.clientY) / 2 : (e.changedTouches.length > 0 ? e.changedTouches.clientY : 0);
-            if (currentY - touchStartY > 70) { 
-                secretMenu.style.display = secretMenu.style.display === 'block' ? 'none' : 'block';
-            }
-            touchStartY = 0;
-        });
-
-        saveBtn.addEventListener('click', () => {
-            const val = forceInput.value;
-            if (val === '') { targetSum = null; localStorage.removeItem('forcedNumber'); } 
-            else { targetSum = parseInt(val); localStorage.setItem('forcedNumber', targetSum); }
-            secretMenu.style.display = 'none';
-        });
-
-        btnRight.addEventListener('click', () => { if (!isRunning) { startTimer(); } else { stopTimer(); } });
-        btnLeft.addEventListener('click', () => { if (isRunning) { recordLap(); } else { resetTimer(); } });
-
-        function startTimer() {
-            isRunning = true;
-            startTime = performance.now() - elapsedTime;
-            timerInterval = requestAnimationFrame(updateTimer);
-            btnRight.textContent = "Interrompi";
-            btnRight.className = "btn btn-stop";
-            btnLeft.textContent = "Giro";
-            btnLeft.classList.remove('disabled');
-            
-            // CORREZIONE INDICE NOTATION: Primo inserimento pulito del record
-            if (laps.length === 0) {
-                laps.push({ time: 0, total: 0 });
-                renderLaps();
-            }
-        }
-
-        function updateTimer() {
-            if (!isRunning) return;
-            elapsedTime = performance.now() - startTime;
-            display.textContent = formatTime(elapsedTime);
-            
-            // CORREZIONE INDICE NOTATION: Accesso sicuro all'elemento dell'array per evitare il crash di Safari
-            if (laps.length > 0) {
-                laps[0].time = elapsedTime - lastLapTotalTime;
-                laps[0].total = elapsedTime;
-                renderLaps();
-            }
-            timerInterval = requestAnimationFrame(updateTimer);
-        }
-
-        function stopTimer() {
-            isRunning = false;
-            cancelAnimationFrame(timerInterval);
-            if (targetSum !== null) {
-                elapsedTime = forceStopValue(elapsedTime, targetSum);
-                display.textContent = formatTime(elapsedMs = elapsedTime);
-                if (laps.length > 0) {
-                    laps[0].time = elapsedTime - lastLapTotalTime;
-                    laps[0].total = elapsedTime;
+            if (touchStartY !== 0) {
+                let currentTouches = e.touches.length > 0 ? e.touches : e.changedTouches;
+                let touchEndY = touchStartY;
+                
+                if (currentTouches && currentTouches.length >= 1) {
+                    touchEndY = currentTouches[0].clientY;
                 }
-            }
-            renderLaps();
-            btnRight.textContent = "Avvia";
-            btnRight.className = "btn btn-start";
-            btnLeft.textContent = "Azzera";
-        }
-
-        function resetTimer() {
-            elapsedTime = 0;
-            lastLapTotalTime = 0;
-            laps = [];
-            display.textContent = "00:00,00";
-            btnLeft.textContent = "Giro";
-            btnLeft.classList.add('disabled');
-            lapsContainer.innerHTML = '';
-        }
-
-        function recordLap() {
-            if (!isRunning) return;
-            lastLapTotalTime = elapsedTime;
-            laps.unshift({ time: 0, total: elapsedTime });
-            renderLaps();
-        }
-
-        function renderLaps() {
-            lapsContainer.innerHTML = '';
-            laps.forEach((item, index) => {
-                let lapNum = laps.length - index;
-                let row = document.createElement('div');
-                row.className = 'lap-row';
                 
-                let label = document.createElement('span');
-                label.className = 'lap-label';
-                label.textContent = `Giro ${lapNum}`;
-                
-                let val = document.createElement('div');
-                val.className = 'lap-time-wrapper';
-                val.textContent = formatTime(item.time);
-                
-                row.appendChild(label);
-                row.appendChild(val);
-                lapsContainer.appendChild(row);
-            });
-        }
+                let swipeDistance = touchEndY - touchStartY;
 
-        function formatTime(ms) {
-            let totalCentiseconds = Math.floor(ms / 10);
-            let centiseconds = totalCentiseconds % 100;
-            let totalSeconds = Math.floor(totalCentiseconds / 100);
-            let seconds = totalSeconds % 60;
-            let minutes = Math.floor(totalSeconds / 60);
-            return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')},${String(centiseconds).padStart(2, '0')}`;
-        }
-
-        function forceStopValue(currentMs, target) {
-            let totalCent = Math.floor(currentMs / 10);
-            let s = Math.floor(totalCent / 100) % 60;
-            let m = Math.floor(totalCent / 6000);
-            let m1 = Math.floor(m / 10); let m2 = m % 10;
-            let s1 = Math.floor(s / 10); let s2 = s % 10;
-            let staticSum = m1 + m2 + s1 + s2;
-            let neededCentisecondsSum = target - staticSum;
-            let currentCent = totalCent % 100;
-            let bestCent = currentCent; let minDiff = 999;
-
-            for (let c = 0; c < 100; c++) {
-                let c1 = Math.floor(c / 10); let c2 = c % 10;
-                if ((c1 + c2) === neededCentisecondsSum) {
-                    let diff = Math.abs(c - currentCent);
-                    if (diff < minDiff) { minDiff = diff; bestCent = c; }
+                if (swipeDistance > 70) {
+                    let currentSavedText = forcedNumber !== null ? ` (Attuale: ${forcedNumber})` : " (Nessuno)";
+                    let input = prompt(`Menu Segreto${currentSavedText}\nInserisci il nuovo numero da forzare:\n(Lascia vuoto per disattivare il trucco)`);
+                    
+                    if (input !== null) {
+                        if (input.trim() === "") {
+                            forcedNumber = null;
+                            localStorage.removeItem('magic_forced_number');
+                        } else {
+                            let num = parseInt(input, 10);
+                            if (!isNaN(num)) {
+                                forcedNumber = num;
+                                localStorage.setItem('magic_forced_number', num);
+                            }
+                        }
+                    }
                 }
+                touchStartY = 0;
             }
-            if (minDiff === 999) return currentMs;
-            return (Math.floor(totalCent / 100) * 1000) + (bestCent * 10);
-        }
+        }, { passive: true });
     </script>
 </body>
 </html>
