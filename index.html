@@ -358,7 +358,7 @@
             btnLeft.textContent = "Giro";
             btnLeft.classList.remove('disabled');
             
-            // CORREZIONE CRASH: Inserimento sicuro e allineato del primo Giro
+            // AGGIUSTAMENTO CHIAVE SAFARI: inserimento corretto nell'array tramite notazione indice [0]
             if (laps.length === 0) {
                 laps.push({ time: 0, total: 0 });
                 renderLaps();
@@ -370,7 +370,7 @@
             elapsedTime = performance.now() - startTime;
             display.textContent = formatTime(elapsedTime);
             
-            // CORREZIONE CRASH: Accesso corretto all'indice dell'array per evitare il blocco di Safari
+            // AGGIUSTAMENTO CHIAVE SAFARI: aggiorna i parametri del giro corrente accedendo in modo sicuro all'array
             if (laps.length > 0) {
                 laps[0].time = elapsedTime - lastLapTotalTime;
                 laps[0].total = elapsedTime;
