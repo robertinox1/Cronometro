@@ -192,15 +192,17 @@
             width: 100%;
             display: block;
         }
+        
+        /* RIPRISTINATE LE ICONE VETTORIALI ORIGINALI A DIMENSIONE PIENA (38PX SVGBOX) */
         .tab-item .tab-svg { 
-            width: 25px; 
-            height: 25px; 
+            width: 38px; 
+            height: 38px; 
         }
         
-        /* DIMENSIONI ADEGUATE A ORE LOCALI, CENTRATURA RISPETTO ALLA SCRITTA ED ELIMINAZIONE SFOCATURE */
+        /* IMMAGINE ADEGUATA PROPORZIONALMENTE ALLA GRANDEZZA REALE DELLE ALTRE ICONE E CENTRATA */
         .tab-item .tab-png-icon {
-            width: 25px; 
-            height: 25px; 
+            width: 38px; 
+            height: 38px; 
             object-fit: contain;
             display: block;
             image-rendering: -webkit-optimize-contrast;
@@ -252,7 +254,7 @@
 
     <div class="tab-bar-container">
         <nav class="tab-bar">
-            <!-- Ore Locali: Bloccato a 25px -->
+            <!-- Ore Locali: Ripristinate le dimensioni d'impatto originarie -->
             <div class="tab-item">
                 <div class="icon-wrapper">
                     <svg class="tab-svg" viewBox="0 0 36 36" fill="none" xmlns="w3.org">
@@ -267,7 +269,7 @@
                 <span>Ore locali</span>
             </div>
             
-            <!-- Sveglie: Immagine PNG allineata e centrata perfettamente sulla scritta -->
+            <!-- Sveglie: Immagine scalata per accoppiarsi simmetricamente alle altre e centrata -->
             <div class="tab-item">
                 <div class="icon-wrapper">
                     <img src="sveglia.png" class="tab-png-icon" alt="Sveglie">
@@ -278,7 +280,7 @@
             <!-- Cronometro -->
             <div class="tab-item active">
                 <div class="icon-wrapper">
-                    <svg class="tab-svg" viewBox="0 0 36 36" fill="none" xmlns="w3.org" style="transform: scale(1.15);"> 
+                    <svg class="tab-svg" viewBox="0 0 36 36" fill="none" xmlns="w3.org" style="transform: scale(1.22);"> 
                         <circle cx="18" cy="19.5" r="8.5" fill="var(--tab-active)" stroke="var(--tab-active)" stroke-width="1.6"/> 
                         <circle cx="18" cy="19.5" r="1.1" fill="black"/>
                         <path d="M18 18.4V14.2" stroke="black" stroke-width="1.6" stroke-linecap="round"/> 
