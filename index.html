@@ -196,16 +196,13 @@
             width: 100%;
             display: block;
         }
-        
-        /* SCALATURA PROPORZIONALE A 22PX PER COMPENSARE LO SPESSORE DELLE ALTRE ICONE VETTORIALI */
+
+        /* IMMAGINE NATIVA SENZA ALCUNA MODIFICA DEI PIXEL O FILTRO DI NITIDEZZA FORZATO */
         .tab-item .tab-png-icon {
-            width: 22px; 
-            height: 22px; 
+            width: 32px; 
+            height: 32px; 
             object-fit: contain;
             display: block;
-            image-rendering: -webkit-optimize-contrast;
-            image-rendering: crisp-edges;
-            image-rendering: pixelated;
         }
 
         .tab-item.active {
@@ -267,7 +264,7 @@
                 <span>Ore locali</span>
             </div>
             
-            <!-- Sveglie: Ridotta e bilanciata simmetricamente a 22px -->
+            <!-- Sveglie: Caricamento puro e centrato della tua foto senza alterazioni geometriche -->
             <div class="tab-item">
                 <div class="icon-wrapper">
                     <img src="sveglia.png" class="tab-png-icon" alt="Sveglie">
