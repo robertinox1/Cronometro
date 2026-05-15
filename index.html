@@ -9,8 +9,10 @@
             --bg-color: #000000;
             --text-color: #ffffff;
             --gray-text: #aeaeb2;
-            --btn-gray: #1c1c1e;
-            --btn-gray-text: #aeaeb2;
+            --btn-gray-dark: #1c1c1e;
+            --btn-gray-dark-text: #8e8e93;
+            --btn-gray-light: #333333;
+            --btn-gray-light-text: #f2f2f7;
             --btn-gray-disabled: #545456;
             --btn-green: #1c3d1e;
             --btn-green-text: #4cd964;
@@ -40,14 +42,13 @@
             overflow: hidden;
         }
 
-        /* Contenitore principale per abbassare numeri e bottoni */
+        /* Spostamento verso il basso del comparto principale */
         .main-content {
             display: flex;
             flex-direction: column;
-            padding-top: 12vh; /* Abbassa tutto il blocco principale */
+            padding-top: 18vh;
         }
 
-        /* Area Display Proporzionata */
         .timer-container {
             display: flex;
             flex-direction: column;
@@ -65,14 +66,13 @@
             white-space: nowrap;
         }
 
-        /* Blocco di controllo principale distanziato dai numeri */
+        /* Spazio verticale aumentato tra numeri e bottoni */
         .controls-wrapper {
             position: relative;
-            margin-top: 55px; /* Aumenta lo spazio tra i numeri e i bottoni */
+            margin-top: 65px;
             margin-bottom: 15px;
         }
 
-        /* Bottoni ingranditi e puliti */
         .controls {
             display: flex;
             justify-content: space-between;
@@ -84,7 +84,7 @@
         }
 
         .btn {
-            width: 82px; /* Leggermente più grandi */
+            width: 82px;
             height: 82px;
             border-radius: 50%;
             border: none;
@@ -102,13 +102,20 @@
             filter: brightness(0.65);
         }
 
+        /* Stile Tasto Giro Iniziale (Spento a zero) */
         .btn-lap {
-            background-color: var(--btn-gray);
-            color: var(--btn-gray-text);
+            background-color: var(--btn-gray-dark);
+            color: var(--btn-gray-dark-text);
         }
         
         .btn-lap:disabled {
             color: var(--btn-gray-disabled);
+        }
+
+        /* Classe dinamica quando il tasto sinistro si attiva/illumina */
+        .btn-lap.active-mode {
+            background-color: var(--btn-gray-light);
+            color: var(--btn-gray-light-text);
         }
 
         .btn-start {
@@ -121,7 +128,6 @@
             color: var(--btn-red-text);
         }
 
-        /* Indicatori a due pallini posizionati in mezzo ai due bottoni */
         .page-dots {
             display: flex;
             gap: 7px;
@@ -144,7 +150,6 @@
             background-color: var(--dot-active);
         }
 
-        /* Lista dei Giri */
         .laps-container {
             flex: 1;
             overflow-y: auto;
@@ -168,18 +173,18 @@
         .lap-label { color: var(--text-color); }
         .lap-time { color: var(--text-color); font-weight: 300; }
 
-        /* Barra delle icone proporzionata senza distorsioni */
+        /* Immagine delle icone portata leggermente più in alto */
         .bottom-tabs {
-            height: 65px; /* Più alta per non sembrare allungata */
+            height: 65px;
             width: 100%;
             background-image: url('tabs.PNG');
-            background-size: cover; /* Evita distorsioni occupando lo spazio */
+            background-size: cover;
             background-position: center bottom;
             background-repeat: no-repeat;
+            margin-bottom: 12px;
             padding-bottom: env(safe-area-inset-bottom);
         }
 
-        /* Menu Segreto (Swipe 2 dita) */
         #secret-menu {
             display: none;
             position: fixed;
@@ -249,7 +254,6 @@
 
     <div class="bottom-tabs"></div>
 
-    <!-- Menu Segreto Forzatura (Swipe 2 dita verso il basso) -->
     <div id="secret-menu">
         <div class="menu-content">
             <h3>Forzatura Cifre</h3>
@@ -284,13 +288,13 @@
         let touchStartY = 0;
         window.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
-                touchStartY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                touchStartY = (e.touches.clientY + e.touches.clientY) / 2;
             }
         }, { passive: true });
 
         window.addEventListener('touchend', (e) => {
             if (touchStartY === 0) return;
-            let touchEndY = (e.changedTouches[0].clientY + (e.changedTouches[1] ? e.changedTouches[1].clientY : e.changedTouches[0].clientY)) / 2;
+            let touchEndY = (e.changedTouches.clientY + (e.changedTouches ? e.changedTouches.clientY : e.changedTouches.clientY)) / 2;
             if (touchEndY - touchStartY > 60) {
                 secretMenu.style.display = 'flex';
             }
@@ -367,7 +371,9 @@
 
                 btnRight.className = "btn btn-stop";
                 btnRight.innerText = "Interrompi";
+                
                 btnLeft.disabled = false;
+                btnLeft.className = "btn btn-lap active-mode"; // Colore chiaro attivo
                 btnLeft.innerText = "Giro";
 
                 if (laps.length === 0) {
@@ -376,7 +382,7 @@
                     
                     liveLapInterval = setInterval(() => {
                         if (laps.length > 0 && isRunning) {
-                            laps[0].time = elapsedTime - totalLapTime;
+                            laps.time = elapsedTime - totalLapTime;
                             renderLaps();
                         }
                     }, 10);
@@ -397,13 +403,15 @@
                 }
 
                 if (laps.length > 0) {
-                    laps[0].time = elapsedTime - totalLapTime;
+                    laps.time = elapsedTime - totalLapTime;
                     renderLaps();
                 }
 
                 display.innerText = formatTime(elapsedTime);
                 btnRight.className = "btn btn-start";
                 btnRight.innerText = "Avvia";
+                
+                btnLeft.className = "btn btn-lap active-mode"; // Rimane chiaro per la modalità "Azzera"
                 btnLeft.innerText = "Azzera";
             }
         });
@@ -416,14 +424,16 @@
                 laps = [];
                 display.innerText = "00:00,00";
                 lapsList.innerHTML = "";
+                
                 btnLeft.disabled = true;
+                btnLeft.className = "btn btn-lap"; // Torna scuro spento a zero
                 btnLeft.innerText = "Giro";
             } else {
                 let currentTotal = elapsedTime;
                 let lapTime = currentTotal - totalLapTime;
                 totalLapTime = currentTotal;
 
-                laps[0].time = lapTime;
+                laps.time = lapTime;
                 laps.unshift({ number: laps.length + 1, time: 0 });
                 renderLaps();
             }
