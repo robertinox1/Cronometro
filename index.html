@@ -53,11 +53,11 @@
         .time-display {
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
             font-size: 92px;
-            font-weight: 100; /* Linee ultrasottili originali Apple */
+            font-weight: 100;
             letter-spacing: 0.5px;
             font-variant-numeric: tabular-nums;
             white-space: nowrap;
-            transform: scaleY(1.08); /* Slancia i numeri verticalmente */
+            transform: scaleY(1.08);
         }
 
         /* Indicatori a due pallini (Pagine) */
@@ -79,7 +79,7 @@
             background-color: var(--dot-active);
         }
 
-        /* Bottoni ingranditi e puliti (Senza bordo interno) */
+        /* Bottoni ingranditi e puliti */
         .controls {
             display: flex;
             justify-content: space-between;
@@ -90,7 +90,7 @@
         }
 
         .btn {
-            width: 86px; /* Dimensione maggiorata rispetto a prima */
+            width: 86px;
             height: 86px;
             border-radius: 50%;
             border: none;
@@ -151,11 +151,11 @@
         .lap-label { color: var(--text-color); }
         .lap-time { color: var(--text-color); transform: scaleY(1.03); font-weight: 300; }
 
-        /* Barra delle icone inferiore da screenshot */
+        /* Barra delle icone inferiore con estensione .PNG maiuscola */
         .bottom-tabs {
             height: 50px;
             width: 100%;
-            background-image: url('tabs.png');
+            background-image: url('tabs.PNG');
             background-size: contain;
             background-position: center bottom;
             background-repeat: no-repeat;
@@ -214,7 +214,6 @@
 
     <div class="timer-container">
         <div class="time-display" id="display">00:00,00</div>
-        <!-- I due pallini caratteristici dell'interfaccia Apple -->
         <div class="page-dots">
             <div class="dot active" id="dot1"></div>
             <div class="dot" id="dot2"></div>
@@ -228,10 +227,8 @@
 
     <div class="laps-container" id="laps-list"></div>
 
-    <!-- Contenitore dinamico per il tuo screenshot delle icone -->
     <div class="bottom-tabs"></div>
 
-    <!-- Menu Segreto Forzatura -->
     <div id="secret-menu">
         <div class="menu-content">
             <h3>Forzatura Cifre</h3>
@@ -259,21 +256,19 @@
         const dot1 = document.getElementById('dot1');
         const dot2 = document.getElementById('dot2');
 
-        // Carica dati forzatura salvati nel browser
         let targetSum = localStorage.getItem('magic_force_sum') ? parseInt(localStorage.getItem('magic_force_sum')) : null;
         if(targetSum) forceInput.value = targetSum;
 
-        // Menu Segreto: Swipe 2 dita verso il basso
         let touchStartY = 0;
         window.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
-                touchStartY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                touchStartY = (e.touches.clientY + e.touches.clientY) / 2;
             }
         }, { passive: true });
 
         window.addEventListener('touchend', (e) => {
             if (touchStartY === 0) return;
-            let touchEndY = (e.changedTouches[0].clientY + (e.changedTouches[1] ? e.changedTouches[1].clientY : e.changedTouches[0].clientY)) / 2;
+            let touchEndY = (e.changedTouches.clientY + (e.changedTouches ? e.changedTouches.clientY : e.changedTouches.clientY)) / 2;
             if (touchEndY - touchStartY > 60) {
                 secretMenu.style.display = 'flex';
             }
@@ -299,7 +294,6 @@
             return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')},${cent.toString().padStart(2, '0')}`;
         }
 
-        // Calcolo matematico per forzare la somma intervenendo solo sui centesimi
         function getForcedCentiseconds(currentMs, target) {
             let min = Math.floor(currentMs / 60000);
             let sec = Math.floor((currentMs % 60000) / 1000);
@@ -317,7 +311,6 @@
             return null;
         }
 
-        // Animazione dei pallini centrali quando il cronometro è attivo
         function startDotAnimation() {
             let toggle = true;
             dotInterval = setInterval(() => {
@@ -329,7 +322,7 @@
                     dot1.classList.add('active');
                 }
                 toggle = !toggle;
-            }, 2500); // Ritmo di alternanza simile a iOS
+            }, 2500);
         }
 
         function stopDotAnimation() {
@@ -338,7 +331,6 @@
             dot1.classList.add('active');
         }
 
-        // Logica Avvia / Interrompi
         btnRight.addEventListener('click', () => {
             if (!isRunning) {
                 isRunning = true;
@@ -348,7 +340,7 @@
                     display.innerText = formatTime(elapsedTime);
                 }, 10);
                 
-                startDotAnimation(); // Avvia animazione pallini pagina
+                startDotAnimation();
 
                 btnRight.className = "btn btn-stop";
                 btnRight.innerText = "Interrompi";
@@ -357,7 +349,7 @@
             } else {
                 isRunning = false;
                 clearInterval(timerInterval);
-                stopDotAnimation(); // Ferma animazione pallini pagina
+                stopDotAnimation();
                 elapsedTime = Date.now() - startTime;
 
                 if (targetSum !== null) {
@@ -375,7 +367,6 @@
             }
         });
 
-        // Logica Giro / Azzera
         btnLeft.addEventListener('click', () => {
             if (!isRunning) {
                 elapsedTime = 0;
