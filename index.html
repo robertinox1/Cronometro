@@ -8,9 +8,10 @@
         :root {
             --bg-color: #000000;
             --text-color: #ffffff;
-            --gray-text: #8e8e93;
-            --btn-gray: #333333;
-            --btn-gray-text: #ffffff;
+            --gray-text: #aeaeb2;
+            --btn-gray: #1c1c1e;
+            --btn-gray-text: #aeaeb2;
+            --btn-gray-disabled: #545456;
             --btn-green: #1c3d1e;
             --btn-green-text: #4cd964;
             --btn-red: #3a1715;
@@ -39,15 +40,20 @@
             overflow: hidden;
         }
 
+        /* Contenitore principale per abbassare numeri e bottoni */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            padding-top: 12vh; /* Abbassa tutto il blocco principale */
+        }
+
         /* Area Display Proporzionata */
         .timer-container {
-            height: 34vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             position: relative;
-            padding-top: 30px;
         }
 
         .time-display {
@@ -59,26 +65,27 @@
             white-space: nowrap;
         }
 
-        /* Blocco di controllo principale */
+        /* Blocco di controllo principale distanziato dai numeri */
         .controls-wrapper {
             position: relative;
+            margin-top: 55px; /* Aumenta lo spazio tra i numeri e i bottoni */
             margin-bottom: 15px;
         }
 
-        /* Bottoni rimpiccioliti all'esatta misura originale */
+        /* Bottoni ingranditi e puliti */
         .controls {
             display: flex;
             justify-content: space-between;
             padding: 0 16px;
-            height: 80px;
+            height: 85px;
             align-items: center;
             position: relative;
             z-index: 2;
         }
 
         .btn {
-            width: 76px;
-            height: 76px;
+            width: 82px; /* Leggermente più grandi */
+            height: 82px;
             border-radius: 50%;
             border: none;
             font-size: 17px;
@@ -101,7 +108,7 @@
         }
         
         .btn-lap:disabled {
-            color: #555555;
+            color: var(--btn-gray-disabled);
         }
 
         .btn-start {
@@ -161,13 +168,13 @@
         .lap-label { color: var(--text-color); }
         .lap-time { color: var(--text-color); font-weight: 300; }
 
-        /* Barra delle icone a tutta larghezza e senza linea superiore */
+        /* Barra delle icone proporzionata senza distorsioni */
         .bottom-tabs {
-            height: 50px;
+            height: 65px; /* Più alta per non sembrare allungata */
             width: 100%;
             background-image: url('tabs.PNG');
-            background-size: 100% 100%;
-            background-position: bottom center;
+            background-size: cover; /* Evita distorsioni occupando lo spazio */
+            background-position: center bottom;
             background-repeat: no-repeat;
             padding-bottom: env(safe-area-inset-bottom);
         }
@@ -221,19 +228,20 @@
 </head>
 <body>
 
-    <div class="timer-container">
-        <div class="time-display" id="display">00:00,00</div>
-    </div>
-
-    <div class="controls-wrapper">
-        <div class="controls">
-            <button class="btn btn-lap" id="btn-left" disabled>Giro</button>
-            <button class="btn btn-start" id="btn-right">Avvia</button>
+    <div class="main-content">
+        <div class="timer-container">
+            <div class="time-display" id="display">00:00,00</div>
         </div>
-        <!-- Pallini posizionati stabilmente al centro tra i bottoni -->
-        <div class="page-dots">
-            <div class="dot active" id="dot1"></div>
-            <div class="dot" id="dot2"></div>
+
+        <div class="controls-wrapper">
+            <div class="controls">
+                <button class="btn btn-lap" id="btn-left" disabled>Giro</button>
+                <button class="btn btn-start" id="btn-right">Avvia</button>
+            </div>
+            <div class="page-dots">
+                <div class="dot active" id="dot1"></div>
+                <div class="dot" id="dot2"></div>
+            </div>
         </div>
     </div>
 
@@ -241,6 +249,7 @@
 
     <div class="bottom-tabs"></div>
 
+    <!-- Menu Segreto Forzatura (Swipe 2 dita verso il basso) -->
     <div id="secret-menu">
         <div class="menu-content">
             <h3>Forzatura Cifre</h3>
@@ -275,13 +284,13 @@
         let touchStartY = 0;
         window.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
-                touchStartY = (e.touches.clientY + e.touches.clientY) / 2;
+                touchStartY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
             }
         }, { passive: true });
 
         window.addEventListener('touchend', (e) => {
             if (touchStartY === 0) return;
-            let touchEndY = (e.changedTouches.clientY + (e.changedTouches ? e.changedTouches.clientY : e.changedTouches.clientY)) / 2;
+            let touchEndY = (e.changedTouches[0].clientY + (e.changedTouches[1] ? e.changedTouches[1].clientY : e.changedTouches[0].clientY)) / 2;
             if (touchEndY - touchStartY > 60) {
                 secretMenu.style.display = 'flex';
             }
@@ -361,12 +370,10 @@
                 btnLeft.disabled = false;
                 btnLeft.innerText = "Giro";
 
-                // Se non ci sono giri inseriti, crea il "Giro 1" dinamico all'avvio
                 if (laps.length === 0) {
                     laps.unshift({ number: 1, time: 0 });
                     renderLaps();
                     
-                    // Mantiene aggiornato il tempo del Giro 1 in tempo reale
                     liveLapInterval = setInterval(() => {
                         if (laps.length > 0 && isRunning) {
                             laps[0].time = elapsedTime - totalLapTime;
@@ -389,7 +396,6 @@
                     }
                 }
 
-                // Sincronizza l'ultimo tempo forzato anche all'interno della lista giri
                 if (laps.length > 0) {
                     laps[0].time = elapsedTime - totalLapTime;
                     renderLaps();
@@ -417,10 +423,7 @@
                 let lapTime = currentTotal - totalLapTime;
                 totalLapTime = currentTotal;
 
-                // Fissa il tempo del giro appena concluso
                 laps[0].time = lapTime;
-
-                // Crea il nuovo giro vuoto che scorrerà sopra il precedente
                 laps.unshift({ number: laps.length + 1, time: 0 });
                 renderLaps();
             }
@@ -431,10 +434,8 @@
             if (laps.length === 0) return;
 
             let minIndex = -1, maxIndex = -1;
-            // Calcolo min/max solo sui giri consolidati (escludendo quello attualmente in corso se ce n'è più di uno)
             if (laps.length > 2) {
                 let min = Infinity, max = -Infinity;
-                // Controlla dal secondo elemento in poi se il cronometro è attivo
                 let startIndex = isRunning ? 1 : 0;
                 for (let i = startIndex; i < laps.length; i++) {
                     if (laps[i].time < min) { min = laps[i].time; minIndex = i; }
