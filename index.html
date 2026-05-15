@@ -169,19 +169,19 @@
         .lap-label { color: var(--text-color); }
         .lap-time { color: var(--text-color); font-weight: 300; }
 
-        /* Immagine icone ridotta di poco verticalmente */
+        /* Icone riproporzionate senza distorsioni e rimpicciolite sull'asse verticale */
         .bottom-tabs {
-            height: 52px;
+            height: 45px; 
             width: 100%;
             background-image: url('tabs.PNG');
-            background-size: cover;
+            background-size: contain; 
             background-position: center bottom;
             background-repeat: no-repeat;
             margin-bottom: 12px;
             padding-bottom: env(safe-area-inset-bottom);
         }
 
-        /* Menu Segreto Integrato */
+        /* Menu Segreto (Swipe a due dita) */
         #secret-menu {
             display: none;
             position: fixed;
@@ -251,7 +251,6 @@
 
     <div class="bottom-tabs"></div>
 
-    <!-- Menu Segreto per la Forzatura Magica -->
     <div id="secret-menu">
         <div class="menu-content">
             <h3>Forzatura Cifre</h3>
@@ -283,21 +282,38 @@
         let targetSum = localStorage.getItem('magic_force_sum') ? parseInt(localStorage.getItem('magic_force_sum')) : null;
         if(targetSum) forceInput.value = targetSum;
 
-        // Gesture: Swipe a due dita verso il basso
+        // Sistema di tracciamento swipe a 2 dita riscritto e corretto
         let touchStartY = 0;
+        let isTwoFingerTouch = false;
+
         window.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
-                touchStartY = (e.touches.clientY + e.touches.clientY) / 2;
+                isTwoFingerTouch = true;
+                touchStartY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+            } else {
+                isTwoFingerTouch = false;
             }
         }, { passive: true });
 
         window.addEventListener('touchend', (e) => {
-            if (touchStartY === 0) return;
-            let touchEndY = (e.changedTouches.clientY + (e.changedTouches ? e.changedTouches.clientY : e.changedTouches.clientY)) / 2;
-            if (touchEndY - touchStartY > 60) {
+            if (!isTwoFingerTouch || touchStartY === 0) return;
+            
+            // Usiamo i dati del tocco finale rimasto o cambiato
+            let currentTouchY = 0;
+            if (e.touches.length > 0) {
+                currentTouchY = e.touches[0].clientY;
+            } else if (e.changedTouches.length > 0) {
+                currentTouchY = e.changedTouches[0].clientY;
+            }
+
+            let deltaY = currentTouchY - touchStartY;
+            // Se lo swipe verso il basso supera i 40px, apre il menu
+            if (deltaY > 40) {
                 secretMenu.style.display = 'flex';
             }
+            
             touchStartY = 0;
+            isTwoFingerTouch = false;
         }, { passive: true });
 
         saveBtn.addEventListener('click', () => {
@@ -381,7 +397,7 @@
                     
                     liveLapInterval = setInterval(() => {
                         if (laps.length > 0 && isRunning) {
-                            laps.time = elapsedTime - totalLapTime;
+                            laps[0].time = elapsedTime - totalLapTime;
                             renderLaps();
                         }
                     }, 10);
@@ -402,7 +418,7 @@
                 }
 
                 if (laps.length > 0) {
-                    laps.time = elapsedTime - totalLapTime;
+                    laps[0].time = elapsedTime - totalLapTime;
                     renderLaps();
                 }
 
@@ -432,7 +448,7 @@
                 let lapTime = currentTotal - totalLapTime;
                 totalLapTime = currentTotal;
 
-                laps.time = lapTime;
+                laps[0].time = lapTime;
                 laps.unshift({ number: laps.length + 1, time: 0 });
                 renderLaps();
             }
