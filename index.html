@@ -65,9 +65,10 @@
             white-space: nowrap;
         }
 
+        /* Blocco bottoni e pallini spostato leggermente più in basso */
         .controls-wrapper {
             position: relative;
-            margin-top: 65px;
+            margin-top: 72px;
             margin-bottom: 15px;
         }
 
@@ -169,13 +170,13 @@
         .lap-label { color: var(--text-color); }
         .lap-time { color: var(--text-color); font-weight: 300; }
 
-        /* Icone riproporzionate per prendere quasi tutta la larghezza schermo senza distorsione */
+        /* Immagine adattata a tutta larghezza e corretta nelle proporzioni */
         .bottom-tabs {
-            height: 45px; 
-            width: 94%; /* Prende quasi tutta la larghezza dello schermo */
-            margin: 0 auto 12px auto; /* Centrata orizzontalmente con margine inferiore */
+            height: 48px; 
+            width: 100%; 
+            margin: 0 0 12px 0;
             background-image: url('tabs.PNG');
-            background-size: contain; /* Proporzioni intatte dell'immagine originale */
+            background-size: 100% 100%; 
             background-position: center bottom;
             background-repeat: no-repeat;
             padding-bottom: env(safe-area-inset-bottom);
