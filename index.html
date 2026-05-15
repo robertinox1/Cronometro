@@ -169,19 +169,18 @@
         .lap-label { color: var(--text-color); }
         .lap-time { color: var(--text-color); font-weight: 300; }
 
-        /* Icone riproporzionate senza distorsioni e rimpicciolite sull'asse verticale */
+        /* Icone riproporzionate per prendere quasi tutta la larghezza schermo senza distorsione */
         .bottom-tabs {
             height: 45px; 
-            width: 100%;
+            width: 94%; /* Prende quasi tutta la larghezza dello schermo */
+            margin: 0 auto 12px auto; /* Centrata orizzontalmente con margine inferiore */
             background-image: url('tabs.PNG');
-            background-size: contain; 
+            background-size: contain; /* Proporzioni intatte dell'immagine originale */
             background-position: center bottom;
             background-repeat: no-repeat;
-            margin-bottom: 12px;
             padding-bottom: env(safe-area-inset-bottom);
         }
 
-        /* Menu Segreto (Swipe a due dita) */
         #secret-menu {
             display: none;
             position: fixed;
@@ -282,14 +281,13 @@
         let targetSum = localStorage.getItem('magic_force_sum') ? parseInt(localStorage.getItem('magic_force_sum')) : null;
         if(targetSum) forceInput.value = targetSum;
 
-        // Sistema di tracciamento swipe a 2 dita riscritto e corretto
         let touchStartY = 0;
         let isTwoFingerTouch = false;
 
         window.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
                 isTwoFingerTouch = true;
-                touchStartY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                touchStartY = (e.touches.clientY + e.touches.clientY) / 2;
             } else {
                 isTwoFingerTouch = false;
             }
@@ -298,16 +296,14 @@
         window.addEventListener('touchend', (e) => {
             if (!isTwoFingerTouch || touchStartY === 0) return;
             
-            // Usiamo i dati del tocco finale rimasto o cambiato
             let currentTouchY = 0;
             if (e.touches.length > 0) {
-                currentTouchY = e.touches[0].clientY;
+                currentTouchY = e.touches.clientY;
             } else if (e.changedTouches.length > 0) {
-                currentTouchY = e.changedTouches[0].clientY;
+                currentTouchY = e.changedTouches.clientY;
             }
 
             let deltaY = currentTouchY - touchStartY;
-            // Se lo swipe verso il basso supera i 40px, apre il menu
             if (deltaY > 40) {
                 secretMenu.style.display = 'flex';
             }
@@ -397,7 +393,7 @@
                     
                     liveLapInterval = setInterval(() => {
                         if (laps.length > 0 && isRunning) {
-                            laps[0].time = elapsedTime - totalLapTime;
+                            laps.time = elapsedTime - totalLapTime;
                             renderLaps();
                         }
                     }, 10);
@@ -418,7 +414,7 @@
                 }
 
                 if (laps.length > 0) {
-                    laps[0].time = elapsedTime - totalLapTime;
+                    laps.time = elapsedTime - totalLapTime;
                     renderLaps();
                 }
 
@@ -448,7 +444,7 @@
                 let lapTime = currentTotal - totalLapTime;
                 totalLapTime = currentTotal;
 
-                laps[0].time = lapTime;
+                laps.time = lapTime;
                 laps.unshift({ number: laps.length + 1, time: 0 });
                 renderLaps();
             }
