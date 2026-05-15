@@ -39,59 +39,46 @@
             overflow: hidden;
         }
 
-        /* Area Display Ultra Sottile e Slanciata */
+        /* Area Display Proporzionata */
         .timer-container {
-            height: 38vh;
+            height: 34vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             position: relative;
-            padding-top: 40px;
+            padding-top: 30px;
         }
 
         .time-display {
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
-            font-size: 92px;
+            font-size: 88px;
             font-weight: 100;
             letter-spacing: 0.5px;
             font-variant-numeric: tabular-nums;
             white-space: nowrap;
-            transform: scaleY(1.08);
         }
 
-        /* Indicatori a due pallini (Pagine) */
-        .page-dots {
-            display: flex;
-            gap: 7px;
-            margin-top: 25px;
+        /* Blocco di controllo principale */
+        .controls-wrapper {
+            position: relative;
+            margin-bottom: 15px;
         }
 
-        .dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background-color: var(--dot-inactive);
-            transition: background-color 0.2s ease;
-        }
-
-        .dot.active {
-            background-color: var(--dot-active);
-        }
-
-        /* Bottoni ingranditi e puliti */
+        /* Bottoni rimpiccioliti all'esatta misura originale */
         .controls {
             display: flex;
             justify-content: space-between;
             padding: 0 16px;
-            margin-bottom: 15px;
-            height: 90px;
+            height: 80px;
             align-items: center;
+            position: relative;
+            z-index: 2;
         }
 
         .btn {
-            width: 86px;
-            height: 86px;
+            width: 76px;
+            height: 76px;
             border-radius: 50%;
             border: none;
             font-size: 17px;
@@ -127,6 +114,29 @@
             color: var(--btn-red-text);
         }
 
+        /* Indicatori a due pallini posizionati in mezzo ai due bottoni */
+        .page-dots {
+            display: flex;
+            gap: 7px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+        }
+
+        .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background-color: var(--dot-inactive);
+            transition: background-color 0.2s ease;
+        }
+
+        .dot.active {
+            background-color: var(--dot-active);
+        }
+
         /* Lista dei Giri */
         .laps-container {
             flex: 1;
@@ -149,17 +159,16 @@
         .lap-row.min { color: var(--btn-green-text); }
         .lap-row.max { color: var(--btn-red-text); }
         .lap-label { color: var(--text-color); }
-        .lap-time { color: var(--text-color); transform: scaleY(1.03); font-weight: 300; }
+        .lap-time { color: var(--text-color); font-weight: 300; }
 
-        /* Barra delle icone inferiore con estensione .PNG maiuscola */
+        /* Barra delle icone a tutta larghezza e senza linea superiore */
         .bottom-tabs {
             height: 50px;
             width: 100%;
             background-image: url('tabs.PNG');
-            background-size: contain;
-            background-position: center bottom;
+            background-size: 100% 100%;
+            background-position: bottom center;
             background-repeat: no-repeat;
-            border-top: 0.5px solid var(--border-color);
             padding-bottom: env(safe-area-inset-bottom);
         }
 
@@ -214,15 +223,18 @@
 
     <div class="timer-container">
         <div class="time-display" id="display">00:00,00</div>
+    </div>
+
+    <div class="controls-wrapper">
+        <div class="controls">
+            <button class="btn btn-lap" id="btn-left" disabled>Giro</button>
+            <button class="btn btn-start" id="btn-right">Avvia</button>
+        </div>
+        <!-- Pallini posizionati stabilmente al centro tra i bottoni -->
         <div class="page-dots">
             <div class="dot active" id="dot1"></div>
             <div class="dot" id="dot2"></div>
         </div>
-    </div>
-
-    <div class="controls">
-        <button class="btn btn-lap" id="btn-left" disabled>Giro</button>
-        <button class="btn btn-start" id="btn-right">Avvia</button>
     </div>
 
     <div class="laps-container" id="laps-list"></div>
@@ -242,6 +254,7 @@
         let elapsedTime = 0;
         let timerInterval = null;
         let dotInterval = null;
+        let liveLapInterval = null;
         let isRunning = false;
         let laps = [];
         let totalLapTime = 0;
@@ -335,6 +348,7 @@
             if (!isRunning) {
                 isRunning = true;
                 startTime = Date.now() - elapsedTime;
+                
                 timerInterval = setInterval(() => {
                     elapsedTime = Date.now() - startTime;
                     display.innerText = formatTime(elapsedTime);
@@ -346,9 +360,24 @@
                 btnRight.innerText = "Interrompi";
                 btnLeft.disabled = false;
                 btnLeft.innerText = "Giro";
+
+                // Se non ci sono giri inseriti, crea il "Giro 1" dinamico all'avvio
+                if (laps.length === 0) {
+                    laps.unshift({ number: 1, time: 0 });
+                    renderLaps();
+                    
+                    // Mantiene aggiornato il tempo del Giro 1 in tempo reale
+                    liveLapInterval = setInterval(() => {
+                        if (laps.length > 0 && isRunning) {
+                            laps[0].time = elapsedTime - totalLapTime;
+                            renderLaps();
+                        }
+                    }, 10);
+                }
             } else {
                 isRunning = false;
                 clearInterval(timerInterval);
+                clearInterval(liveLapInterval);
                 stopDotAnimation();
                 elapsedTime = Date.now() - startTime;
 
@@ -360,6 +389,12 @@
                     }
                 }
 
+                // Sincronizza l'ultimo tempo forzato anche all'interno della lista giri
+                if (laps.length > 0) {
+                    laps[0].time = elapsedTime - totalLapTime;
+                    renderLaps();
+                }
+
                 display.innerText = formatTime(elapsedTime);
                 btnRight.className = "btn btn-start";
                 btnRight.innerText = "Avvia";
@@ -369,6 +404,7 @@
 
         btnLeft.addEventListener('click', () => {
             if (!isRunning) {
+                clearInterval(liveLapInterval);
                 elapsedTime = 0;
                 totalLapTime = 0;
                 laps = [];
@@ -381,7 +417,11 @@
                 let lapTime = currentTotal - totalLapTime;
                 totalLapTime = currentTotal;
 
-                laps.unshift({ number: laps.length + 1, time: lapTime });
+                // Fissa il tempo del giro appena concluso
+                laps[0].time = lapTime;
+
+                // Crea il nuovo giro vuoto che scorrerà sopra il precedente
+                laps.unshift({ number: laps.length + 1, time: 0 });
                 renderLaps();
             }
         });
@@ -391,12 +431,15 @@
             if (laps.length === 0) return;
 
             let minIndex = -1, maxIndex = -1;
-            if (laps.length > 1) {
+            // Calcolo min/max solo sui giri consolidati (escludendo quello attualmente in corso se ce n'è più di uno)
+            if (laps.length > 2) {
                 let min = Infinity, max = -Infinity;
-                laps.forEach((lap, index) => {
-                    if (lap.time < min) { min = lap.time; minIndex = index; }
-                    if (lap.time > max) { max = lap.time; maxIndex = index; }
-                });
+                // Controlla dal secondo elemento in poi se il cronometro è attivo
+                let startIndex = isRunning ? 1 : 0;
+                for (let i = startIndex; i < laps.length; i++) {
+                    if (laps[i].time < min) { min = laps[i].time; minIndex = i; }
+                    if (laps[i].time > max) { max = laps[i].time; maxIndex = i; }
+                }
             }
 
             laps.forEach((lap, index) => {
