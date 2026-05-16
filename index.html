@@ -180,7 +180,7 @@
             overflow-y: auto;
             border-top: 0.5px solid var(--border-color);
             padding: 0 16px;
-            margin-bottom: 80px; /* Margine di sicurezza per non finire dietro la barra delle icone */
+            margin-bottom: 60px; /* Adattato millimetricamente alle icone abbassate */
             touch-action: pan-y; 
         }
 
@@ -204,27 +204,27 @@
             font-weight: 300; 
         }
 
-        /* Fascia nera fissa ancorata al fondo dello schermo per posizionare millimetricamente le icone */
+        /* MODIFICATO: Contenitore abbassato per eliminare il buco nero e poggiare millimetricamente sul notch inferiore */
         .bottom-tabs-container {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 70px; /* Altezza della base */
+            height: 52px; /* Ridotta l'altezza per far collassare lo spazio vuoto in eccesso */
             background-color: #000000;
             z-index: 10;
             display: flex;
-            align-items: flex-start; /* Spinge l'immagine verso l'alto del contenitore */
+            align-items: flex-end; /* Spinge l'immagine a filo con l'estrema base dello schermo */
         }
 
         .bottom-tabs {
-            height: 54px; /* Altezza reale dell'immagine delle icone */
+            height: 48px; /* Altezza bloccata per mantenere le icone proporzionate sopra il notch */
             width: 100%; 
             background-image: url('tabs.PNG');
             background-size: 100% 100%; 
-            background-position: center top;
+            background-position: center bottom;
             background-repeat: no-repeat;
-            margin-bottom: 16px; /* Spazio millimetrico dal bordo fisico per stare sopra il notch */
+            margin-bottom: 4px; /* Rialzo microscopico per evitare sovrapposizioni grafiche con la sbarra Home di iOS */
         }
 
         #secret-menu {
@@ -296,7 +296,6 @@
 
         <div class="laps-container" id="laps-list"></div>
 
-        <!-- Contenitore fisso anti-buco nero -->
         <div class="bottom-tabs-container">
             <div class="bottom-tabs"></div>
         </div>
@@ -333,7 +332,6 @@
         let targetSum = localStorage.getItem('magic_force_sum') ? parseInt(localStorage.getItem('magic_force_sum')) : null;
         if(targetSum) forceInput.value = targetSum;
 
-        // SISTEMA DI BLOCCO ROTAZIONE VERTICALE DI TIPO RIGIDO
         function enforcePortrait() {
             if (window.innerWidth > window.innerHeight) {
                 document.getElementById('app-wrapper').style.width = "100vw";
@@ -343,22 +341,20 @@
         window.addEventListener('resize', enforcePortrait);
         window.addEventListener('orientationchange', enforcePortrait);
 
-        // NUOVO RILEVATORE GESTURE ISOlATO PER IPHONE (Evita conflitti e blocchi nativi del browser)
         let touchStartAvgY = 0;
         window.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
-                e.preventDefault(); // Interrompe i comandi nativi di Safari sullo zoom/scroll a due dita
-                touchStartAvgY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                e.preventDefault(); 
+                touchStartAvgY = (e.touches.clientY + e.touches.clientY) / 2;
             }
         }, { passive: false });
 
         window.addEventListener('touchmove', (e) => {
             if (e.touches.length === 2 && touchStartAvgY !== 0) {
                 e.preventDefault();
-                let currentAvgY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                let currentAvgY = (e.touches.clientY + e.touches.clientY) / 2;
                 let diffY = currentAvgY - touchStartAvgY;
                 
-                // Se trascini verso il basso di 30 pixel, apre all'istante il menu segreto
                 if (diffY > 30) {
                     secretMenu.style.display = 'flex';
                     touchStartAvgY = 0; 
@@ -388,6 +384,7 @@
             return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')},${cent.toString().padStart(2, '0')}`;
         }
 
+        // Algoritmo matematico per calcolare all'istante i millesimi necessari per forzare la somma esatta delle cifre
         function getForcedCentiseconds(currentMs, target) {
             let min = Math.floor(currentMs / 60000);
             let sec = Math.floor((currentMs % 60000) / 1000);
@@ -450,10 +447,9 @@
                 
                 renderLaps();
                 
-                // AZIONA LO SCORRIMENTO IN TEMPO REALE DEL GIRO NELLA LISTA
                 liveLapInterval = setInterval(() => {
                     if (laps.length > 0 && isRunning) {
-                        laps[0].time = elapsedTime - totalLapTime;
+                        laps.time = elapsedTime - totalLapTime;
                         renderLaps();
                     }
                 }, 10);
@@ -474,7 +470,7 @@
                 }
 
                 if (laps.length > 0) {
-                    laps[0].time = elapsedTime - totalLapTime;
+                    laps.time = elapsedTime - totalLapTime;
                     renderLaps();
                 }
 
@@ -504,7 +500,7 @@
                 let lapTime = currentTotal - totalLapTime;
                 totalLapTime = currentTotal;
 
-                laps[0].time = lapTime;
+                laps.time = lapTime;
                 laps.unshift({ number: laps.length + 1, time: 0 });
                 renderLaps();
             }
