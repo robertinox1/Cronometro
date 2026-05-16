@@ -27,8 +27,6 @@
             --border-color: #262629;
             --dot-active: #ffffff;
             --dot-inactive: #3a3a3c;
-            --apple-orange: #ff9f0a;
-            --tab-gray: #8e8e93;
         }
 
         html, body {
@@ -147,7 +145,7 @@
             overflow-y: auto;
             border-top: 0.5px solid var(--border-color);
             padding: 0 16px;
-            margin-bottom: 88px; 
+            margin-bottom: 60px; 
             touch-action: pan-y;
         }
 
@@ -165,46 +163,26 @@
         .lap-row.max { color: var(--btn-red-text); }
         .lap-time { color: var(--text-color); font-weight: 300; }
 
-        /* RICOSTRUZIONE NATIVA DELLA BARRA ICONE: Riempie il vuoto e cancella i buchi neri */
-        .apple-navbar {
+        /* Ripristino posizionamento definitivo screenshot tabs.PNG */
+        .bottom-tabs-container {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 84px; 
-            background-color: #161616;
-            border-top: 0.5px solid var(--border-color);
-            display: flex;
-            justify-content: space-around;
-            padding-top: 6px;
-            z-index: 100;
-            padding-bottom: env(safe-area-inset-bottom);
+            height: 50px; 
+            background-color: #000000;
+            z-index: 10;
         }
 
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            width: 20%;
-            color: var(--tab-gray);
-            font-size: 10px;
-            font-weight: 500;
-            letter-spacing: -0.1px;
+        .bottom-tabs {
+            height: 100%;
+            width: 100%; 
+            background-image: url('tabs.PNG');
+            background-size: 100% 100%; 
+            background-position: center bottom;
+            background-repeat: no-repeat;
         }
 
-        .nav-item svg {
-            width: 24px;
-            height: 24px;
-            margin-bottom: 4px;
-            fill: currentColor;
-        }
-
-        .nav-item.active {
-            color: var(--apple-orange);
-        }
-
-        /* Menu Segreto Popup */
         #secret-menu {
             display: none;
             position: fixed;
@@ -216,11 +194,12 @@
             z-index: 9999;
             justify-content: center;
             align-items: center;
+            touch-action: auto;
         }
 
         .menu-content { background-color: #1c1c1e; padding: 20px; border-radius: 14px; width: 280px; text-align: center; }
         .menu-content h3 { margin-bottom: 15px; font-size: 17px; color: #fff; }
-        .menu-content input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #3a3a3c; background-color: #2c2c2e; color: #fff; font-size: 18px; text-align: center; margin-bottom: 15px; outline: none; -webkit-user-select: text; }
+        .menu-content input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #3a3a3c; background-color: #2c2c2e; color: #fff; font-size: 18px; text-align: center; margin-bottom: 15px; outline: none; }
         .menu-content button { background-color: #0a84ff; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 16px; font-weight: 600; width: 100%; }
     </style>
 </head>
@@ -246,24 +225,8 @@
 
         <div class="laps-container" id="laps-list"></div>
 
-        <!-- Barra delle icone Apple nativa in codice puro -->
-        <div class="apple-navbar">
-            <div class="nav-item">
-                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 13v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-                Ore internazionali
-            </div>
-            <div class="nav-item">
-                <svg viewBox="0 0 24 24"><path d="M22 5.72l-4.6-3.86-1.29 1.53 4.6 3.86L22 5.72zM7.88 3.39L6.6 1.86 2 5.71l1.29 1.53 4.59-3.85zM12.5 8H11v6l5.25 3.15.75-1.23-4.5-2.67V8zM12 4c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7z"/></svg>
-                Sveglia
-            </div>
-            <div class="nav-item active">
-                <svg viewBox="0 0 24 24"><path d="M19.03 7.39l1.42-1.42c-.45-.51-.93-1-1.42-1.42l-1.42 1.42C16.14 4.74 14.17 4 12 4c-5.52 0-10 4.48-10 10s4.48 10 10 10 10-4.48 10-10c0-2.17-.74-4.14-1.97-5.61zM13 10h-2v5h2v-5zm-1 12c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zM11 2h2v2h-2V2z"/></svg>
-                Cronometro
-            </div>
-            <div class="nav-item">
-                <svg viewBox="0 0 24 24"><path d="M6 2h12v2H6V2zm11.55 10.32c.75-.41 1.22-1.25 1.15-2.17-.11-1.41-1.31-2.52-2.72-2.45-1.12.06-2.03.78-2.38 1.77L12 11h-2v2h2v3.5l1.62 1.62c.78.78 2.05.78 2.83 0l1.1-1.1c.78-.78.78-2.05 0-2.83l-1.5-1.37zM12 4c-4.42 0-8 3.58-8 8s3.58 8 8 8 8-3.58 8-8B4 8.42 4 12c0-3.86 3.14-7 7-7s7 3.14 7 7-3.14 7-7 7z"/></svg>
-                Timer
-            </div>
+        <div class="bottom-tabs-container">
+            <div class="bottom-tabs"></div>
         </div>
     </div>
 
@@ -287,25 +250,25 @@
         let targetSum = localStorage.getItem('magic_force_sum') ? parseInt(localStorage.getItem('magic_force_sum')) : null;
         if(targetSum) forceInput.value = targetSum;
 
-        // RISOLUZIONE SWIPE A DUE DITA SENZA FILTRI INTERFERENTI
-        let startY = 0;
+        // RISOLUZIONE FUNZIONAMENTO MENU SEGRETO A DUE DITA
+        let touchStartAvgY = 0;
         window.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
-                startY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                touchStartAvgY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
             }
         }, { passive: true });
 
         window.addEventListener('touchmove', (e) => {
-            if (e.touches.length === 2 && startY !== 0) {
-                let currentY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-                if (currentY - startY > 40) {
+            if (e.touches.length === 2 && touchStartAvgY !== 0) {
+                let currentAvgY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                if (currentAvgY - touchStartAvgY > 35) {
                     secretMenu.style.display = 'flex';
-                    startY = 0;
+                    touchStartAvgY = 0; 
                 }
             }
         }, { passive: true });
 
-        window.addEventListener('touchend', () => { startY = 0; });
+        window.addEventListener('touchend', () => { touchStartAvgY = 0; });
 
         saveBtn.addEventListener('click', () => {
             const val = parseInt(forceInput.value);
