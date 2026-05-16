@@ -334,19 +334,30 @@
                         renderLaps(); 
                     } 
                 }, 10);
-            } else {
+                       } else {
                 isRunning = false; clearInterval(timerInterval); clearInterval(liveLapInterval); clearInterval(dotInterval);
                 dot2.classList.remove('active'); dot1.classList.add('active');
                 elapsedTime = Date.now() - startTime;
+                
+                // Calcola la forzatura magica prima di scrivere il tempo del giro
                 if (targetSum !== null) {
                     let forcedMs = getForcedCentiseconds(elapsedTime, targetSum);
-                    if (forcedMs !== null) elapsedTime = (Math.floor(elapsedTime / 1000) * 1000) + forcedMs;
+                    if (forcedMs !== null) {
+                        elapsedTime = (Math.floor(elapsedTime / 1000) * 1000) + forcedMs;
+                    }
                 }
-                if (laps.length > 0) laps[0].time = elapsedTime - totalLapTime;
+                
+                // Forzatura applicata all'istante anche nella lista dei giri
+                if (laps.length > 0) {
+                    laps.time = elapsedTime - totalLapTime;
+                    renderLaps(); // Sincronizza i due contatori sullo schermo
+                }
+                
                 display.innerText = formatTime(elapsedTime);
                 btnRight.className = "btn btn-start"; btnRight.innerText = "Avvia";
                 btnLeft.className = "btn btn-lap active-mode"; btnLeft.innerText = "Azzera";
             }
+
         });
 
         btnLeft.addEventListener('click', () => {
