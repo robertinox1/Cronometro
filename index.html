@@ -166,7 +166,6 @@
         .lap-row.max { color: var(--btn-red-text); }
         .lap-time { color: var(--text-color); font-weight: 300; }
 
-        /* MODIFICATO: Altezza ridotta di pochissimo sull'asse verticale a 54px */
         .bottom-tabs-container {
             position: fixed;
             bottom: 18px; 
@@ -328,10 +327,8 @@
                 isRunning = false; clearInterval(timerInterval); clearInterval(liveLapInterval); clearInterval(dotInterval);
                 dot2.classList.remove('active'); dot1.classList.add('active');
                 
-                // 1. Calcola il tempo reale allo stop
                 elapsedTime = Date.now() - startTime;
                 
-                // 2. Applica la forzatura numerica magica se attiva
                 if (targetSum !== null) {
                     let forcedMs = getForcedCentiseconds(elapsedTime, targetSum);
                     if (forcedMs !== null) {
@@ -339,12 +336,10 @@
                     }
                 }
                 
-                // 3. Modifica matematicamente l'ultimo giro prima di visualizzarlo
                 if (laps.length > 0) {
                     laps.time = elapsedTime - totalLapTime;
                 }
                 
-                // 4. Disegna a video i due risultati perfettamente identici
                 display.innerText = formatTime(elapsedTime);
                 renderLaps();
                 
