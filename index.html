@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Cronometro</title>
     <style>
         :root {
@@ -10,7 +10,7 @@
             --text-color: #ffffff;
             --gray-text: #aeaeb2;
             --btn-gray-dark: #1c1c1e;
-            --btn-gray-dark-text: #8e8e93;
+            --btn-gray-dark-text: #8e8e93; /* Grigio più chiaro richiesto a cronometro spento */
             --btn-gray-light: #333333;
             --btn-gray-light-text: #f2f2f7;
             --btn-gray-disabled: #545456;
@@ -65,9 +65,10 @@
             white-space: nowrap;
         }
 
+        /* Comparto bottoni spostato ancora più in basso */
         .controls-wrapper {
             position: relative;
-            margin-top: 82px;
+            margin-top: 86px;
             margin-bottom: 15px;
         }
 
@@ -119,9 +120,11 @@
             color: var(--btn-green-text);
         }
 
+        /* Testo "Interrompi" rimpicciolito per l'interfaccia originale */
         .btn-stop {
             background-color: var(--btn-red);
             color: var(--btn-red-text);
+            font-size: 15px; 
         }
 
         .page-dots {
@@ -168,16 +171,16 @@
         .lap-row.max { color: var(--btn-red-text); }
         .lap-label { color: var(--text-color); }
         
-        /* Ripristinato il font originale richiesto per la lista dei giri */
         .lap-time { 
             color: var(--text-color); 
             font-weight: 300; 
         }
 
+        /* Alzata di un millimetro rispetto a prima */
         .bottom-tabs {
             height: 56px; 
             width: 100%; 
-            margin: 0 0 12px 0;
+            margin: 0 0 16px 0; 
             background-image: url('tabs.PNG');
             background-size: 100% 100%; 
             background-position: center bottom;
@@ -185,6 +188,7 @@
             padding-bottom: env(safe-area-inset-bottom);
         }
 
+        /* Menu Segreto per la Forzatura Magica */
         #secret-menu {
             display: none;
             position: fixed;
@@ -285,35 +289,35 @@
         let targetSum = localStorage.getItem('magic_force_sum') ? parseInt(localStorage.getItem('magic_force_sum')) : null;
         if(targetSum) forceInput.value = targetSum;
 
-        let touchStartY = 0;
-        let isTwoFingerTouch = false;
+        // SISTEMA DI RILEVAMENTO SWIPE A 2 DITA INTEGRALE ED INFAILLIBILE
+        let touchStartPoints = [];
 
         window.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
-                isTwoFingerTouch = true;
-                touchStartY = (e.touches.clientY + e.touches.clientY) / 2;
-            } else {
-                isTwoFingerTouch = false;
+                // Registra la posizione iniziale Y di entrambe le dita
+                touchStartPoints = [e.touches[0].clientY, e.touches[1].clientY];
             }
         }, { passive: true });
 
-        window.addEventListener('touchend', (e) => {
-            if (!isTwoFingerTouch || touchStartY === 0) return;
-            
-            let currentTouchY = 0;
-            if (e.touches.length > 0) {
-                currentTouchY = e.touches.clientY;
-            } else if (e.changedTouches.length > 0) {
-                currentTouchY = e.changedTouches.clientY;
+        window.addEventListener('touchmove', (e) => {
+            if (e.touches.length === 2 && touchStartPoints.length === 2) {
+                // Calcola la media dello spostamento corrente
+                let currentY0 = e.touches[0].clientY;
+                let currentY1 = e.touches[1].clientY;
+                
+                let startAvgY = (touchStartPoints[0] + touchStartPoints[1]) / 2;
+                let currentAvgY = (currentY0 + currentY1) / 2;
+                
+                // Se le dita si muovono verso il basso di almeno 30px, attiva il menu immediatamente
+                if (currentAvgY - startAvgY > 30) {
+                    secretMenu.style.display = 'flex';
+                    touchStartPoints = []; // Resetta per evitare attivazioni multiple libere
+                }
             }
+        }, { passive: true });
 
-            let deltaY = currentTouchY - touchStartY;
-            if (deltaY > 40) {
-                secretMenu.style.display = 'flex';
-            }
-            
-            touchStartY = 0;
-            isTwoFingerTouch = false;
+        window.addEventListener('touchend', () => {
+            touchStartPoints = [];
         }, { passive: true });
 
         saveBtn.addEventListener('click', () => {
@@ -397,7 +401,6 @@
                 
                 renderLaps();
                 
-                // Riscritto per far scorrere stabilmente il tempo del giro corrente in tempo reale
                 liveLapInterval = setInterval(() => {
                     if (laps.length > 0 && isRunning) {
                         laps[0].time = elapsedTime - totalLapTime;
