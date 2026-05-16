@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
     <!-- Configurazione Web App a schermo intero -->
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -15,8 +15,8 @@
             --bg-color: #000000;
             --text-color: #ffffff;
             --gray-text: #aeaeb2;
-            --btn-gray-dark: #2a2a2c; /* MODIFICATO: Sfondo grigio leggermente più chiaro a cronometro a 0 */
-            --btn-gray-dark-text: #a0a0a8; /* MODIFICATO: Scritta Giro leggermente più chiara a cronometro a 0 */
+            --btn-gray-dark: #2c2c2e; /* Sfondo Giro modificato: grigio leggermente più chiaro a cronometro a 0 */
+            --btn-gray-dark-text: #aeaeaF; /* Scritta Giro modificata: grigio chiaro visibile a cronometro a 0 */
             --btn-gray-light: #333333;
             --btn-gray-light-text: #f2f2f7;
             --btn-gray-disabled: #545456;
@@ -212,7 +212,7 @@
 
             <div class="controls-wrapper">
                 <div class="controls">
-                    <button class="btn btn-lap" id="btn-left" disabled>Giro</button>
+                    <button class="btn btn-lap" id="btn-left">Giro</button>
                     <button class="btn btn-start" id="btn-right">Avvia</button>
                 </div>
                 <div class="page-dots">
@@ -237,7 +237,7 @@
         </div>
     </div>
 
-    <script {prevent-default-touch}>
+    <script>
         let startTime = 0, elapsedTime = 0, timerInterval = null, dotInterval = null, liveLapInterval = null;
         let isRunning = false, laps = [], totalLapTime = 0;
 
@@ -258,28 +258,25 @@
         window.addEventListener('resize', portraitConstraint);
         window.addEventListener('orientationchange', portraitConstraint);
 
-        let dualTouchStartY = null;
+        // RIPRISTINATO SISTEMA DI RILEVAMENTO GESTURE A DUE DITA SENZA EVENTI PREVENTIVI DANNOSI
+        let touchYStart = 0;
         window.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
-                e.preventDefault(); 
-                dualTouchStartY = (e.touches.clientY + e.touches.clientY) / 2;
+                touchYStart = (e.touches[0].clientY + e.touches[1].clientY) / 2;
             }
-        }, { passive: false });
+        }, { passive: true });
 
         window.addEventListener('touchmove', (e) => {
-            if (e.touches.length === 2 && dualTouchStartY !== null) {
-                e.preventDefault();
-                let currentAvgY = (e.touches.clientY + e.touches.clientY) / 2;
-                let moveY = currentAvgY - dualTouchStartY;
-                
-                if (moveY > 35) {
+            if (e.touches.length === 2 && touchYStart !== 0) {
+                let currentAvgY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                if (currentAvgY - touchYStart > 35) {
                     secretMenu.style.display = 'flex';
-                    dualTouchStartY = null; 
+                    touchYStart = 0; 
                 }
             }
-        }, { passive: false });
+        }, { passive: true });
 
-        window.addEventListener('touchend', () => { dualTouchStartY = null; });
+        window.addEventListener('touchend', () => { touchYStart = 0; });
 
         saveBtn.addEventListener('click', () => {
             const val = parseInt(forceInput.value);
@@ -319,16 +316,17 @@
                 timerInterval = setInterval(() => { elapsedTime = Date.now() - startTime; display.innerText = formatTime(elapsedTime); }, 10);
                 startDotAnimation();
                 btnRight.className = "btn btn-stop"; btnRight.innerText = "Interrompi";
-                btnLeft.disabled = false; btnLeft.className = "btn btn-lap active-mode"; btnLeft.innerText = "Giro";
+                btnLeft.className = "btn btn-lap active-mode"; btnLeft.innerText = "Giro";
                 
                 if (laps.length === 0) {
                     laps.unshift({ number: 1, time: 0 });
                 }
                 renderLaps();
                 
+                // CORE CORRETTO: Avvia stabilmente l'aggiornamento continuo del tempo dei giri live
                 liveLapInterval = setInterval(() => { 
                     if (laps.length > 0 && isRunning) { 
-                        laps.time = elapsedTime - totalLapTime; 
+                        laps[0].time = elapsedTime - totalLapTime; 
                         renderLaps(); 
                     } 
                 }, 10);
@@ -340,7 +338,7 @@
                     let forcedMs = getForcedCentiseconds(elapsedTime, targetSum);
                     if (forcedMs !== null) elapsedTime = (Math.floor(elapsedTime / 1000) * 1000) + forcedMs;
                 }
-                if (laps.length > 0) laps.time = elapsedTime - totalLapTime;
+                if (laps.length > 0) laps[0].time = elapsedTime - totalLapTime;
                 display.innerText = formatTime(elapsedTime);
                 btnRight.className = "btn btn-start"; btnRight.innerText = "Avvia";
                 btnLeft.className = "btn btn-lap active-mode"; btnLeft.innerText = "Azzera";
@@ -349,11 +347,12 @@
 
         btnLeft.addEventListener('click', () => {
             if (!isRunning) {
+                clearInterval(liveLapInterval);
                 elapsedTime = 0; totalLapTime = 0; laps = []; display.innerText = "00:00,00"; lapsList.innerHTML = "";
-                btnLeft.disabled = true; btnLeft.className = "btn btn-lap"; btnLeft.innerText = "Giro";
+                btnLeft.className = "btn btn-lap"; btnLeft.innerText = "Giro";
             } else {
                 let currentTotal = elapsedTime; let lapTime = currentTotal - totalLapTime; totalLapTime = currentTotal;
-                laps.time = lapTime; laps.unshift({ number: laps.length + 1, time: 0 }); renderLaps();
+                laps[0].time = lapTime; laps.unshift({ number: laps.length + 1, time: 0 }); renderLaps();
             }
         });
 
