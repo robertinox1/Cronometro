@@ -186,7 +186,7 @@
             overflow-y: auto;
             border-top: 0.5px solid var(--border-color);
             padding: 0 16px;
-            margin-bottom: 70px; /* Evita sovrapposizioni con la barra inferiore */
+            margin-bottom: 50px; /* Ridotto il margine per adattarsi alle icone abbassate */
             touch-action: pan-y; 
         }
 
@@ -210,20 +210,21 @@
             font-weight: 300; 
         }
 
-        /* Posizionamento perfetto sopra il notch di sistema senza buchi neri */
+        /* Spostata verso il basso: ora è quasi attaccata e fluttua millimetricamente sopra il notch inferiore */
         .bottom-tabs {
             position: fixed;
             bottom: 0;
             left: 0;
-            height: 68px; /* Altezza ottimizzata per includere l'area notch e fluttuare appena sopra */
+            height: 52px; /* Altezza calibrata per la visualizzazione a tutto schermo da Home */
             width: 100%; 
             background-image: url('tabs.PNG');
-            background-size: 100% auto; 
-            background-position: center top;
+            background-size: 100% 100%; 
+            background-position: center bottom;
             background-repeat: no-repeat;
             z-index: 10;
             background-color: #000000;
-            padding-bottom: env(safe-area-inset-bottom);
+            /* Rimosso il calcolo di safe-area che creava il buco vuoto */
+            padding-bottom: 0; 
         }
 
         #secret-menu {
@@ -333,13 +334,13 @@
         let touchStartY = 0;
         window.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
-                touchStartY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                touchStartY = (e.touches.clientY + e.touches.clientY) / 2;
             }
         }, { passive: true });
 
         window.addEventListener('touchmove', (e) => {
             if (e.touches.length === 2 && touchStartY !== 0) {
-                let currentY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                let currentY = (e.touches.clientY + e.touches.clientY) / 2;
                 let moveDistance = currentY - touchStartY;
                 
                 if (moveDistance > 40) {
@@ -433,10 +434,9 @@
                 
                 renderLaps();
                 
-                // TIMER LIVE DEI GIRI PERFETTAMENTE SINCRONIZZATO
                 liveLapInterval = setInterval(() => {
                     if (laps.length > 0 && isRunning) {
-                        laps[0].time = elapsedTime - totalLapTime;
+                        laps.time = elapsedTime - totalLapTime;
                         renderLaps();
                     }
                 }, 10);
@@ -457,7 +457,7 @@
                 }
 
                 if (laps.length > 0) {
-                    laps[0].time = elapsedTime - totalLapTime;
+                    laps.time = elapsedTime - totalLapTime;
                     renderLaps();
                 }
 
@@ -487,7 +487,7 @@
                 let lapTime = currentTotal - totalLapTime;
                 totalLapTime = currentTotal;
 
-                laps[0].time = lapTime;
+                laps.time = lapTime;
                 laps.unshift({ number: laps.length + 1, time: 0 });
                 renderLaps();
             }
