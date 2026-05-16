@@ -15,8 +15,8 @@
             --bg-color: #000000;
             --text-color: #ffffff;
             --gray-text: #aeaeb2;
-            --btn-gray-dark: #2c2c2e; 
-            --btn-gray-dark-text: #aeaeaF; 
+            --btn-gray-dark: #1c1c1e; /* SCURITO: Sfondo Giro a cronometro spento */
+            --btn-gray-dark-text: #8e8e93; /* SCURITO: Testo Giro a cronometro spento */
             --btn-gray-light: #333333;
             --btn-gray-light-text: #f2f2f7;
             --btn-gray-disabled: #545456;
@@ -145,7 +145,7 @@
             overflow-y: auto;
             border-top: 0.5px solid var(--border-color);
             padding: 0 16px;
-            margin-bottom: 65px; 
+            margin-bottom: 95px; 
             touch-action: pan-y;
         }
 
@@ -163,13 +163,13 @@
         .lap-row.max { color: var(--btn-red-text); }
         .lap-time { color: var(--text-color); font-weight: 300; }
 
-        /* RIPRISTINATO: Posizionamento a filo pavimento esatto per eliminare il vuoto */
+        /* RIPRISTINATO: Esatte caratteristiche precedenti approvate (bottom: 18px e altezza: 62px) */
         .bottom-tabs-container {
             position: fixed;
-            bottom: 0;
+            bottom: 18px; 
             left: 0;
             width: 100%;
-            height: 52px; 
+            height: 62px; 
             background-color: #000000;
             z-index: 10;
         }
@@ -323,9 +323,11 @@
                 }
                 renderLaps();
                 
+                // SISTEMATO DEFINITIVAMENTE: il contatore dei giri live ora scorre in tempo reale
+                clearInterval(liveLapInterval);
                 liveLapInterval = setInterval(() => { 
                     if (laps.length > 0 && isRunning) { 
-                        laps.time = elapsedTime - totalLapTime; 
+                        laps[0].time = elapsedTime - totalLapTime; 
                         renderLaps(); 
                     } 
                 }, 10);
@@ -337,7 +339,7 @@
                     let forcedMs = getForcedCentiseconds(elapsedTime, targetSum);
                     if (forcedMs !== null) elapsedTime = (Math.floor(elapsedTime / 1000) * 1000) + forcedMs;
                 }
-                if (laps.length > 0) laps.time = elapsedTime - totalLapTime;
+                if (laps.length > 0) laps[0].time = elapsedTime - totalLapTime;
                 display.innerText = formatTime(elapsedTime);
                 btnRight.className = "btn btn-start"; btnRight.innerText = "Avvia";
                 btnLeft.className = "btn btn-lap active-mode"; btnLeft.innerText = "Azzera";
@@ -351,7 +353,7 @@
                 btnLeft.className = "btn btn-lap"; btnLeft.innerText = "Giro";
             } else {
                 let currentTotal = elapsedTime; let lapTime = currentTotal - totalLapTime; totalLapTime = currentTotal;
-                laps.time = lapTime; laps.unshift({ number: laps.length + 1, time: 0 }); renderLaps();
+                laps[0].time = lapTime; laps.unshift({ number: laps.length + 1, time: 0 }); renderLaps();
             }
         });
 
