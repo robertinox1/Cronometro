@@ -1,0 +1,9 @@
+{
+  "name": "Cronometro Apple",
+  "short_name": "Cronometro",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background-color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "portrait"
+}
