@@ -65,10 +65,9 @@
             white-space: nowrap;
         }
 
-        /* Blocco bottoni e pallini spostato leggermente più in basso */
         .controls-wrapper {
             position: relative;
-            margin-top: 72px;
+            margin-top: 82px;
             margin-bottom: 15px;
         }
 
@@ -168,11 +167,15 @@
         .lap-row.min { color: var(--btn-green-text); }
         .lap-row.max { color: var(--btn-red-text); }
         .lap-label { color: var(--text-color); }
-        .lap-time { color: var(--text-color); font-weight: 300; }
+        
+        /* Ripristinato il font originale richiesto per la lista dei giri */
+        .lap-time { 
+            color: var(--text-color); 
+            font-weight: 300; 
+        }
 
-        /* Immagine adattata a tutta larghezza e corretta nelle proporzioni */
         .bottom-tabs {
-            height: 48px; 
+            height: 56px; 
             width: 100%; 
             margin: 0 0 12px 0;
             background-image: url('tabs.PNG');
@@ -390,15 +393,18 @@
 
                 if (laps.length === 0) {
                     laps.unshift({ number: 1, time: 0 });
-                    renderLaps();
-                    
-                    liveLapInterval = setInterval(() => {
-                        if (laps.length > 0 && isRunning) {
-                            laps.time = elapsedTime - totalLapTime;
-                            renderLaps();
-                        }
-                    }, 10);
                 }
+                
+                renderLaps();
+                
+                // Riscritto per far scorrere stabilmente il tempo del giro corrente in tempo reale
+                liveLapInterval = setInterval(() => {
+                    if (laps.length > 0 && isRunning) {
+                        laps[0].time = elapsedTime - totalLapTime;
+                        renderLaps();
+                    }
+                }, 10);
+                
             } else {
                 isRunning = false;
                 clearInterval(timerInterval);
@@ -415,7 +421,7 @@
                 }
 
                 if (laps.length > 0) {
-                    laps.time = elapsedTime - totalLapTime;
+                    laps[0].time = elapsedTime - totalLapTime;
                     renderLaps();
                 }
 
@@ -445,7 +451,7 @@
                 let lapTime = currentTotal - totalLapTime;
                 totalLapTime = currentTotal;
 
-                laps.time = lapTime;
+                laps[0].time = lapTime;
                 laps.unshift({ number: laps.length + 1, time: 0 });
                 renderLaps();
             }
