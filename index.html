@@ -163,13 +163,13 @@
         .lap-row.max { color: var(--btn-red-text); }
         .lap-time { color: var(--text-color); font-weight: 300; }
 
-        /* MODIFICATO: Altezza ridotta di pochissimo sull'asse verticale a 54px */
+        /* MODIFICATO: Altezza impostata a 58px (via di mezzo esatta richiesta) */
         .bottom-tabs-container {
             position: fixed;
             bottom: 18px; 
             left: 0;
             width: 100%;
-            height: 54px; 
+            height: 58px; 
             background-color: #000000;
             z-index: 10;
         }
@@ -259,17 +259,16 @@
         window.addEventListener('resize', portraitConstraint);
         window.addEventListener('orientationchange', portraitConstraint);
 
-        // RIPRISTINATO: Sistema di rilevamento touch puro a due dita per il menu segreto
         let touchYStart = 0;
         window.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
-                touchYStart = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                touchYStart = (e.touches.clientY + e.touches.clientY) / 2;
             }
         }, { passive: true });
 
         window.addEventListener('touchmove', (e) => {
             if (e.touches.length === 2 && touchYStart !== 0) {
-                let currentAvgY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                let currentAvgY = (e.touches.clientY + e.touches.clientY) / 2;
                 if (currentAvgY - touchYStart > 35) {
                     secretMenu.style.display = 'flex';
                     touchYStart = 0; 
@@ -291,6 +290,7 @@
             return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')},${cent.toString().padStart(2, '0')}`;
         }
 
+        // Calcola in tempo reale i centesimi esatti necessari allo stop per forzare la somma richiesta
         function getForcedCentiseconds(currentMs, target) {
             let min = Math.floor(currentMs / 60000), sec = Math.floor((currentMs % 60000) / 1000);
             let baseSum = Math.floor(min / 10) + (min % 10) + Math.floor(sec / 10) + (sec % 10);
@@ -327,7 +327,7 @@
                 clearInterval(liveLapInterval);
                 liveLapInterval = setInterval(() => { 
                     if (laps.length > 0 && isRunning) { 
-                        laps[0].time = elapsedTime - totalLapTime; 
+                        laps.time = elapsedTime - totalLapTime; 
                         renderLaps(); 
                     } 
                 }, 10);
@@ -339,7 +339,7 @@
                     let forcedMs = getForcedCentiseconds(elapsedTime, targetSum);
                     if (forcedMs !== null) elapsedTime = (Math.floor(elapsedTime / 1000) * 1000) + forcedMs;
                 }
-                if (laps.length > 0) laps[0].time = elapsedTime - totalLapTime;
+                if (laps.length > 0) laps.time = elapsedTime - totalLapTime;
                 display.innerText = formatTime(elapsedTime);
                 btnRight.className = "btn btn-start"; btnRight.innerText = "Avvia";
                 btnLeft.className = "btn btn-lap active-mode"; btnLeft.innerText = "Azzera";
@@ -353,7 +353,7 @@
                 btnLeft.className = "btn btn-lap"; btnLeft.innerText = "Giro";
             } else {
                 let currentTotal = elapsedTime; let lapTime = currentTotal - totalLapTime; totalLapTime = currentTotal;
-                laps[0].time = lapTime; laps.unshift({ number: laps.length + 1, time: 0 }); renderLaps();
+                laps.time = lapTime; laps.unshift({ number: laps.length + 1, time: 0 }); renderLaps();
             }
         });
 
