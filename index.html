@@ -7,8 +7,6 @@
     <!-- Configurazione Web App nativa per iOS -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
-    <!-- Collegamento al file segreto Manifest -->
     <link rel="manifest" href="manifest.json">
     
     <title>Cronometro</title>
@@ -135,7 +133,7 @@
             overflow-y: auto;
             border-top: 0.5px solid var(--border-color);
             padding: 0 16px;
-            margin-bottom: 85px; 
+            margin-bottom: 100px; 
         }
 
         .lap-row {
@@ -152,25 +150,33 @@
         .lap-row.max { color: var(--btn-red-text); }
         .lap-time { color: var(--text-color); font-weight: 300; }
 
-        /* Icone bloccate sul fondo, pronte a scendere quando l'app viene installata */
+        /* MODIFICATO: Estensione del blocco nero per riempire forzatamente il buco hardware di iOS */
         .bottom-tabs-container {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 80px; 
-            background-color: #000000;
+            height: 88px; /* Aumentato per coprire tutta l'area critica */
+            background-color: #000000; /* Nero assoluto per fondersi con lo chassis del telefono */
             z-index: 10;
-            padding-bottom: env(safe-area-inset-bottom);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
         }
 
         .bottom-tabs {
-            height: 52px;
+            height: 54px;
             width: 100%; 
             background-image: url('tabs.PNG');
             background-size: 100% 100%; 
-            background-position: center bottom;
+            background-position: center top;
             background-repeat: no-repeat;
+        }
+        
+        /* Area di compensazione per spingere l'immagine via dal bordo inferiore */
+        .safe-spacer {
+            height: env(safe-area-inset-bottom);
+            background-color: #000000;
         }
 
         #secret-menu {
@@ -184,6 +190,7 @@
             z-index: 9999;
             justify-content: center;
             align-items: center;
+            touch-action: auto;
         }
 
         .menu-content { background-color: #1c1c1e; padding: 20px; border-radius: 14px; width: 280px; text-align: center; }
@@ -216,6 +223,7 @@
 
         <div class="bottom-tabs-container">
             <div class="bottom-tabs"></div>
+            <div class="safe-spacer"></div>
         </div>
     </div>
 
@@ -239,25 +247,38 @@
         let targetSum = localStorage.getItem('magic_force_sum') ? parseInt(localStorage.getItem('magic_force_sum')) : null;
         if(targetSum) forceInput.value = targetSum;
 
-        // RILEVATORE DI TOCCO UNIVERSALE A DUE DITA (Infallibile e pulito)
-        let touchStartPoints = null;
+        function enforcePortrait() {
+            if (window.innerWidth > window.innerHeight) {
+                document.getElementById('app-wrapper').style.width = "100vw";
+                document.getElementById('app-wrapper').style.height = "100vh";
+            }
+        }
+        window.addEventListener('resize', enforcePortrait);
+        window.addEventListener('orientationchange', enforcePortrait);
+
+        let touchStartAvgY = 0;
         window.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
-                touchStartPoints = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                e.preventDefault(); 
+                touchStartAvgY = (e.touches.clientY + e.touches.clientY) / 2;
             }
-        });
+        }, { passive: false });
 
         window.addEventListener('touchmove', (e) => {
-            if (e.touches.length === 2 && touchStartPoints !== null) {
-                let currentAvgY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-                if (currentAvgY - touchStartPoints > 40) {
+            if (e.touches.length === 2 && touchStartAvgY !== 0) {
+                e.preventDefault();
+                let currentAvgY = (e.touches.clientY + e.touches.clientY) / 2;
+                let diffY = currentAvgY - touchStartAvgY;
+                
+                if (diffY > 30) {
                     secretMenu.style.display = 'flex';
-                    touchStartPoints = null;
+                    touchStartAvgY = 0; 
                 }
             }
-        });
+        }, { passive: false });
 
-        window.addEventListener('touchend', () => { touchStartPoints = null; });
+        window.addEventListener('touchend', () => { touchStartAvgY = 0; });
+        window.addEventListener('gesturestart', (e) => e.preventDefault());
 
         saveBtn.addEventListener('click', () => {
             const val = parseInt(forceInput.value);
@@ -300,7 +321,7 @@
                 btnLeft.disabled = false; btnLeft.className = "btn btn-lap active-mode"; btnLeft.innerText = "Giro";
                 if (laps.length === 0) laps.unshift({ number: 1, time: 0 });
                 renderLaps();
-                liveLapInterval = setInterval(() => { if (laps.length > 0 && isRunning) { laps[0].time = elapsedTime - totalLapTime; renderLaps(); } }, 10);
+                liveLapInterval = setInterval(() => { if (laps.length > 0 && isRunning) { laps.time = elapsedTime - totalLapTime; renderLaps(); } }, 10);
             } else {
                 isRunning = false; clearInterval(timerInterval); clearInterval(liveLapInterval); clearInterval(dotInterval);
                 dot2.classList.remove('active'); dot1.classList.add('active');
@@ -309,7 +330,7 @@
                     let forcedMs = getForcedCentiseconds(elapsedTime, targetSum);
                     if (forcedMs !== null) elapsedTime = (Math.floor(elapsedTime / 1000) * 1000) + forcedMs;
                 }
-                if (laps.length > 0) laps[0].time = elapsedTime - totalLapTime;
+                if (laps.length > 0) laps.time = elapsedTime - totalLapTime;
                 display.innerText = formatTime(elapsedTime);
                 btnRight.className = "btn btn-start"; btnRight.innerText = "Avvia";
                 btnLeft.className = "btn btn-lap active-mode"; btnLeft.innerText = "Azzera";
@@ -322,7 +343,7 @@
                 btnLeft.disabled = true; btnLeft.className = "btn btn-lap"; btnLeft.innerText = "Giro";
             } else {
                 let currentTotal = elapsedTime; let lapTime = currentTotal - totalLapTime; totalLapTime = currentTotal;
-                laps[0].time = lapTime; laps.unshift({ number: laps.length + 1, time: 0 }); renderLaps();
+                laps.time = lapTime; laps.unshift({ number: laps.length + 1, time: 0 }); renderLaps();
             }
         });
 
