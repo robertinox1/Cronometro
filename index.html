@@ -3,6 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <!-- Meta-tag fondamentali per nascondere la barra di navigazione quando salvata sulla Home -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    
     <title>Cronometro</title>
     <style>
         :root {
@@ -10,7 +16,7 @@
             --text-color: #ffffff;
             --gray-text: #aeaeb2;
             --btn-gray-dark: #1c1c1e;
-            --btn-gray-dark-text: #b0b0b8; /* Grigio più chiaro richiesto a cronometro spento */
+            --btn-gray-dark-text: #b0b0b8;
             --btn-gray-light: #333333;
             --btn-gray-light-text: #f2f2f7;
             --btn-gray-disabled: #545456;
@@ -30,15 +36,8 @@
             overflow: hidden;
             touch-action: none;
             background-color: #000000;
-        }
-
-        /* Forza la visualizzazione verticale anche se il browser ruota fisicamente */
-        @media screen and (orientation: landscape) {
-            html, body {
-                position: fixed;
-                width: 100vw;
-                height: 100vh;
-            }
+            margin: 0;
+            padding: 0;
         }
 
         * {
@@ -58,22 +57,22 @@
             height: 100vh;
         }
 
-        /* Contenitore strutturale blindato per il blocco orientamento */
         #app-wrapper {
-            width: 100% !important;
-            height: 100% !important;
+            width: 100vw;
+            height: 100vh;
             display: flex;
             flex-direction: column;
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            transform: none !important;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: #000000;
         }
 
         .main-content {
             display: flex;
             flex-direction: column;
             padding-top: 18vh;
+            flex-shrink: 0;
         }
 
         .timer-container {
@@ -180,7 +179,7 @@
             overflow-y: auto;
             border-top: 0.5px solid var(--border-color);
             padding: 0 16px;
-            margin-bottom: 140px; /* Aumentato lo spazio per proteggere le icone alzate ancora di più */
+            margin-bottom: 75px; 
             touch-action: pan-y; 
         }
 
@@ -204,10 +203,10 @@
             font-weight: 300; 
         }
 
-        /* Barra delle icone spostata ancora più sopra, per stare esattamente sopra il notch */
+        /* Posizionamento geometrico fisso per Web App a tutto schermo: azzera il buco nero e si siede perfettamente sopra la linea Home di iOS */
         .bottom-tabs {
             position: absolute;
-            bottom: 74px; 
+            bottom: 12px; 
             left: 0;
             height: 56px; 
             width: 100%; 
@@ -223,8 +222,8 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             background-color: rgba(0, 0, 0, 0.85);
             z-index: 9999;
             justify-content: center;
@@ -308,6 +307,7 @@
         let laps = [];
         let totalLapTime = 0;
 
+        const wrapper = document.getElementById('app-wrapper');
         const display = document.getElementById('display');
         const btnLeft = document.getElementById('btn-left');
         const btnRight = document.getElementById('btn-right');
@@ -321,40 +321,53 @@
         let targetSum = localStorage.getItem('magic_force_sum') ? parseInt(localStorage.getItem('magic_force_sum')) : null;
         if(targetSum) forceInput.value = targetSum;
 
-        // BLOCCO ORIENTAMENTO STILE IPHONE (Forza in modo rigido la visualizzazione portrait ed esclude qualsiasi calcolo landscape)
-        function forceHardwarePortraitLock() {
-            const wrap = document.getElementById('app-wrapper');
-            wrap.style.setProperty('transform', 'none', 'important');
-            wrap.style.setProperty('width', '100vw', 'important');
-            wrap.style.setProperty('height', '100vh', 'important');
-            wrap.style.setProperty('top', '0px', 'important');
-            wrap.style.setProperty('left', '0px', 'important');
+        // BLOCCO ROTAZIONE DI TIPO HARDWARE (Controrotazione matematica se si inclina il telefono)
+        function forceHardwarePortrait() {
+            let width = window.innerWidth;
+            let height = window.innerHeight;
+            
+            if (width > height) {
+                wrapper.style.width = height + "px";
+                wrapper.style.height = width + "px";
+                wrapper.style.top = ((height - width) / 2) + "px";
+                wrapper.style.left = ((width - height) / 2) + "px";
+                wrapper.style.transform = "rotate(-90deg)";
+            } else {
+                wrapper.style.width = "100vw";
+                wrapper.style.height = "100vh";
+                wrapper.style.top = "0px";
+                wrapper.style.left = "0px";
+                wrapper.style.transform = "none";
+            }
         }
-        window.addEventListener('resize', forceHardwarePortraitLock);
-        window.addEventListener('orientationchange', forceHardwarePortraitLock);
-        window.addEventListener('load', forceOrientationPortrait || forceHardwarePortraitLock);
+        window.addEventListener('resize', forceHardwarePortrait);
+        window.addEventListener('orientationchange', forceHardwarePortrait);
+        window.addEventListener('load', forceHardwarePortrait);
 
-        // GESTURE POPUP A 2 DITA INTEGRALE
-        let startY = 0;
+        // RILEVAMENTO GESTURE SWIPE A 2 DITA INTEGRALE
+        let touchStartPositions = null;
         window.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
-                startY = (e.touches.clientY + e.touches.clientY) / 2;
+                touchStartPositions = {
+                    y0: e.touches.clientY,
+                    y1: e.touches.clientY
+                };
             }
         }, { passive: true });
 
         window.addEventListener('touchmove', (e) => {
-            if (e.touches.length === 2 && startY !== 0) {
-                let currentY = (e.touches.clientY + e.touches.clientY) / 2;
-                let swipeDistance = currentY - startY;
+            if (e.touches.length === 2 && touchStartPositions) {
+                let currentAvgY = (e.touches.clientY + e.touches.clientY) / 2;
+                let startAvgY = (touchStartPositions.y0 + touchStartPositions.y1) / 2;
                 
-                if (swipeDistance > 35) {
+                if (currentAvgY - startAvgY > 30) {
                     secretMenu.style.display = 'flex';
-                    startY = 0;
+                    touchStartPositions = null; 
                 }
             }
         }, { passive: true });
 
-        window.addEventListener('touchend', () => { startY = 0; });
+        window.addEventListener('touchend', () => { touchStartPositions = null; });
         window.addEventListener('gesturestart', (e) => e.preventDefault());
 
         saveBtn.addEventListener('click', () => {
