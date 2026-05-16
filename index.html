@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
+    <link rel="apple-touch-icon" href="icon.PNG">
+    <link rel="apple-touch-icon" sizes="180x180" href="icon.PNG">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
@@ -8,10 +11,6 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="manifest" href="manifest.json">
-    
-    <!-- Icona Apple Nativa -->
-    <link rel="apple-touch-icon" href="icon.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
     
     <title>Cronometro</title>
     <style>
@@ -167,12 +166,13 @@
         .lap-row.max { color: var(--btn-red-text); }
         .lap-time { color: var(--text-color); font-weight: 300; }
 
+        /* MODIFICATO: Altezza ridotta di pochissimo sull'asse verticale a 54px */
         .bottom-tabs-container {
             position: fixed;
             bottom: 18px; 
             left: 0;
             width: 100%;
-            height: 58px; 
+            height: 62px; 
             background-color: #000000;
             z-index: 10;
         }
@@ -253,15 +253,6 @@
         let targetSum = localStorage.getItem('magic_force_sum') ? parseInt(localStorage.getItem('magic_force_sum')) : null;
         if(targetSum) forceInput.value = targetSum;
 
-        function portraitConstraint() {
-            if (window.innerWidth > window.innerHeight) {
-                document.getElementById('app-wrapper').style.width = "100vw";
-                document.getElementById('app-wrapper').style.height = "100vh";
-            }
-        }
-        window.addEventListener('resize', portraitConstraint);
-        window.addEventListener('orientationchange', portraitConstraint);
-
         let touchYStart = 0;
         window.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
@@ -337,10 +328,10 @@
                 isRunning = false; clearInterval(timerInterval); clearInterval(liveLapInterval); clearInterval(dotInterval);
                 dot2.classList.remove('active'); dot1.classList.add('active');
                 
-                // 1. Cattura il tempo reale allo stop
+                // 1. Calcola il tempo reale allo stop
                 elapsedTime = Date.now() - startTime;
                 
-                // 2. Calcola l'eventuale valore magico forzato
+                // 2. Applica la forzatura numerica magica se attiva
                 if (targetSum !== null) {
                     let forcedMs = getForcedCentiseconds(elapsedTime, targetSum);
                     if (forcedMs !== null) {
@@ -348,12 +339,12 @@
                     }
                 }
                 
-                // 3. Applica l'esatto tempo forzato all'ultimo giro PRIMA del disegno grafico
+                // 3. Modifica matematicamente l'ultimo giro prima di visualizzarlo
                 if (laps.length > 0) {
-                    laps[0].time = elapsedTime - totalLapTime;
+                    laps.time = elapsedTime - totalLapTime;
                 }
                 
-                // 4. Stampa i risultati identici ovunque
+                // 4. Disegna a video i due risultati perfettamente identici
                 display.innerText = formatTime(elapsedTime);
                 renderLaps();
                 
@@ -369,7 +360,7 @@
                 btnLeft.className = "btn btn-lap"; btnLeft.innerText = "Giro";
             } else {
                 let currentTotal = elapsedTime; let lapTime = currentTotal - totalLapTime; totalLapTime = currentTotal;
-                laps[0].time = lapTime; laps.unshift({ number: laps.length + 1, time: 0 }); renderLaps();
+                laps.time = lapTime; laps.unshift({ number: laps.length + 1, time: 0 }); renderLaps();
             }
         });
 
