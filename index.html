@@ -371,8 +371,14 @@
             }
         });
 
-        function renderLaps() {
+               function renderLaps() {
             lapsList.innerHTML = ""; if (laps.length === 0) return;
+            
+            // Forza il primo giro ad allinearsi al tempo totale quando il cronometro viene fermato
+            if (!isRunning && laps.length > 0) {
+                laps.time = elapsedTime - totalLapTime;
+            }
+
             let minIndex = -1, maxIndex = -1;
             if (laps.length > 2) {
                 let min = Infinity, max = -Infinity;
