@@ -16,7 +16,7 @@
             --text-color: #ffffff;
             --gray-text: #aeaeb2;
             --btn-gray-dark: #1c1c1e;
-            --btn-gray-dark-text: #b0b0b8;
+            --btn-gray-dark-text: #8e8e93; /* Reso grigio chiaro per quando il bottone è disattivato */
             --btn-gray-light: #333333;
             --btn-gray-light-text: #f2f2f7;
             --btn-gray-disabled: #545456;
@@ -125,7 +125,9 @@
         .btn-lap:disabled { color: var(--btn-gray-disabled); }
         .btn-lap.active-mode { background-color: var(--btn-gray-light); color: var(--btn-gray-light-text); }
         .btn-start { background-color: var(--btn-green); color: var(--btn-green-text); }
-        .btn-stop { background-color: var(--btn-red); color: var(--btn-red-text); font-size: 15px; }
+        
+        /* Modificato: scritta rimpicciolita di pochissimo rispetto a prima */
+        .btn-stop { background-color: var(--btn-red); color: var(--btn-red-text); font-size: 14.5px; }
 
         .page-dots {
             display: flex;
@@ -163,7 +165,7 @@
         .lap-row.max { color: var(--btn-red-text); }
         .lap-time { color: var(--text-color); font-weight: 300; }
 
-        /* MODIFICATO: Altezza aumentata a 62px per allungare verticalmente lo screenshot */
+        /* Struttura della barra icone totalmente invariata */
         .bottom-tabs-container {
             position: fixed;
             bottom: 18px; 
@@ -238,7 +240,7 @@
         </div>
     </div>
 
-    <script>
+    <script {prevent-default-touch}>
         let startTime = 0, elapsedTime = 0, timerInterval = null, dotInterval = null, liveLapInterval = null;
         let isRunning = false, laps = [], totalLapTime = 0;
 
@@ -259,25 +261,29 @@
         window.addEventListener('resize', portraitConstraint);
         window.addEventListener('orientationchange', portraitConstraint);
 
-        // GESTURE APERTURA MENU SEGRETO A DUE DITA RIPRISTINATA ED ISOLATA
-        let touchYStart = 0;
+        // RIPRISTINO TOTALE MENU SEGRETO: Intercettazione touch isolata e forzata per Web App iOS
+        let dualTouchStartY = null;
         window.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
-                touchYStart = (e.touches.clientY + e.touches.clientY) / 2;
+                e.preventDefault(); // Blocca lo zoom del browser per liberare il sensore delle dita
+                dualTouchStartY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
             }
-        }, { passive: true });
+        }, { passive: false });
 
         window.addEventListener('touchmove', (e) => {
-            if (e.touches.length === 2 && touchYStart !== 0) {
-                let currentAvgY = (e.touches.clientY + e.touches.clientY) / 2;
-                if (currentAvgY - touchYStart > 35) {
+            if (e.touches.length === 2 && dualTouchStartY !== null) {
+                e.preventDefault();
+                let currentAvgY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                let moveY = currentAvgY - dualTouchStartY;
+                
+                if (moveY > 35) {
                     secretMenu.style.display = 'flex';
-                    touchYStart = 0; 
+                    dualTouchStartY = null; 
                 }
             }
-        }, { passive: true });
+        }, { passive: false });
 
-        window.addEventListener('touchend', () => { touchYStart = 0; });
+        window.addEventListener('touchend', () => { dualTouchStartY = null; });
 
         saveBtn.addEventListener('click', () => {
             const val = parseInt(forceInput.value);
@@ -324,7 +330,6 @@
                 }
                 renderLaps();
                 
-                // ATTIVATO: Gestione dello scorrimento in tempo reale dei giri nella lista
                 liveLapInterval = setInterval(() => { 
                     if (laps.length > 0 && isRunning) { 
                         laps[0].time = elapsedTime - totalLapTime; 
