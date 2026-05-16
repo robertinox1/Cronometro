@@ -15,8 +15,8 @@
             --bg-color: #000000;
             --text-color: #ffffff;
             --gray-text: #aeaeb2;
-            --btn-gray-dark: #1c1c1e;
-            --btn-gray-dark-text: #8e8e93; /* Reso grigio chiaro per quando il bottone è disattivato */
+            --btn-gray-dark: #2a2a2c; /* MODIFICATO: Sfondo grigio leggermente più chiaro a cronometro a 0 */
+            --btn-gray-dark-text: #a0a0a8; /* MODIFICATO: Scritta Giro leggermente più chiara a cronometro a 0 */
             --btn-gray-light: #333333;
             --btn-gray-light-text: #f2f2f7;
             --btn-gray-disabled: #545456;
@@ -125,8 +125,6 @@
         .btn-lap:disabled { color: var(--btn-gray-disabled); }
         .btn-lap.active-mode { background-color: var(--btn-gray-light); color: var(--btn-gray-light-text); }
         .btn-start { background-color: var(--btn-green); color: var(--btn-green-text); }
-        
-        /* Modificato: scritta rimpicciolita di pochissimo rispetto a prima */
         .btn-stop { background-color: var(--btn-red); color: var(--btn-red-text); font-size: 14.5px; }
 
         .page-dots {
@@ -165,7 +163,6 @@
         .lap-row.max { color: var(--btn-red-text); }
         .lap-time { color: var(--text-color); font-weight: 300; }
 
-        /* Struttura della barra icone totalmente invariata */
         .bottom-tabs-container {
             position: fixed;
             bottom: 18px; 
@@ -261,19 +258,18 @@
         window.addEventListener('resize', portraitConstraint);
         window.addEventListener('orientationchange', portraitConstraint);
 
-        // RIPRISTINO TOTALE MENU SEGRETO: Intercettazione touch isolata e forzata per Web App iOS
         let dualTouchStartY = null;
         window.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
-                e.preventDefault(); // Blocca lo zoom del browser per liberare il sensore delle dita
-                dualTouchStartY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                e.preventDefault(); 
+                dualTouchStartY = (e.touches.clientY + e.touches.clientY) / 2;
             }
         }, { passive: false });
 
         window.addEventListener('touchmove', (e) => {
             if (e.touches.length === 2 && dualTouchStartY !== null) {
                 e.preventDefault();
-                let currentAvgY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                let currentAvgY = (e.touches.clientY + e.touches.clientY) / 2;
                 let moveY = currentAvgY - dualTouchStartY;
                 
                 if (moveY > 35) {
@@ -332,7 +328,7 @@
                 
                 liveLapInterval = setInterval(() => { 
                     if (laps.length > 0 && isRunning) { 
-                        laps[0].time = elapsedTime - totalLapTime; 
+                        laps.time = elapsedTime - totalLapTime; 
                         renderLaps(); 
                     } 
                 }, 10);
@@ -344,7 +340,7 @@
                     let forcedMs = getForcedCentiseconds(elapsedTime, targetSum);
                     if (forcedMs !== null) elapsedTime = (Math.floor(elapsedTime / 1000) * 1000) + forcedMs;
                 }
-                if (laps.length > 0) laps[0].time = elapsedTime - totalLapTime;
+                if (laps.length > 0) laps.time = elapsedTime - totalLapTime;
                 display.innerText = formatTime(elapsedTime);
                 btnRight.className = "btn btn-start"; btnRight.innerText = "Avvia";
                 btnLeft.className = "btn btn-lap active-mode"; btnLeft.innerText = "Azzera";
@@ -357,7 +353,7 @@
                 btnLeft.disabled = true; btnLeft.className = "btn btn-lap"; btnLeft.innerText = "Giro";
             } else {
                 let currentTotal = elapsedTime; let lapTime = currentTotal - totalLapTime; totalLapTime = currentTotal;
-                laps[0].time = lapTime; laps.unshift({ number: laps.length + 1, time: 0 }); renderLaps();
+                laps.time = lapTime; laps.unshift({ number: laps.length + 1, time: 0 }); renderLaps();
             }
         });
 
