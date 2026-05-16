@@ -49,15 +49,16 @@
             height: 100vh;
         }
 
-        /* Contenitore principale orientabile via codice */
+        /* Wrapper blindato per bloccare l'orientamento */
         #app-wrapper {
-            width: 100%;
-            height: 100%;
+            width: 100% !important;
+            height: 100% !important;
             display: flex;
             flex-direction: column;
-            position: absolute;
-            top: 0;
-            left: 0;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            transform: none !important;
         }
 
         .main-content {
@@ -170,7 +171,7 @@
             overflow-y: auto;
             border-top: 0.5px solid var(--border-color);
             padding: 0 16px;
-            margin-bottom: 90px; /* Lascia lo spazio fisso per non coprire le icone */
+            margin-bottom: 110px; /* Aumentato spazio per non toccare le icone sollevate */
             touch-action: pan-y; 
         }
 
@@ -194,10 +195,10 @@
             font-weight: 300; 
         }
 
-        /* Posizionamento assoluto sollevato dal bordo inferiore per evitare tagli */
+        /* Barra delle icone alzata ulteriormente per totale visibilità */
         .bottom-tabs {
             position: absolute;
-            bottom: 30px;
+            bottom: 45px; 
             left: 0;
             height: 56px; 
             width: 100%; 
@@ -208,7 +209,6 @@
             z-index: 10;
         }
 
-        /* Menu Segreto Popup */
         #secret-menu {
             display: none;
             position: fixed;
@@ -258,7 +258,6 @@
 </head>
 <body oncontextmenu="return false;">
 
-    <!-- Wrapper strutturale per forzare l'orientamento dritto -->
     <div id="app-wrapper">
         <div class="main-content">
             <div class="timer-container">
@@ -300,7 +299,6 @@
         let laps = [];
         let totalLapTime = 0;
 
-        const wrapper = document.getElementById('app-wrapper');
         const display = document.getElementById('display');
         const btnLeft = document.getElementById('btn-left');
         const btnRight = document.getElementById('btn-right');
@@ -314,44 +312,29 @@
         let targetSum = localStorage.getItem('magic_force_sum') ? parseInt(localStorage.getItem('magic_force_sum')) : null;
         if(targetSum) forceInput.value = targetSum;
 
-        // FUNZIONE MECCANICA DI BLOCCO ORIENTAMENTO VERTICALE INTEGRALE
-        function lockOrientation() {
-            let w = window.innerWidth;
-            let h = window.innerHeight;
-            if (w > h) {
-                // Se è in orizzontale, forza la rotazione contraria per raddrizzare la grafica
-                wrapper.style.width = h + 'px';
-                wrapper.style.height = w + 'px';
-                wrapper.style.transform = 'rotate(-90deg)';
-                wrapper.style.transformOrigin = '0 0';
-                wrapper.style.top = h + 'px';
-                wrapper.style.left = '0px';
-            } else {
-                // Ripristina se torna dritto
-                wrapper.style.width = '100%';
-                wrapper.style.height = '100%';
-                wrapper.style.transform = 'none';
-                wrapper.style.top = '0px';
-                wrapper.style.left = '0px';
+        // FORCE SCREEN PORTRAIT LOCK (Annulla via codice qualsiasi tentativo di rotazione orizzontale o speculare)
+        function securePortrait() {
+            if (window.innerHeight < window.innerWidth) {
+                document.getElementById('app-wrapper').style.setProperty('transform', 'none', 'important');
+                document.getElementById('app-wrapper').style.setProperty('width', '100vw', 'important');
+                document.getElementById('app-wrapper').style.setProperty('height', '100vh', 'important');
             }
         }
-        window.addEventListener('resize', lockOrientation);
-        window.addEventListener('load', lockOrientation);
+        window.addEventListener('resize', securePortrait);
+        window.addEventListener('orientationchange', securePortrait);
 
-        // RIPRISTINO GESTURE SWIPE A 2 DITA MATEMATICO PULITO
+        // RIPRISTINO INTERRUTTORE DI GESTURE SWIPE A 2 DITA SENZA MODIFICHE
         let yStart = 0;
         window.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
-                yStart = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                yStart = (e.touches.clientY + e.touches.clientY) / 2;
             }
         }, { passive: true });
 
         window.addEventListener('touchmove', (e) => {
             if (e.touches.length === 2 && yStart !== 0) {
-                let yCurrent = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                let yCurrent = (e.touches.clientY + e.touches.clientY) / 2;
                 let diffY = yCurrent - yStart;
-                
-                // Se le due dita scendono di oltre 40px apre immediatamente il menu
                 if (diffY > 40) {
                     secretMenu.style.display = 'flex';
                     yStart = 0; 
@@ -359,10 +342,7 @@
             }
         }, { passive: true });
 
-        window.addEventListener('touchend', () => {
-            yStart = 0;
-        }, { passive: true });
-
+        window.addEventListener('touchend', () => { yStart = 0; }, { passive: true });
         window.addEventListener('gesturestart', (e) => e.preventDefault());
 
         saveBtn.addEventListener('click', () => {
@@ -448,7 +428,7 @@
                 
                 liveLapInterval = setInterval(() => {
                     if (laps.length > 0 && isRunning) {
-                        laps[0].time = elapsedTime - totalLapTime;
+                        laps.time = elapsedTime - totalLapTime;
                         renderLaps();
                     }
                 }, 10);
@@ -469,7 +449,7 @@
                 }
 
                 if (laps.length > 0) {
-                    laps[0].time = elapsedTime - totalLapTime;
+                    laps.time = elapsedTime - totalLapTime;
                     renderLaps();
                 }
 
@@ -499,7 +479,7 @@
                 let lapTime = currentTotal - totalLapTime;
                 totalLapTime = currentTotal;
 
-                laps[0].time = lapTime;
+                laps.time = lapTime;
                 laps.unshift({ number: laps.length + 1, time: 0 });
                 renderLaps();
             }
