@@ -4,10 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
-    <!-- Meta-tag fondamentali per nascondere la barra di navigazione quando salvata sulla Home -->
+    <!-- Forza la modalità Web App a schermo intero senza barre quando salvata sulla Home -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="mobile-web-app-capable" content="yes">
     
     <title>Cronometro</title>
     <style>
@@ -29,13 +28,14 @@
             --dot-inactive: #3a3a3c;
         }
 
+        /* Blocco preventivo di scroll e zoom del browser */
         html, body {
-            position: fixed;
             width: 100%;
             height: 100%;
             overflow: hidden;
-            touch-action: none;
             background-color: #000000;
+            position: fixed;
+            touch-action: none;
             margin: 0;
             padding: 0;
         }
@@ -57,15 +57,22 @@
             height: 100vh;
         }
 
-        #app-wrapper {
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            position: absolute;
+        /* Schermata di blocco rotazione: se girato, oscura tutto per costringere a rimetterlo verticale */
+        #orientation-blocker {
+            display: none;
+            position: fixed;
             top: 0;
             left: 0;
+            width: 100vw;
+            height: 100vh;
             background-color: #000000;
+            z-index: 10000;
+        }
+
+        @media screen and (orientation: landscape) {
+            #orientation-blocker {
+                display: block;
+            }
         }
 
         .main-content {
@@ -179,7 +186,7 @@
             overflow-y: auto;
             border-top: 0.5px solid var(--border-color);
             padding: 0 16px;
-            margin-bottom: 75px; 
+            margin-bottom: 70px; /* Evita sovrapposizioni con la barra inferiore */
             touch-action: pan-y; 
         }
 
@@ -203,18 +210,20 @@
             font-weight: 300; 
         }
 
-        /* Posizionamento geometrico fisso per Web App a tutto schermo: azzera il buco nero e si siede perfettamente sopra la linea Home di iOS */
+        /* Posizionamento perfetto sopra il notch di sistema senza buchi neri */
         .bottom-tabs {
-            position: absolute;
-            bottom: 12px; 
+            position: fixed;
+            bottom: 0;
             left: 0;
-            height: 56px; 
+            height: 68px; /* Altezza ottimizzata per includere l'area notch e fluttuare appena sopra */
             width: 100%; 
             background-image: url('tabs.PNG');
-            background-size: 100% 100%; 
-            background-position: center bottom;
+            background-size: 100% auto; 
+            background-position: center top;
             background-repeat: no-repeat;
             z-index: 10;
+            background-color: #000000;
+            padding-bottom: env(safe-area-inset-bottom);
         }
 
         #secret-menu {
@@ -266,28 +275,28 @@
 </head>
 <body oncontextmenu="return false;">
 
-    <div id="app-wrapper">
-        <div class="main-content">
-            <div class="timer-container">
-                <div class="time-display" id="display">00:00,00</div>
-            </div>
+    <div id="orientation-blocker"></div>
 
-            <div class="controls-wrapper">
-                <div class="controls">
-                    <button class="btn btn-lap" id="btn-left" disabled>Giro</button>
-                    <button class="btn btn-start" id="btn-right">Avvia</button>
-                </div>
-                <div class="page-dots">
-                    <div class="dot active" id="dot1"></div>
-                    <div class="dot" id="dot2"></div>
-                </div>
-            </div>
+    <div class="main-content">
+        <div class="timer-container">
+            <div class="time-display" id="display">00:00,00</div>
         </div>
 
-        <div class="laps-container" id="laps-list"></div>
-
-        <div class="bottom-tabs"></div>
+        <div class="controls-wrapper">
+            <div class="controls">
+                <button class="btn btn-lap" id="btn-left" disabled>Giro</button>
+                <button class="btn btn-start" id="btn-right">Avvia</button>
+            </div>
+            <div class="page-dots">
+                <div class="dot active" id="dot1"></div>
+                <div class="dot" id="dot2"></div>
+            </div>
+        </div>
     </div>
+
+    <div class="laps-container" id="laps-list"></div>
+
+    <div class="bottom-tabs"></div>
 
     <div id="secret-menu">
         <div class="menu-content">
@@ -307,7 +316,6 @@
         let laps = [];
         let totalLapTime = 0;
 
-        const wrapper = document.getElementById('app-wrapper');
         const display = document.getElementById('display');
         const btnLeft = document.getElementById('btn-left');
         const btnRight = document.getElementById('btn-right');
@@ -321,53 +329,27 @@
         let targetSum = localStorage.getItem('magic_force_sum') ? parseInt(localStorage.getItem('magic_force_sum')) : null;
         if(targetSum) forceInput.value = targetSum;
 
-        // BLOCCO ROTAZIONE DI TIPO HARDWARE (Controrotazione matematica se si inclina il telefono)
-        function forceHardwarePortrait() {
-            let width = window.innerWidth;
-            let height = window.innerHeight;
-            
-            if (width > height) {
-                wrapper.style.width = height + "px";
-                wrapper.style.height = width + "px";
-                wrapper.style.top = ((height - width) / 2) + "px";
-                wrapper.style.left = ((width - height) / 2) + "px";
-                wrapper.style.transform = "rotate(-90deg)";
-            } else {
-                wrapper.style.width = "100vw";
-                wrapper.style.height = "100vh";
-                wrapper.style.top = "0px";
-                wrapper.style.left = "0px";
-                wrapper.style.transform = "none";
-            }
-        }
-        window.addEventListener('resize', forceHardwarePortrait);
-        window.addEventListener('orientationchange', forceHardwarePortrait);
-        window.addEventListener('load', forceHardwarePortrait);
-
-        // RILEVAMENTO GESTURE SWIPE A 2 DITA INTEGRALE
-        let touchStartPositions = null;
+        // GESTURE APERTURA MENU SEGRETO A 2 DITA INTEGRALE NATIVA
+        let touchStartY = 0;
         window.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
-                touchStartPositions = {
-                    y0: e.touches.clientY,
-                    y1: e.touches.clientY
-                };
+                touchStartY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
             }
         }, { passive: true });
 
         window.addEventListener('touchmove', (e) => {
-            if (e.touches.length === 2 && touchStartPositions) {
-                let currentAvgY = (e.touches.clientY + e.touches.clientY) / 2;
-                let startAvgY = (touchStartPositions.y0 + touchStartPositions.y1) / 2;
+            if (e.touches.length === 2 && touchStartY !== 0) {
+                let currentY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                let moveDistance = currentY - touchStartY;
                 
-                if (currentAvgY - startAvgY > 30) {
+                if (moveDistance > 40) {
                     secretMenu.style.display = 'flex';
-                    touchStartPositions = null; 
+                    touchStartY = 0;
                 }
             }
         }, { passive: true });
 
-        window.addEventListener('touchend', () => { touchStartPositions = null; });
+        window.addEventListener('touchend', () => { touchStartY = 0; });
         window.addEventListener('gesturestart', (e) => e.preventDefault());
 
         saveBtn.addEventListener('click', () => {
@@ -451,9 +433,10 @@
                 
                 renderLaps();
                 
+                // TIMER LIVE DEI GIRI PERFETTAMENTE SINCRONIZZATO
                 liveLapInterval = setInterval(() => {
                     if (laps.length > 0 && isRunning) {
-                        laps.time = elapsedTime - totalLapTime;
+                        laps[0].time = elapsedTime - totalLapTime;
                         renderLaps();
                     }
                 }, 10);
@@ -474,7 +457,7 @@
                 }
 
                 if (laps.length > 0) {
-                    laps.time = elapsedTime - totalLapTime;
+                    laps[0].time = elapsedTime - totalLapTime;
                     renderLaps();
                 }
 
@@ -504,7 +487,7 @@
                 let lapTime = currentTotal - totalLapTime;
                 totalLapTime = currentTotal;
 
-                laps.time = lapTime;
+                laps[0].time = lapTime;
                 laps.unshift({ number: laps.length + 1, time: 0 });
                 renderLaps();
             }
