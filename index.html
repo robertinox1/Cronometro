@@ -346,6 +346,8 @@
                 }
                 if (laps.length > 0) laps[0].time = elapsedTime - totalLapTime;
                 display.innerText = formatTime(elapsedTime);
+                    if (document.querySelector('.lap-row .lap-time')) document.querySelector('.lap-row .lap-time').innerText = display.innerText;
+
                 btnRight.className = "btn btn-start"; btnRight.innerText = "Avvia";
                 btnLeft.className = "btn btn-lap active-mode"; btnLeft.innerText = "Azzera";
             }
