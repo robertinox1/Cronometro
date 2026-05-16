@@ -52,16 +52,15 @@
             overflow: hidden;
         }
 
-        /* Blocco rotazione: forza il display in verticale anche se il telefono gira */
-        @media screen and (orientation: landscape) {
+        /* Blocco rotazione totale: blocca lo schermo dritto anche se il telefono viene girato di lato o sottosopra */
+        @media screen and (orientation: landscape), screen and (orientation: portrait-secondary) {
             body {
-                transform: rotate(-90deg);
-                transform-origin: left top;
-                width: 100vh;
-                height: 100vw;
-                position: absolute;
-                top: 100%;
+                transform: none !important;
+                position: fixed;
+                top: 0;
                 left: 0;
+                width: 100%;
+                height: 100%;
             }
         }
 
@@ -175,7 +174,6 @@
             overflow-y: auto;
             border-top: 0.5px solid var(--border-color);
             padding: 0 16px;
-            /* Permette lo scorrimento dei soli giri bloccando il resto */
             touch-action: pan-y; 
         }
 
@@ -199,16 +197,15 @@
             font-weight: 300; 
         }
 
-        /* Alzata di un ulteriore millimetro verso l'alto */
+        /* Icone sollevate e protette dal taglio della barra inferiore degli smartphone */
         .bottom-tabs {
             height: 56px; 
             width: 100%; 
-            margin: 0 0 20px 0; 
+            margin: 0 0 24px 0; /* Rialzate stabilmente sopra il bordo inferiore */
             background-image: url('tabs.PNG');
             background-size: 100% 100%; 
             background-position: center bottom;
             background-repeat: no-repeat;
-            padding-bottom: env(safe-area-inset-bottom);
         }
 
         #secret-menu {
@@ -222,7 +219,7 @@
             z-index: 9999;
             justify-content: center;
             align-items: center;
-            touch-action: auto; /* Permette l'inserimento del testo nel menu */
+            touch-action: auto;
         }
 
         .menu-content {
@@ -258,7 +255,7 @@
         }
     </style>
 </head>
-<body oncontextmenu="return false;"> <!-- Blocco del menu a tendina con click prolungato -->
+<body oncontextmenu="return false;">
 
     <div class="main-content">
         <div class="timer-container">
@@ -312,19 +309,18 @@
         let targetSum = localStorage.getItem('magic_force_sum') ? parseInt(localStorage.getItem('magic_force_sum')) : null;
         if(targetSum) forceInput.value = targetSum;
 
-        // Gestione forzata gesture swipe 2 dita verso il basso
         let touchStartPoints = [];
 
         window.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
-                touchStartPoints = [e.touches[0].clientY, e.touches[1].clientY];
+                touchStartPoints = [e.touches.clientY, e.touches.clientY];
             }
         }, { passive: true });
 
         window.addEventListener('touchmove', (e) => {
             if (e.touches.length === 2 && touchStartPoints.length === 2) {
-                let currentAvgY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-                let startAvgY = (touchStartPoints[0] + touchStartPoints[1]) / 2;
+                let currentAvgY = (e.touches.clientY + e.touches.clientY) / 2;
+                let startAvgY = (touchStartPoints + touchStartPoints) / 2;
                 
                 if (currentAvgY - startAvgY > 30) {
                     secretMenu.style.display = 'flex';
@@ -337,7 +333,6 @@
             touchStartPoints = [];
         }, { passive: true });
 
-        // Blocco preventivo dello zoom a due dita nativo del browser
         window.addEventListener('gesturestart', (e) => {
             e.preventDefault();
         });
@@ -425,7 +420,7 @@
                 
                 liveLapInterval = setInterval(() => {
                     if (laps.length > 0 && isRunning) {
-                        laps[0].time = elapsedTime - totalLapTime;
+                        laps.time = elapsedTime - totalLapTime;
                         renderLaps();
                     }
                 }, 10);
@@ -446,7 +441,7 @@
                 }
 
                 if (laps.length > 0) {
-                    laps[0].time = elapsedTime - totalLapTime;
+                    laps.time = elapsedTime - totalLapTime;
                     renderLaps();
                 }
 
@@ -476,7 +471,7 @@
                 let lapTime = currentTotal - totalLapTime;
                 totalLapTime = currentTotal;
 
-                laps[0].time = lapTime;
+                laps.time = lapTime;
                 laps.unshift({ number: laps.length + 1, time: 0 });
                 renderLaps();
             }
