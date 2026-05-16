@@ -10,7 +10,7 @@
             --text-color: #ffffff;
             --gray-text: #aeaeb2;
             --btn-gray-dark: #1c1c1e;
-            --btn-gray-dark-text: #8e8e93;
+            --btn-gray-dark-text: #b0b0b8; /* Grigio più chiaro richiesto a cronometro spento */
             --btn-gray-light: #333333;
             --btn-gray-light-text: #f2f2f7;
             --btn-gray-disabled: #545456;
@@ -32,6 +32,15 @@
             background-color: #000000;
         }
 
+        /* Forza la visualizzazione verticale anche se il browser ruota fisicamente */
+        @media screen and (orientation: landscape) {
+            html, body {
+                position: fixed;
+                width: 100vw;
+                height: 100vh;
+            }
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -49,14 +58,16 @@
             height: 100vh;
         }
 
+        /* Contenitore strutturale blindato per il blocco orientamento */
         #app-wrapper {
-            width: 100%;
-            height: 100%;
+            width: 100% !important;
+            height: 100% !important;
             display: flex;
             flex-direction: column;
-            position: absolute;
-            top: 0;
-            left: 0;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            transform: none !important;
         }
 
         .main-content {
@@ -169,7 +180,7 @@
             overflow-y: auto;
             border-top: 0.5px solid var(--border-color);
             padding: 0 16px;
-            margin-bottom: 125px; /* Spazio aumentato per proteggere le icone sollevate */
+            margin-bottom: 140px; /* Aumentato lo spazio per proteggere le icone alzate ancora di più */
             touch-action: pan-y; 
         }
 
@@ -193,10 +204,10 @@
             font-weight: 300; 
         }
 
-        /* Rialzata sopra il notch/home indicator di iOS */
+        /* Barra delle icone spostata ancora più sopra, per stare esattamente sopra il notch */
         .bottom-tabs {
             position: absolute;
-            bottom: 58px; 
+            bottom: 74px; 
             left: 0;
             height: 56px; 
             width: 100%; 
@@ -310,28 +321,30 @@
         let targetSum = localStorage.getItem('magic_force_sum') ? parseInt(localStorage.getItem('magic_force_sum')) : null;
         if(targetSum) forceInput.value = targetSum;
 
-        // SISTEMA DI BLOCCO ROTAZIONE DIRETTO (Forza l'orientamento verticale rigido a prescindere dal movimento)
-        function forceOrientationPortrait() {
-            if (window.innerWidth > window.innerHeight) {
-                document.getElementById('app-wrapper').style.width = '100vw';
-                document.getElementById('app-wrapper').style.height = '100vh';
-            }
+        // BLOCCO ORIENTAMENTO STILE IPHONE (Forza in modo rigido la visualizzazione portrait ed esclude qualsiasi calcolo landscape)
+        function forceHardwarePortraitLock() {
+            const wrap = document.getElementById('app-wrapper');
+            wrap.style.setProperty('transform', 'none', 'important');
+            wrap.style.setProperty('width', '100vw', 'important');
+            wrap.style.setProperty('height', '100vh', 'important');
+            wrap.style.setProperty('top', '0px', 'important');
+            wrap.style.setProperty('left', '0px', 'important');
         }
-        window.addEventListener('resize', forceOrientationPortrait);
-        window.addEventListener('orientationchange', forceOrientationPortrait);
-        window.addEventListener('load', forceOrientationPortrait);
+        window.addEventListener('resize', forceHardwarePortraitLock);
+        window.addEventListener('orientationchange', forceHardwarePortraitLock);
+        window.addEventListener('load', forceOrientationPortrait || forceHardwarePortraitLock);
 
-        // GESTURE POPUP A 2 DITA
+        // GESTURE POPUP A 2 DITA INTEGRALE
         let startY = 0;
         window.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
-                startY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                startY = (e.touches.clientY + e.touches.clientY) / 2;
             }
         }, { passive: true });
 
         window.addEventListener('touchmove', (e) => {
             if (e.touches.length === 2 && startY !== 0) {
-                let currentY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                let currentY = (e.touches.clientY + e.touches.clientY) / 2;
                 let swipeDistance = currentY - startY;
                 
                 if (swipeDistance > 35) {
@@ -427,7 +440,7 @@
                 
                 liveLapInterval = setInterval(() => {
                     if (laps.length > 0 && isRunning) {
-                        laps[0].time = elapsedTime - totalLapTime;
+                        laps.time = elapsedTime - totalLapTime;
                         renderLaps();
                     }
                 }, 10);
@@ -448,7 +461,7 @@
                 }
 
                 if (laps.length > 0) {
-                    laps[0].time = elapsedTime - totalLapTime;
+                    laps.time = elapsedTime - totalLapTime;
                     renderLaps();
                 }
 
@@ -478,7 +491,7 @@
                 let lapTime = currentTotal - totalLapTime;
                 totalLapTime = currentTotal;
 
-                laps[0].time = lapTime;
+                laps.time = lapTime;
                 laps.unshift({ number: laps.length + 1, time: 0 });
                 renderLaps();
             }
