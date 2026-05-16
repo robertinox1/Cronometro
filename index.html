@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
-    <!-- Forza la modalità Web App a schermo intero senza barre quando salvata sulla Home -->
+    <!-- Rende la pagina una Web App a tutto schermo senza barre se salvata sulla Home -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
     
     <title>Cronometro</title>
     <style>
@@ -28,7 +29,6 @@
             --dot-inactive: #3a3a3c;
         }
 
-        /* Blocco preventivo di scroll e zoom del browser */
         html, body {
             width: 100%;
             height: 100%;
@@ -57,22 +57,15 @@
             height: 100vh;
         }
 
-        /* Schermata di blocco rotazione: se girato, oscura tutto per costringere a rimetterlo verticale */
-        #orientation-blocker {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
+        #app-wrapper {
             width: 100vw;
             height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            top: 0;
+            left: 0;
             background-color: #000000;
-            z-index: 10000;
-        }
-
-        @media screen and (orientation: landscape) {
-            #orientation-blocker {
-                display: block;
-            }
         }
 
         .main-content {
@@ -186,7 +179,7 @@
             overflow-y: auto;
             border-top: 0.5px solid var(--border-color);
             padding: 0 16px;
-            margin-bottom: 50px; /* Ridotto il margine per adattarsi alle icone abbassate */
+            margin-bottom: 75px; 
             touch-action: pan-y; 
         }
 
@@ -210,21 +203,18 @@
             font-weight: 300; 
         }
 
-        /* Spostata verso il basso: ora è quasi attaccata e fluttua millimetricamente sopra il notch inferiore */
+        /* Posizionamento perfetto: azzera i buchi neri e si attacca sopra la linea Home di iOS */
         .bottom-tabs {
-            position: fixed;
-            bottom: 0;
+            position: absolute;
+            bottom: 12px; 
             left: 0;
-            height: 52px; /* Altezza calibrata per la visualizzazione a tutto schermo da Home */
+            height: 56px; 
             width: 100%; 
             background-image: url('tabs.PNG');
             background-size: 100% 100%; 
             background-position: center bottom;
             background-repeat: no-repeat;
             z-index: 10;
-            background-color: #000000;
-            /* Rimosso il calcolo di safe-area che creava il buco vuoto */
-            padding-bottom: 0; 
         }
 
         #secret-menu {
@@ -276,28 +266,28 @@
 </head>
 <body oncontextmenu="return false;">
 
-    <div id="orientation-blocker"></div>
+    <div id="app-wrapper">
+        <div class="main-content">
+            <div class="timer-container">
+                <div class="time-display" id="display">00:00,00</div>
+            </div>
 
-    <div class="main-content">
-        <div class="timer-container">
-            <div class="time-display" id="display">00:00,00</div>
+            <div class="controls-wrapper">
+                <div class="controls">
+                    <button class="btn btn-lap" id="btn-left" disabled>Giro</button>
+                    <button class="btn btn-start" id="btn-right">Avvia</button>
+                </div>
+                <div class="page-dots">
+                    <div class="dot active" id="dot1"></div>
+                    <div class="dot" id="dot2"></div>
+                </div>
+            </div>
         </div>
 
-        <div class="controls-wrapper">
-            <div class="controls">
-                <button class="btn btn-lap" id="btn-left" disabled>Giro</button>
-                <button class="btn btn-start" id="btn-right">Avvia</button>
-            </div>
-            <div class="page-dots">
-                <div class="dot active" id="dot1"></div>
-                <div class="dot" id="dot2"></div>
-            </div>
-        </div>
+        <div class="laps-container" id="laps-list"></div>
+
+        <div class="bottom-tabs"></div>
     </div>
-
-    <div class="laps-container" id="laps-list"></div>
-
-    <div class="bottom-tabs"></div>
 
     <div id="secret-menu">
         <div class="menu-content">
@@ -330,27 +320,37 @@
         let targetSum = localStorage.getItem('magic_force_sum') ? parseInt(localStorage.getItem('magic_force_sum')) : null;
         if(targetSum) forceInput.value = targetSum;
 
-        // GESTURE APERTURA MENU SEGRETO A 2 DITA INTEGRALE NATIVA
-        let touchStartY = 0;
+        // BLOCCO ORIENTAMENTO VERTICALE REALE (Annulla le rotazioni ripristinando le misure portrait)
+        function portraitLock() {
+            if (window.innerWidth > window.innerHeight) {
+                document.getElementById('app-wrapper').style.width = "100vw";
+                document.getElementById('app-wrapper').style.height = "100vh";
+            }
+        }
+        window.addEventListener('resize', portraitLock);
+        window.addEventListener('orientationchange', portraitLock);
+
+        // GESTURE APERTURA MENU SEGRETO A 2 DITA SEPARATA E BLINDATA
+        let touchStartTop = 0;
         window.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
-                touchStartY = (e.touches.clientY + e.touches.clientY) / 2;
+                touchStartTop = (e.touches.clientY + e.touches.clientY) / 2;
             }
         }, { passive: true });
 
         window.addEventListener('touchmove', (e) => {
-            if (e.touches.length === 2 && touchStartY !== 0) {
+            if (e.touches.length === 2 && touchStartTop !== 0) {
                 let currentY = (e.touches.clientY + e.touches.clientY) / 2;
-                let moveDistance = currentY - touchStartY;
+                let distance = currentY - touchStartTop;
                 
-                if (moveDistance > 40) {
+                if (distance > 35) {
                     secretMenu.style.display = 'flex';
-                    touchStartY = 0;
+                    touchStartTop = 0;
                 }
             }
         }, { passive: true });
 
-        window.addEventListener('touchend', () => { touchStartY = 0; });
+        window.addEventListener('touchend', () => { touchStartTop = 0; });
         window.addEventListener('gesturestart', (e) => e.preventDefault());
 
         saveBtn.addEventListener('click', () => {
@@ -434,6 +434,7 @@
                 
                 renderLaps();
                 
+                // AVVIA SCORRIMENTO TEMPO GIRO LIVE CORRETTO
                 liveLapInterval = setInterval(() => {
                     if (laps.length > 0 && isRunning) {
                         laps.time = elapsedTime - totalLapTime;
