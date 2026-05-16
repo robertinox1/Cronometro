@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <!-- Configurazione Web App a schermo intero -->
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -15,8 +15,8 @@
             --bg-color: #000000;
             --text-color: #ffffff;
             --gray-text: #aeaeb2;
-            --btn-gray-dark: #2c2c2e; /* Sfondo Giro modificato: grigio leggermente più chiaro a cronometro a 0 */
-            --btn-gray-dark-text: #aeaeaF; /* Scritta Giro modificata: grigio chiaro visibile a cronometro a 0 */
+            --btn-gray-dark: #2c2c2e; 
+            --btn-gray-dark-text: #aeaeaF; 
             --btn-gray-light: #333333;
             --btn-gray-light-text: #f2f2f7;
             --btn-gray-disabled: #545456;
@@ -145,7 +145,7 @@
             overflow-y: auto;
             border-top: 0.5px solid var(--border-color);
             padding: 0 16px;
-            margin-bottom: 95px; 
+            margin-bottom: 65px; 
             touch-action: pan-y;
         }
 
@@ -163,12 +163,13 @@
         .lap-row.max { color: var(--btn-red-text); }
         .lap-time { color: var(--text-color); font-weight: 300; }
 
+        /* RIPRISTINATO: Posizionamento a filo pavimento esatto per eliminare il vuoto */
         .bottom-tabs-container {
             position: fixed;
-            bottom: 18px; 
+            bottom: 0;
             left: 0;
             width: 100%;
-            height: 62px; 
+            height: 52px; 
             background-color: #000000;
             z-index: 10;
         }
@@ -258,17 +259,16 @@
         window.addEventListener('resize', portraitConstraint);
         window.addEventListener('orientationchange', portraitConstraint);
 
-        // RIPRISTINATO SISTEMA DI RILEVAMENTO GESTURE A DUE DITA SENZA EVENTI PREVENTIVI DANNOSI
         let touchYStart = 0;
         window.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
-                touchYStart = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                touchYStart = (e.touches.clientY + e.touches.clientY) / 2;
             }
         }, { passive: true });
 
         window.addEventListener('touchmove', (e) => {
             if (e.touches.length === 2 && touchYStart !== 0) {
-                let currentAvgY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                let currentAvgY = (e.touches.clientY + e.touches.clientY) / 2;
                 if (currentAvgY - touchYStart > 35) {
                     secretMenu.style.display = 'flex';
                     touchYStart = 0; 
@@ -323,10 +323,9 @@
                 }
                 renderLaps();
                 
-                // CORE CORRETTO: Avvia stabilmente l'aggiornamento continuo del tempo dei giri live
                 liveLapInterval = setInterval(() => { 
                     if (laps.length > 0 && isRunning) { 
-                        laps[0].time = elapsedTime - totalLapTime; 
+                        laps.time = elapsedTime - totalLapTime; 
                         renderLaps(); 
                     } 
                 }, 10);
@@ -338,7 +337,7 @@
                     let forcedMs = getForcedCentiseconds(elapsedTime, targetSum);
                     if (forcedMs !== null) elapsedTime = (Math.floor(elapsedTime / 1000) * 1000) + forcedMs;
                 }
-                if (laps.length > 0) laps[0].time = elapsedTime - totalLapTime;
+                if (laps.length > 0) laps.time = elapsedTime - totalLapTime;
                 display.innerText = formatTime(elapsedTime);
                 btnRight.className = "btn btn-start"; btnRight.innerText = "Avvia";
                 btnLeft.className = "btn btn-lap active-mode"; btnLeft.innerText = "Azzera";
@@ -352,7 +351,7 @@
                 btnLeft.className = "btn btn-lap"; btnLeft.innerText = "Giro";
             } else {
                 let currentTotal = elapsedTime; let lapTime = currentTotal - totalLapTime; totalLapTime = currentTotal;
-                laps[0].time = lapTime; laps.unshift({ number: laps.length + 1, time: 0 }); renderLaps();
+                laps.time = lapTime; laps.unshift({ number: laps.length + 1, time: 0 }); renderLaps();
             }
         });
 
