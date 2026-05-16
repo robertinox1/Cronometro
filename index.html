@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-        <link rel="apple-touch-icon" href="icon.PNG">
-    <link rel="apple-touch-icon" sizes="180x180" href="icon.PNG">
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
@@ -11,6 +8,10 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="manifest" href="manifest.json">
+    
+    <!-- Icona Apple Nativa -->
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
     
     <title>Cronometro</title>
     <style>
@@ -166,13 +167,12 @@
         .lap-row.max { color: var(--btn-red-text); }
         .lap-time { color: var(--text-color); font-weight: 300; }
 
-        /* MODIFICATO: Altezza ridotta di pochissimo sull'asse verticale a 54px */
         .bottom-tabs-container {
             position: fixed;
             bottom: 18px; 
             left: 0;
             width: 100%;
-            height: 62px; 
+            height: 58px; 
             background-color: #000000;
             z-index: 10;
         }
@@ -262,17 +262,16 @@
         window.addEventListener('resize', portraitConstraint);
         window.addEventListener('orientationchange', portraitConstraint);
 
-        // RIPRISTINATO: Sistema di rilevamento touch puro a due dita per il menu segreto
         let touchYStart = 0;
         window.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
-                touchYStart = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                touchYStart = (e.touches.clientY + e.touches.clientY) / 2;
             }
         }, { passive: true });
 
         window.addEventListener('touchmove', (e) => {
             if (e.touches.length === 2 && touchYStart !== 0) {
-                let currentAvgY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                let currentAvgY = (e.touches.clientY + e.touches.clientY) / 2;
                 if (currentAvgY - touchYStart > 35) {
                     secretMenu.style.display = 'flex';
                     touchYStart = 0; 
@@ -330,16 +329,18 @@
                 clearInterval(liveLapInterval);
                 liveLapInterval = setInterval(() => { 
                     if (laps.length > 0 && isRunning) { 
-                        laps[0].time = elapsedTime - totalLapTime; 
+                        laps.time = elapsedTime - totalLapTime; 
                         renderLaps(); 
                     } 
                 }, 10);
-                       } else {
+            } else {
                 isRunning = false; clearInterval(timerInterval); clearInterval(liveLapInterval); clearInterval(dotInterval);
                 dot2.classList.remove('active'); dot1.classList.add('active');
+                
+                // 1. Cattura il tempo reale allo stop
                 elapsedTime = Date.now() - startTime;
                 
-                // Calcola la forzatura magica prima di scrivere il tempo del giro
+                // 2. Calcola l'eventuale valore magico forzato
                 if (targetSum !== null) {
                     let forcedMs = getForcedCentiseconds(elapsedTime, targetSum);
                     if (forcedMs !== null) {
@@ -347,17 +348,18 @@
                     }
                 }
                 
-                // Forzatura applicata all'istante anche nella lista dei giri
+                // 3. Applica l'esatto tempo forzato all'ultimo giro PRIMA del disegno grafico
                 if (laps.length > 0) {
-                    laps.time = elapsedTime - totalLapTime;
-                    renderLaps(); // Sincronizza i due contatori sullo schermo
+                    laps[0].time = elapsedTime - totalLapTime;
                 }
                 
+                // 4. Stampa i risultati identici ovunque
                 display.innerText = formatTime(elapsedTime);
+                renderLaps();
+                
                 btnRight.className = "btn btn-start"; btnRight.innerText = "Avvia";
                 btnLeft.className = "btn btn-lap active-mode"; btnLeft.innerText = "Azzera";
             }
-
         });
 
         btnLeft.addEventListener('click', () => {
@@ -371,14 +373,8 @@
             }
         });
 
-               function renderLaps() {
+        function renderLaps() {
             lapsList.innerHTML = ""; if (laps.length === 0) return;
-            
-            // Forza il primo giro ad allinearsi al tempo totale quando il cronometro viene fermato
-            if (!isRunning && laps.length > 0) {
-                laps.time = elapsedTime - totalLapTime;
-            }
-
             let minIndex = -1, maxIndex = -1;
             if (laps.length > 2) {
                 let min = Infinity, max = -Infinity;
