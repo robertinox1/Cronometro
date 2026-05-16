@@ -169,7 +169,7 @@
             overflow-y: auto;
             border-top: 0.5px solid var(--border-color);
             padding: 0 16px;
-            margin-bottom: 75px; 
+            margin-bottom: 125px; /* Spazio aumentato per proteggere le icone sollevate */
             touch-action: pan-y; 
         }
 
@@ -193,10 +193,10 @@
             font-weight: 300; 
         }
 
-        /* Posizionamento perfetto a filo sopra la sbarra Home di iOS */
+        /* Rialzata sopra il notch/home indicator di iOS */
         .bottom-tabs {
             position: absolute;
-            bottom: calc(env(safe-area-inset-bottom) - 10px);
+            bottom: 58px; 
             left: 0;
             height: 56px; 
             width: 100%; 
@@ -310,18 +310,18 @@
         let targetSum = localStorage.getItem('magic_force_sum') ? parseInt(localStorage.getItem('magic_force_sum')) : null;
         if(targetSum) forceInput.value = targetSum;
 
-        // SISTEMA DI BLOCCO ORIENTAMENTO ASSOLUTO
-        function forcePortrait() {
-            if (window.innerHeight < window.innerWidth) {
-                document.getElementById('app-wrapper').style.setProperty('transform', 'none', 'important');
-                document.getElementById('app-wrapper').style.setProperty('width', '100vw', 'important');
-                document.getElementById('app-wrapper').style.setProperty('height', '100vh', 'important');
+        // SISTEMA DI BLOCCO ROTAZIONE DIRETTO (Forza l'orientamento verticale rigido a prescindere dal movimento)
+        function forceOrientationPortrait() {
+            if (window.innerWidth > window.innerHeight) {
+                document.getElementById('app-wrapper').style.width = '100vw';
+                document.getElementById('app-wrapper').style.height = '100vh';
             }
         }
-        window.addEventListener('resize', forcePortrait);
-        window.addEventListener('orientationchange', forcePortrait);
+        window.addEventListener('resize', forceOrientationPortrait);
+        window.addEventListener('orientationchange', forceOrientationPortrait);
+        window.addEventListener('load', forceOrientationPortrait);
 
-        // NUOVO SISTEMA DI RILEVAMENTO GESTURE A 2 DITA INSEPARABILE DA IOS
+        // GESTURE POPUP A 2 DITA
         let startY = 0;
         window.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
@@ -342,6 +342,7 @@
         }, { passive: true });
 
         window.addEventListener('touchend', () => { startY = 0; });
+        window.addEventListener('gesturestart', (e) => e.preventDefault());
 
         saveBtn.addEventListener('click', () => {
             const val = parseInt(forceInput.value);
@@ -424,7 +425,6 @@
                 
                 renderLaps();
                 
-                // SISTEMATO: Avvia lo scorrimento stabile e continuo in tempo reale del primo giro
                 liveLapInterval = setInterval(() => {
                     if (laps.length > 0 && isRunning) {
                         laps[0].time = elapsedTime - totalLapTime;
