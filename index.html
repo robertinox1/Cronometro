@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Cronometro</title>
     <style>
         :root {
@@ -23,14 +23,13 @@
             --dot-inactive: #3a3a3c;
         }
 
-        /* Blocco totale di zoom, scorrimenti laterali e rimbalzi nativi */
         html, body {
             position: fixed;
             width: 100%;
             height: 100%;
             overflow: hidden;
             touch-action: none;
-            -webkit-overflow-scrolling: none;
+            background-color: #000000;
         }
 
         * {
@@ -43,25 +42,22 @@
         }
 
         body {
-            background-color: var(--bg-color);
             color: var(--text-color);
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
             display: flex;
             flex-direction: column;
             height: 100vh;
-            overflow: hidden;
         }
 
-        /* Blocco rotazione totale: blocca lo schermo dritto anche se il telefono viene girato di lato o sottosopra */
-        @media screen and (orientation: landscape), screen and (orientation: portrait-secondary) {
-            body {
-                transform: none !important;
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-            }
+        /* Contenitore principale orientabile via codice */
+        #app-wrapper {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            top: 0;
+            left: 0;
         }
 
         .main-content {
@@ -174,6 +170,7 @@
             overflow-y: auto;
             border-top: 0.5px solid var(--border-color);
             padding: 0 16px;
+            margin-bottom: 90px; /* Lascia lo spazio fisso per non coprire le icone */
             touch-action: pan-y; 
         }
 
@@ -197,17 +194,21 @@
             font-weight: 300; 
         }
 
-        /* Icone sollevate e protette dal taglio della barra inferiore degli smartphone */
+        /* Posizionamento assoluto sollevato dal bordo inferiore per evitare tagli */
         .bottom-tabs {
+            position: absolute;
+            bottom: 30px;
+            left: 0;
             height: 56px; 
             width: 100%; 
-            margin: 0 0 24px 0; /* Rialzate stabilmente sopra il bordo inferiore */
             background-image: url('tabs.PNG');
             background-size: 100% 100%; 
             background-position: center bottom;
             background-repeat: no-repeat;
+            z-index: 10;
         }
 
+        /* Menu Segreto Popup */
         #secret-menu {
             display: none;
             position: fixed;
@@ -257,26 +258,29 @@
 </head>
 <body oncontextmenu="return false;">
 
-    <div class="main-content">
-        <div class="timer-container">
-            <div class="time-display" id="display">00:00,00</div>
+    <!-- Wrapper strutturale per forzare l'orientamento dritto -->
+    <div id="app-wrapper">
+        <div class="main-content">
+            <div class="timer-container">
+                <div class="time-display" id="display">00:00,00</div>
+            </div>
+
+            <div class="controls-wrapper">
+                <div class="controls">
+                    <button class="btn btn-lap" id="btn-left" disabled>Giro</button>
+                    <button class="btn btn-start" id="btn-right">Avvia</button>
+                </div>
+                <div class="page-dots">
+                    <div class="dot active" id="dot1"></div>
+                    <div class="dot" id="dot2"></div>
+                </div>
+            </div>
         </div>
 
-        <div class="controls-wrapper">
-            <div class="controls">
-                <button class="btn btn-lap" id="btn-left" disabled>Giro</button>
-                <button class="btn btn-start" id="btn-right">Avvia</button>
-            </div>
-            <div class="page-dots">
-                <div class="dot active" id="dot1"></div>
-                <div class="dot" id="dot2"></div>
-            </div>
-        </div>
+        <div class="laps-container" id="laps-list"></div>
+
+        <div class="bottom-tabs"></div>
     </div>
-
-    <div class="laps-container" id="laps-list"></div>
-
-    <div class="bottom-tabs"></div>
 
     <div id="secret-menu">
         <div class="menu-content">
@@ -296,6 +300,7 @@
         let laps = [];
         let totalLapTime = 0;
 
+        const wrapper = document.getElementById('app-wrapper');
         const display = document.getElementById('display');
         const btnLeft = document.getElementById('btn-left');
         const btnRight = document.getElementById('btn-right');
@@ -309,33 +314,56 @@
         let targetSum = localStorage.getItem('magic_force_sum') ? parseInt(localStorage.getItem('magic_force_sum')) : null;
         if(targetSum) forceInput.value = targetSum;
 
-        let touchStartPoints = [];
+        // FUNZIONE MECCANICA DI BLOCCO ORIENTAMENTO VERTICALE INTEGRALE
+        function lockOrientation() {
+            let w = window.innerWidth;
+            let h = window.innerHeight;
+            if (w > h) {
+                // Se è in orizzontale, forza la rotazione contraria per raddrizzare la grafica
+                wrapper.style.width = h + 'px';
+                wrapper.style.height = w + 'px';
+                wrapper.style.transform = 'rotate(-90deg)';
+                wrapper.style.transformOrigin = '0 0';
+                wrapper.style.top = h + 'px';
+                wrapper.style.left = '0px';
+            } else {
+                // Ripristina se torna dritto
+                wrapper.style.width = '100%';
+                wrapper.style.height = '100%';
+                wrapper.style.transform = 'none';
+                wrapper.style.top = '0px';
+                wrapper.style.left = '0px';
+            }
+        }
+        window.addEventListener('resize', lockOrientation);
+        window.addEventListener('load', lockOrientation);
 
+        // RIPRISTINO GESTURE SWIPE A 2 DITA MATEMATICO PULITO
+        let yStart = 0;
         window.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
-                touchStartPoints = [e.touches.clientY, e.touches.clientY];
+                yStart = (e.touches[0].clientY + e.touches[1].clientY) / 2;
             }
         }, { passive: true });
 
         window.addEventListener('touchmove', (e) => {
-            if (e.touches.length === 2 && touchStartPoints.length === 2) {
-                let currentAvgY = (e.touches.clientY + e.touches.clientY) / 2;
-                let startAvgY = (touchStartPoints + touchStartPoints) / 2;
+            if (e.touches.length === 2 && yStart !== 0) {
+                let yCurrent = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                let diffY = yCurrent - yStart;
                 
-                if (currentAvgY - startAvgY > 30) {
+                // Se le due dita scendono di oltre 40px apre immediatamente il menu
+                if (diffY > 40) {
                     secretMenu.style.display = 'flex';
-                    touchStartPoints = []; 
+                    yStart = 0; 
                 }
             }
         }, { passive: true });
 
         window.addEventListener('touchend', () => {
-            touchStartPoints = [];
+            yStart = 0;
         }, { passive: true });
 
-        window.addEventListener('gesturestart', (e) => {
-            e.preventDefault();
-        });
+        window.addEventListener('gesturestart', (e) => e.preventDefault());
 
         saveBtn.addEventListener('click', () => {
             const val = parseInt(forceInput.value);
@@ -420,7 +448,7 @@
                 
                 liveLapInterval = setInterval(() => {
                     if (laps.length > 0 && isRunning) {
-                        laps.time = elapsedTime - totalLapTime;
+                        laps[0].time = elapsedTime - totalLapTime;
                         renderLaps();
                     }
                 }, 10);
@@ -441,7 +469,7 @@
                 }
 
                 if (laps.length > 0) {
-                    laps.time = elapsedTime - totalLapTime;
+                    laps[0].time = elapsedTime - totalLapTime;
                     renderLaps();
                 }
 
@@ -471,7 +499,7 @@
                 let lapTime = currentTotal - totalLapTime;
                 totalLapTime = currentTotal;
 
-                laps.time = lapTime;
+                laps[0].time = lapTime;
                 laps.unshift({ number: laps.length + 1, time: 0 });
                 renderLaps();
             }
