@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Cronometro</title>
     <style>
         :root {
@@ -49,16 +49,14 @@
             height: 100vh;
         }
 
-        /* Wrapper blindato per bloccare l'orientamento */
         #app-wrapper {
-            width: 100% !important;
-            height: 100% !important;
+            width: 100%;
+            height: 100%;
             display: flex;
             flex-direction: column;
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            transform: none !important;
+            position: absolute;
+            top: 0;
+            left: 0;
         }
 
         .main-content {
@@ -171,7 +169,7 @@
             overflow-y: auto;
             border-top: 0.5px solid var(--border-color);
             padding: 0 16px;
-            margin-bottom: 110px; /* Aumentato spazio per non toccare le icone sollevate */
+            margin-bottom: 75px; 
             touch-action: pan-y; 
         }
 
@@ -195,10 +193,10 @@
             font-weight: 300; 
         }
 
-        /* Barra delle icone alzata ulteriormente per totale visibilità */
+        /* Posizionamento perfetto a filo sopra la sbarra Home di iOS */
         .bottom-tabs {
             position: absolute;
-            bottom: 45px; 
+            bottom: calc(env(safe-area-inset-bottom) - 10px);
             left: 0;
             height: 56px; 
             width: 100%; 
@@ -312,38 +310,38 @@
         let targetSum = localStorage.getItem('magic_force_sum') ? parseInt(localStorage.getItem('magic_force_sum')) : null;
         if(targetSum) forceInput.value = targetSum;
 
-        // FORCE SCREEN PORTRAIT LOCK (Annulla via codice qualsiasi tentativo di rotazione orizzontale o speculare)
-        function securePortrait() {
+        // SISTEMA DI BLOCCO ORIENTAMENTO ASSOLUTO
+        function forcePortrait() {
             if (window.innerHeight < window.innerWidth) {
                 document.getElementById('app-wrapper').style.setProperty('transform', 'none', 'important');
                 document.getElementById('app-wrapper').style.setProperty('width', '100vw', 'important');
                 document.getElementById('app-wrapper').style.setProperty('height', '100vh', 'important');
             }
         }
-        window.addEventListener('resize', securePortrait);
-        window.addEventListener('orientationchange', securePortrait);
+        window.addEventListener('resize', forcePortrait);
+        window.addEventListener('orientationchange', forcePortrait);
 
-        // RIPRISTINO INTERRUTTORE DI GESTURE SWIPE A 2 DITA SENZA MODIFICHE
-        let yStart = 0;
+        // NUOVO SISTEMA DI RILEVAMENTO GESTURE A 2 DITA INSEPARABILE DA IOS
+        let startY = 0;
         window.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
-                yStart = (e.touches.clientY + e.touches.clientY) / 2;
+                startY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
             }
         }, { passive: true });
 
         window.addEventListener('touchmove', (e) => {
-            if (e.touches.length === 2 && yStart !== 0) {
-                let yCurrent = (e.touches.clientY + e.touches.clientY) / 2;
-                let diffY = yCurrent - yStart;
-                if (diffY > 40) {
+            if (e.touches.length === 2 && startY !== 0) {
+                let currentY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                let swipeDistance = currentY - startY;
+                
+                if (swipeDistance > 35) {
                     secretMenu.style.display = 'flex';
-                    yStart = 0; 
+                    startY = 0;
                 }
             }
         }, { passive: true });
 
-        window.addEventListener('touchend', () => { yStart = 0; }, { passive: true });
-        window.addEventListener('gesturestart', (e) => e.preventDefault());
+        window.addEventListener('touchend', () => { startY = 0; });
 
         saveBtn.addEventListener('click', () => {
             const val = parseInt(forceInput.value);
@@ -426,9 +424,10 @@
                 
                 renderLaps();
                 
+                // SISTEMATO: Avvia lo scorrimento stabile e continuo in tempo reale del primo giro
                 liveLapInterval = setInterval(() => {
                     if (laps.length > 0 && isRunning) {
-                        laps.time = elapsedTime - totalLapTime;
+                        laps[0].time = elapsedTime - totalLapTime;
                         renderLaps();
                     }
                 }, 10);
@@ -449,7 +448,7 @@
                 }
 
                 if (laps.length > 0) {
-                    laps.time = elapsedTime - totalLapTime;
+                    laps[0].time = elapsedTime - totalLapTime;
                     renderLaps();
                 }
 
@@ -479,7 +478,7 @@
                 let lapTime = currentTotal - totalLapTime;
                 totalLapTime = currentTotal;
 
-                laps.time = lapTime;
+                laps[0].time = lapTime;
                 laps.unshift({ number: laps.length + 1, time: 0 });
                 renderLaps();
             }
