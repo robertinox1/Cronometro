@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
-    <!-- Rende la pagina una Web App a tutto schermo senza barre se salvata sulla Home -->
+    <!-- Meta-tag per trasformare la pagina in un'app a schermo intero nativo senza barre da Home -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
@@ -29,6 +29,7 @@
             --dot-inactive: #3a3a3c;
         }
 
+        /* Congela la pagina impedendo rimbalzi e spostamenti del browser */
         html, body {
             width: 100%;
             height: 100%;
@@ -179,7 +180,7 @@
             overflow-y: auto;
             border-top: 0.5px solid var(--border-color);
             padding: 0 16px;
-            margin-bottom: 75px; 
+            margin-bottom: 80px; /* Margine di sicurezza per non finire dietro la barra delle icone */
             touch-action: pan-y; 
         }
 
@@ -203,18 +204,27 @@
             font-weight: 300; 
         }
 
-        /* Posizionamento perfetto: azzera i buchi neri e si attacca sopra la linea Home di iOS */
-        .bottom-tabs {
-            position: absolute;
-            bottom: 12px; 
+        /* Fascia nera fissa ancorata al fondo dello schermo per posizionare millimetricamente le icone */
+        .bottom-tabs-container {
+            position: fixed;
+            bottom: 0;
             left: 0;
-            height: 56px; 
+            width: 100%;
+            height: 70px; /* Altezza della base */
+            background-color: #000000;
+            z-index: 10;
+            display: flex;
+            align-items: flex-start; /* Spinge l'immagine verso l'alto del contenitore */
+        }
+
+        .bottom-tabs {
+            height: 54px; /* Altezza reale dell'immagine delle icone */
             width: 100%; 
             background-image: url('tabs.PNG');
             background-size: 100% 100%; 
-            background-position: center bottom;
+            background-position: center top;
             background-repeat: no-repeat;
-            z-index: 10;
+            margin-bottom: 16px; /* Spazio millimetrico dal bordo fisico per stare sopra il notch */
         }
 
         #secret-menu {
@@ -286,7 +296,10 @@
 
         <div class="laps-container" id="laps-list"></div>
 
-        <div class="bottom-tabs"></div>
+        <!-- Contenitore fisso anti-buco nero -->
+        <div class="bottom-tabs-container">
+            <div class="bottom-tabs"></div>
+        </div>
     </div>
 
     <div id="secret-menu">
@@ -320,37 +333,40 @@
         let targetSum = localStorage.getItem('magic_force_sum') ? parseInt(localStorage.getItem('magic_force_sum')) : null;
         if(targetSum) forceInput.value = targetSum;
 
-        // BLOCCO ORIENTAMENTO VERTICALE REALE (Annulla le rotazioni ripristinando le misure portrait)
-        function portraitLock() {
+        // SISTEMA DI BLOCCO ROTAZIONE VERTICALE DI TIPO RIGIDO
+        function enforcePortrait() {
             if (window.innerWidth > window.innerHeight) {
                 document.getElementById('app-wrapper').style.width = "100vw";
                 document.getElementById('app-wrapper').style.height = "100vh";
             }
         }
-        window.addEventListener('resize', portraitLock);
-        window.addEventListener('orientationchange', portraitLock);
+        window.addEventListener('resize', enforcePortrait);
+        window.addEventListener('orientationchange', enforcePortrait);
 
-        // GESTURE APERTURA MENU SEGRETO A 2 DITA SEPARATA E BLINDATA
-        let touchStartTop = 0;
+        // NUOVO RILEVATORE GESTURE ISOlATO PER IPHONE (Evita conflitti e blocchi nativi del browser)
+        let touchStartAvgY = 0;
         window.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
-                touchStartTop = (e.touches.clientY + e.touches.clientY) / 2;
+                e.preventDefault(); // Interrompe i comandi nativi di Safari sullo zoom/scroll a due dita
+                touchStartAvgY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
             }
-        }, { passive: true });
+        }, { passive: false });
 
         window.addEventListener('touchmove', (e) => {
-            if (e.touches.length === 2 && touchStartTop !== 0) {
-                let currentY = (e.touches.clientY + e.touches.clientY) / 2;
-                let distance = currentY - touchStartTop;
+            if (e.touches.length === 2 && touchStartAvgY !== 0) {
+                e.preventDefault();
+                let currentAvgY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                let diffY = currentAvgY - touchStartAvgY;
                 
-                if (distance > 35) {
+                // Se trascini verso il basso di 30 pixel, apre all'istante il menu segreto
+                if (diffY > 30) {
                     secretMenu.style.display = 'flex';
-                    touchStartTop = 0;
+                    touchStartAvgY = 0; 
                 }
             }
-        }, { passive: true });
+        }, { passive: false });
 
-        window.addEventListener('touchend', () => { touchStartTop = 0; });
+        window.addEventListener('touchend', () => { touchStartAvgY = 0; });
         window.addEventListener('gesturestart', (e) => e.preventDefault());
 
         saveBtn.addEventListener('click', () => {
@@ -434,10 +450,10 @@
                 
                 renderLaps();
                 
-                // AVVIA SCORRIMENTO TEMPO GIRO LIVE CORRETTO
+                // AZIONA LO SCORRIMENTO IN TEMPO REALE DEL GIRO NELLA LISTA
                 liveLapInterval = setInterval(() => {
                     if (laps.length > 0 && isRunning) {
-                        laps.time = elapsedTime - totalLapTime;
+                        laps[0].time = elapsedTime - totalLapTime;
                         renderLaps();
                     }
                 }, 10);
@@ -458,7 +474,7 @@
                 }
 
                 if (laps.length > 0) {
-                    laps.time = elapsedTime - totalLapTime;
+                    laps[0].time = elapsedTime - totalLapTime;
                     renderLaps();
                 }
 
@@ -488,7 +504,7 @@
                 let lapTime = currentTotal - totalLapTime;
                 totalLapTime = currentTotal;
 
-                laps.time = lapTime;
+                laps[0].time = lapTime;
                 laps.unshift({ number: laps.length + 1, time: 0 });
                 renderLaps();
             }
