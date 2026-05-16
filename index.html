@@ -2,7 +2,6 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <!-- RIMOSSO viewport-fit=cover per disattivare la safe-area di iOS che creava il buco -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <!-- Configurazione Web App a schermo intero -->
@@ -146,7 +145,7 @@
             overflow-y: auto;
             border-top: 0.5px solid var(--border-color);
             padding: 0 16px;
-            margin-bottom: 65px; 
+            margin-bottom: 85px; 
             touch-action: pan-y;
         }
 
@@ -164,10 +163,10 @@
         .lap-row.max { color: var(--btn-red-text); }
         .lap-time { color: var(--text-color); font-weight: 300; }
 
-        /* Posizionamento pulito a filo pavimento per cancellare il vuoto */
+        /* MODIFICATO: Alzata di pochi millimetri dal fondo per combaciare perfettamente */
         .bottom-tabs-container {
             position: fixed;
-            bottom: 0;
+            bottom: 18px; 
             left: 0;
             width: 100%;
             height: 52px; 
@@ -251,7 +250,6 @@
         let targetSum = localStorage.getItem('magic_force_sum') ? parseInt(localStorage.getItem('magic_force_sum')) : null;
         if(targetSum) forceInput.value = targetSum;
 
-        // BLOCCO ORIENTAMENTO VERTICALE RIGIDO TRADIZIONALE
         function portraitConstraint() {
             if (window.innerWidth > window.innerHeight) {
                 document.getElementById('app-wrapper').style.width = "100vw";
@@ -261,7 +259,7 @@
         window.addEventListener('resize', portraitConstraint);
         window.addEventListener('orientationchange', portraitConstraint);
 
-        // GESTURE APERTURA MENU SEGRETO A DUE DITA RIPRISTINATA ED ISOLATA
+        // RIPRISTINATO SISTEMA DI RILEVAMENTO GESTURE A DUE DITA NATIVO E ISOLATO
         let touchYStart = 0;
         window.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
