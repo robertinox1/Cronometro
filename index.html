@@ -330,7 +330,9 @@
                 clearInterval(liveLapInterval);
                 liveLapInterval = setInterval(() => { 
                     if (laps.length > 0 && isRunning) { 
-                        laps[0].time = elapsedTime - totalLapTime; 
+                        laps[0].time = elapsedTime - totalLapTime;
+                            if (document.querySelector('.lap-row .lap-time')) document.querySelector('.lap-row .lap-time').innerText = display.innerText;
+
                         renderLaps(); 
                     } 
                 }, 10);
