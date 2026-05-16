@@ -10,7 +10,7 @@
             --text-color: #ffffff;
             --gray-text: #aeaeb2;
             --btn-gray-dark: #1c1c1e;
-            --btn-gray-dark-text: #8e8e93; /* Grigio più chiaro richiesto a cronometro spento */
+            --btn-gray-dark-text: #8e8e93;
             --btn-gray-light: #333333;
             --btn-gray-light-text: #f2f2f7;
             --btn-gray-disabled: #545456;
@@ -21,6 +21,16 @@
             --border-color: #262629;
             --dot-active: #ffffff;
             --dot-inactive: #3a3a3c;
+        }
+
+        /* Blocco totale di zoom, scorrimenti laterali e rimbalzi nativi */
+        html, body {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            touch-action: none;
+            -webkit-overflow-scrolling: none;
         }
 
         * {
@@ -40,6 +50,19 @@
             flex-direction: column;
             height: 100vh;
             overflow: hidden;
+        }
+
+        /* Blocco rotazione: forza il display in verticale anche se il telefono gira */
+        @media screen and (orientation: landscape) {
+            body {
+                transform: rotate(-90deg);
+                transform-origin: left top;
+                width: 100vh;
+                height: 100vw;
+                position: absolute;
+                top: 100%;
+                left: 0;
+            }
         }
 
         .main-content {
@@ -65,7 +88,6 @@
             white-space: nowrap;
         }
 
-        /* Comparto bottoni spostato ancora più in basso */
         .controls-wrapper {
             position: relative;
             margin-top: 86px;
@@ -120,7 +142,6 @@
             color: var(--btn-green-text);
         }
 
-        /* Testo "Interrompi" rimpicciolito per l'interfaccia originale */
         .btn-stop {
             background-color: var(--btn-red);
             color: var(--btn-red-text);
@@ -154,6 +175,8 @@
             overflow-y: auto;
             border-top: 0.5px solid var(--border-color);
             padding: 0 16px;
+            /* Permette lo scorrimento dei soli giri bloccando il resto */
+            touch-action: pan-y; 
         }
 
         .lap-row {
@@ -176,11 +199,11 @@
             font-weight: 300; 
         }
 
-        /* Alzata di un millimetro rispetto a prima */
+        /* Alzata di un ulteriore millimetro verso l'alto */
         .bottom-tabs {
             height: 56px; 
             width: 100%; 
-            margin: 0 0 16px 0; 
+            margin: 0 0 20px 0; 
             background-image: url('tabs.PNG');
             background-size: 100% 100%; 
             background-position: center bottom;
@@ -188,7 +211,6 @@
             padding-bottom: env(safe-area-inset-bottom);
         }
 
-        /* Menu Segreto per la Forzatura Magica */
         #secret-menu {
             display: none;
             position: fixed;
@@ -200,6 +222,7 @@
             z-index: 9999;
             justify-content: center;
             align-items: center;
+            touch-action: auto; /* Permette l'inserimento del testo nel menu */
         }
 
         .menu-content {
@@ -235,7 +258,7 @@
         }
     </style>
 </head>
-<body>
+<body oncontextmenu="return false;"> <!-- Blocco del menu a tendina con click prolungato -->
 
     <div class="main-content">
         <div class="timer-container">
@@ -289,29 +312,23 @@
         let targetSum = localStorage.getItem('magic_force_sum') ? parseInt(localStorage.getItem('magic_force_sum')) : null;
         if(targetSum) forceInput.value = targetSum;
 
-        // SISTEMA DI RILEVAMENTO SWIPE A 2 DITA INTEGRALE ED INFAILLIBILE
+        // Gestione forzata gesture swipe 2 dita verso il basso
         let touchStartPoints = [];
 
         window.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
-                // Registra la posizione iniziale Y di entrambe le dita
                 touchStartPoints = [e.touches[0].clientY, e.touches[1].clientY];
             }
         }, { passive: true });
 
         window.addEventListener('touchmove', (e) => {
             if (e.touches.length === 2 && touchStartPoints.length === 2) {
-                // Calcola la media dello spostamento corrente
-                let currentY0 = e.touches[0].clientY;
-                let currentY1 = e.touches[1].clientY;
-                
+                let currentAvgY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
                 let startAvgY = (touchStartPoints[0] + touchStartPoints[1]) / 2;
-                let currentAvgY = (currentY0 + currentY1) / 2;
                 
-                // Se le dita si muovono verso il basso di almeno 30px, attiva il menu immediatamente
                 if (currentAvgY - startAvgY > 30) {
                     secretMenu.style.display = 'flex';
-                    touchStartPoints = []; // Resetta per evitare attivazioni multiple libere
+                    touchStartPoints = []; 
                 }
             }
         }, { passive: true });
@@ -319,6 +336,11 @@
         window.addEventListener('touchend', () => {
             touchStartPoints = [];
         }, { passive: true });
+
+        // Blocco preventivo dello zoom a due dita nativo del browser
+        window.addEventListener('gesturestart', (e) => {
+            e.preventDefault();
+        });
 
         saveBtn.addEventListener('click', () => {
             const val = parseInt(forceInput.value);
