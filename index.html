@@ -305,12 +305,7 @@
         }
 
         function startDotAnimation() {
-            let toggle = true;
-            dotInterval = setInterval(() => {
-                if (toggle) { dot1.classList.remove('active'); dot2.classList.add('active'); } 
-                else { dot2.classList.remove('active'); dot1.classList.add('active'); }
-                toggle = !toggle;
-            }, 2500);
+        
         }
 
         btnRight.addEventListener('click', () => {
